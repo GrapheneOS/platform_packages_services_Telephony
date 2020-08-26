@@ -5532,11 +5532,13 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
         final long identity = Binder.clearCallingIdentity();
         try {
-            Settings.Global.putInt(mApp.getContentResolver(),
-                    Settings.Global.PREFERRED_NETWORK_MODE + subId, networkType);
-
             Boolean success = (Boolean) sendRequest(
                     CMD_SET_PREFERRED_NETWORK_TYPE, networkType, subId);
+
+            if (success) {
+                Settings.Global.putInt(mApp.getContentResolver(),
+                        Settings.Global.PREFERRED_NETWORK_MODE + subId, networkType);
+            }
             if (DBG) log("setPreferredNetworkType: " + (success ? "ok" : "fail"));
             return success;
         } finally {
@@ -6819,6 +6821,13 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
         final long identity = Binder.clearCallingIdentity();
         try {
+            // isActiveSubId requires READ_PHONE_STATE, which we already check for above
+            if (!mSubscriptionController.isActiveSubId(subId, callingPackage, callingFeatureId)) {
+                Rlog.d(LOG_TAG,
+                        "getServiceStateForSubscriber returning null for inactive subId=" + subId);
+                return null;
+            }
+
             final Phone phone = getPhone(subId);
             if (phone == null) {
                 return null;
