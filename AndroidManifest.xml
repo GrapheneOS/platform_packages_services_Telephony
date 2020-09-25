@@ -24,7 +24,6 @@
 
     <original-package android:name="com.android.phone" />
 
-    <protected-broadcast android:name="android.telecom.action.TTY_PREFERRED_MODE_CHANGED" />
     <protected-broadcast android:name="android.telecom.action.CURRENT_TTY_MODE_CHANGED" />
     <protected-broadcast android:name="android.intent.action.SERVICE_STATE" />
     <protected-broadcast android:name="android.intent.action.RADIO_TECHNOLOGY" />
@@ -216,6 +215,7 @@
     <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
     <uses-permission android:name="android.permission.NETWORK_STATS_PROVIDER" />
     <uses-permission android:name="android.permission.HANDLE_CAR_MODE_CHANGES"/>
+    <uses-permission android:name="android.permission.MANAGE_SUBSCRIPTION_PLANS"/>
 
     <application android:name="PhoneApp"
             android:persistent="true"
