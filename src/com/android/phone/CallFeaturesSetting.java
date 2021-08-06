@@ -392,9 +392,6 @@ public class CallFeaturesSetting extends PreferenceActivity
             prefSet.removePreference(gsmOptions);
 
             int phoneType = mPhone.getPhoneType();
-            if (carrierConfig.getBoolean(CarrierConfigManager.KEY_HIDE_CARRIER_NETWORK_SETTINGS_BOOL)) {
-                prefSet.removePreference(fdnButton);
-            } else {
                 if (phoneType == PhoneConstants.PHONE_TYPE_CDMA) {
                     prefSet.removePreference(fdnButton);
 
@@ -417,7 +414,6 @@ public class CallFeaturesSetting extends PreferenceActivity
                 } else {
                     throw new IllegalStateException("Unexpected phone type: " + phoneType);
                 }
-            }
         }
         updateVtWfc();
 
