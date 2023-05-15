@@ -177,6 +177,11 @@
                 android:readPermission="android.permission.READ_CONTACTS"
                 android:writePermission="android.permission.WRITE_CONTACTS" />
 
+        <provider
+            android:name=".IccProviderStub"
+            android:authorities="icc.stub"
+            android:exported="true" />
+
         <provider android:name=".SimPhonebookProvider"
             android:authorities="com.android.simphonebook"
             android:multiprocess="true"
