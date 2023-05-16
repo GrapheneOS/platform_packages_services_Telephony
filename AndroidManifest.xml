@@ -189,6 +189,11 @@
             android:readPermission="android.permission.READ_CONTACTS"
             android:writePermission="android.permission.WRITE_CONTACTS" />
 
+        <provider
+            android:name=".SimPhonebookProviderStub"
+            android:authorities="com.android.simphonebook.stub"
+            android:exported="true" />
+
         <provider android:name="com.android.ims.rcs.uce.eab.EabProvider"
                 android:authorities="eab"
                 android:exported="false"/>
