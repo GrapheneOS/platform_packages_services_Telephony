@@ -106,12 +106,12 @@ public class SimPhonebookProvider extends ContentProvider {
 
     private static final int WRITE_TIMEOUT_SECONDS = 30;
 
-    private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+    static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
-    private static final int ELEMENTARY_FILES = 100;
-    private static final int ELEMENTARY_FILES_ITEM = 101;
-    private static final int SIM_RECORDS = 200;
-    private static final int SIM_RECORDS_ITEM = 201;
+    static final int ELEMENTARY_FILES = 100;
+    static final int ELEMENTARY_FILES_ITEM = 101;
+    static final int SIM_RECORDS = 200;
+    static final int SIM_RECORDS_ITEM = 201;
 
     static {
         URI_MATCHER.addURI(SimPhonebookContract.AUTHORITY,
