@@ -221,7 +221,7 @@
     <bool name="config_pstnCanPlaceEmergencyCalls">true</bool>
 
     <!-- The package name for the platform carrier config app, bundled with system image. -->
-    <string name="platform_carrier_config_package" translatable="false">com.android.carrierconfig</string>
+    <string name="platform_carrier_config_package" translatable="false">app.grapheneos.carrierconfig2</string>
 
     <!-- Flag indicating whether the TelephonyConnectionService supports the handover of calls from
          the TelephonyConnectionService to another ConnectionService defined in the system.
