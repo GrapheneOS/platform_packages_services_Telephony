@@ -3198,7 +3198,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         try {
             int subId = SubscriptionManager.getDefaultDataSubscriptionId();
             final Phone phone = getPhone(subId);
-            if (phone != null) {
+            if (phone != null && phone.getDataSettingsManager() != null) {
                 phone.getDataSettingsManager().setDataEnabled(
                         TelephonyManager.DATA_ENABLED_REASON_USER, true, callingPackage);
                 return true;
@@ -3222,7 +3222,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         try {
             int subId = SubscriptionManager.getDefaultDataSubscriptionId();
             final Phone phone = getPhone(subId);
-            if (phone != null) {
+            if (phone != null && phone.getDataSettingsManager() != null) {
                 phone.getDataSettingsManager().setDataEnabled(
                         TelephonyManager.DATA_ENABLED_REASON_USER, false, callingPackage);
                 return true;
@@ -7514,12 +7514,15 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         try {
             int phoneId = SubscriptionManager.getPhoneId(subId);
             Phone phone = PhoneFactory.getPhone(phoneId);
-            if (phone != null) {
+            if (phone != null && phone.getDataSettingsManager() != null) {
                 boolean retVal = phone.getDataSettingsManager().isDataEnabled();
                 if (DBG) log("isDataEnabled: " + retVal + ", subId=" + subId);
                 return retVal;
             } else {
-                if (DBG) loge("isDataEnabled: no phone subId=" + subId + " retVal=false");
+                if (DBG) {
+                    loge("isDataEnabled: no phone or no DataSettingsManager subId="
+                            + subId + " retVal=false");
+                }
                 return false;
             }
         } finally {
@@ -7567,14 +7570,14 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                         + " reason=" + reason);
             }
             Phone phone = PhoneFactory.getPhone(phoneId);
-            if (phone != null) {
+            if (phone != null && phone.getDataSettingsManager() != null) {
                 boolean retVal;
                 retVal = phone.getDataSettingsManager().isDataEnabledForReason(reason);
                 if (DBG) log("isDataEnabledForReason: retVal=" + retVal);
                 return retVal;
             } else {
                 if (DBG) {
-                    loge("isDataEnabledForReason: no phone subId="
+                    loge("isDataEnabledForReason: no phone or no DataSettingsManager subId="
                             + subId + " retVal=false");
                 }
                 return false;
@@ -9508,7 +9511,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             if (phone != null) {
                 if (reason == TelephonyManager.DATA_ENABLED_REASON_CARRIER) {
                     phone.carrierActionSetMeteredApnsEnabled(enabled);
-                } else {
+                } else if (phone.getDataSettingsManager() != null) {
                     phone.getDataSettingsManager().setDataEnabled(
                             reason, enabled, callingPackage);
                 }
@@ -10850,7 +10853,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             isMetered = phone.getDataNetworkController().getDataConfigManager()
                     .isMeteredCapability(DataUtils.apnTypeToNetworkCapability(apnType),
                             phone.getServiceState().getDataRoaming());
-            isDataEnabled = phone.getDataSettingsManager().isDataEnabled(apnType);
+            isDataEnabled = (phone.getDataSettingsManager() != null)
+                    ?  phone.getDataSettingsManager().isDataEnabled(apnType) : false;
             return !isMetered || isDataEnabled;
         } finally {
             Binder.restoreCallingIdentity(identity);
@@ -11040,7 +11044,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         final long identity = Binder.clearCallingIdentity();
         try {
             Phone phone = getPhone(subscriptionId);
-            if (phone == null) return false;
+            if (phone == null || phone.getDataSettingsManager() == null) return false;
 
             return phone.getDataSettingsManager().isMobileDataPolicyEnabled(policy);
         } finally {
@@ -11059,7 +11063,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         final long identity = Binder.clearCallingIdentity();
         try {
             Phone phone = getPhone(subscriptionId);
-            if (phone == null) return;
+            if (phone == null || phone.getDataSettingsManager() == null) return;
 
             phone.getDataSettingsManager().setMobileDataPolicy(policy, enabled);
         } finally {
