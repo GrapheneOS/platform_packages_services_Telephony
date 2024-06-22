@@ -419,7 +419,6 @@ public class ImsProvisioningController {
             }
 
             mSubId = subId;
-            mSlotId = getSlotId(subId);
             mConfigCallback.setSubId(subId);
         }
 
@@ -531,7 +530,9 @@ public class ImsProvisioningController {
 
                 if (mFeatureFlags.notifyInitialImsProvisioningStatus()) {
                     // Notify MmTel provisioning value based on capability and radio tech.
-                    if (mProvisioningCallbackManagersSlotMap.get(mSlotId).hasCallblacks()) {
+                    ProvisioningCallbackManager p =
+                            mProvisioningCallbackManagersSlotMap.get(mSlotId);
+                    if (p != null && p.hasCallblacks()) {
                         notifyMmTelProvisioningStatus(mSlotId, mSubId, null);
                     }
                 }
@@ -658,7 +659,6 @@ public class ImsProvisioningController {
             }
 
             mSubId = subId;
-            mSlotId = getSlotId(subId);
             mConfigCallback.setSubId(subId);
         }
 
@@ -769,7 +769,9 @@ public class ImsProvisioningController {
                 setInitialProvisioningKeys(mSubId);
 
                 if (mFeatureFlags.notifyInitialImsProvisioningStatus()) {
-                    if (mProvisioningCallbackManagersSlotMap.get(mSlotId).hasCallblacks()) {
+                    ProvisioningCallbackManager p =
+                            mProvisioningCallbackManagersSlotMap.get(mSlotId);
+                    if (p != null && p.hasCallblacks()) {
                         // Notify RCS provisioning value based on capability and radio tech.
                         notifyRcsProvisioningStatus(mSlotId, mSubId, null);
                     }
