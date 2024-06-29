@@ -1019,6 +1019,7 @@ countries {
   eccs {
     phone_number: "114"
     types: TYPE_UNSPECIFIED
+    routing: NORMAL
   }
   eccs {
     phone_number: "191"
