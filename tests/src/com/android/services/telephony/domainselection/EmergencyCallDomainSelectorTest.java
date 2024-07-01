@@ -471,7 +471,8 @@ public class EmergencyCallDomainSelectorTest {
         doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
                 .when(mTelephonyManager).getSimState(anyInt());
         doReturn(true).when(mCsrdCtrl).isThereOtherSlot();
-        doReturn(new String[] {"jp"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"jp"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_require_sim_for_emergency));
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(
                 UNKNOWN, REGISTRATION_STATE_UNKNOWN, 0, false, false, 0, 0, "", "", "jp");
@@ -586,7 +587,8 @@ public class EmergencyCallDomainSelectorTest {
     @Test
     public void testDefaultCombinedImsRegisteredSelectPsThenExtendedServiceRequestFailIsoMatch()
             throws Exception {
-        doReturn(new String[] {"us"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"us"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_prefer_cs_preferred_scan_after_csfb_failure));
 
         createSelector(SLOT_0_SUB_ID);
         unsolBarringInfoChanged(false);
@@ -625,7 +627,8 @@ public class EmergencyCallDomainSelectorTest {
     @Test
     public void testDefaultCombinedImsRegisteredSelectPsThenExtendedServiceRequestFailIsoNotMatch()
             throws Exception {
-        doReturn(new String[] {"us"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"us"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_prefer_cs_preferred_scan_after_csfb_failure));
 
         createSelector(SLOT_0_SUB_ID);
         unsolBarringInfoChanged(false);
@@ -1788,7 +1791,8 @@ public class EmergencyCallDomainSelectorTest {
         doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
                 .when(mTelephonyManager).getSimState(anyInt());
         doReturn(true).when(mCsrdCtrl).isThereOtherSlot();
-        doReturn(new String[] {"jp"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"jp"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_require_sim_for_emergency));
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(EUTRAN,
                 REGISTRATION_STATE_UNKNOWN,
@@ -1812,7 +1816,8 @@ public class EmergencyCallDomainSelectorTest {
         doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
                 .when(mTelephonyManager).getSimState(anyInt());
         doReturn(true).when(mCsrdCtrl).isThereOtherSlot();
-        doReturn(new String[] {"jp"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"jp"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_require_sim_for_emergency));
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(UNKNOWN,
                 REGISTRATION_STATE_UNKNOWN,
@@ -1843,7 +1848,8 @@ public class EmergencyCallDomainSelectorTest {
         doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
                 .when(mTelephonyManager).getSimState(anyInt());
         doReturn(false).when(mCsrdCtrl).isThereOtherSlot();
-        doReturn(new String[] {"jp"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"jp"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_require_sim_for_emergency));
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(EUTRAN,
                 REGISTRATION_STATE_UNKNOWN,
@@ -1865,7 +1871,8 @@ public class EmergencyCallDomainSelectorTest {
         unsolBarringInfoChanged(false);
         doReturn(2).when(mTelephonyManager).getActiveModemCount();
         doReturn(true).when(mCsrdCtrl).isThereOtherSlotInService();
-        doReturn(new String[] {"in"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"in"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_prefer_normal_service_capable_subscription));
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(EUTRAN,
                 REGISTRATION_STATE_UNKNOWN,
@@ -1889,7 +1896,8 @@ public class EmergencyCallDomainSelectorTest {
 
         doReturn(2).when(mTelephonyManager).getActiveModemCount();
         doReturn(true).when(mCsrdCtrl).isThereOtherSlotInService();
-        doReturn(new String[] {"in"}).when(mResources).getStringArray(anyInt());
+        doReturn(new String[] {"in"}).when(mResources).getStringArray(
+                eq(R.array.config_countries_prefer_normal_service_capable_subscription));
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(UNKNOWN,
                 REGISTRATION_STATE_UNKNOWN,
