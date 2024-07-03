@@ -12297,7 +12297,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     private static void validateSignalStrengthUpdateRequest(Context context,
             SignalStrengthUpdateRequest request, int callingUid) {
-        if (callingUid == Process.PHONE_UID || callingUid == Process.SYSTEM_UID) {
+        if (TelephonyPermissions.isSystemOrPhone(callingUid)) {
             // phone/system process do not have further restriction on request
             return;
         }

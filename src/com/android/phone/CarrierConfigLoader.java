@@ -44,7 +44,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PermissionEnforcer;
 import android.os.PersistableBundle;
-import android.os.Process;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.os.SystemProperties;
@@ -1758,12 +1757,14 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
     private void enforceCallerIsSystemOrRequestingPackage(@NonNull String requestingPackage)
             throws SecurityException {
         final int callingUid = Binder.getCallingUid();
-        if (callingUid == Process.ROOT_UID || callingUid == Process.SYSTEM_UID
-                || callingUid == Process.SHELL_UID || callingUid == Process.PHONE_UID) {
-            // Bug reports (dumpstate.cpp) run as SHELL, and let some other privileged UIDs through
-            // as well.
+        if (TelephonyPermissions.isRootOrShell(callingUid)
+                || TelephonyPermissions.isSystemOrPhone(
+                callingUid)) {
+            // Bug reports (dumpstate.cpp) run as SHELL, and let some other privileged UIDs
+            // through as well.
             return;
         }
+
         // An app is trying to dump extra detail, block it if they aren't who they claim to be.
         AppOpsManager appOps = mContext.getSystemService(AppOpsManager.class);
         if (appOps == null) {
