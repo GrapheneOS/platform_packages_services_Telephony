@@ -3429,8 +3429,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     @Override
     public String getNetworkCountryIsoForPhone(int phoneId) {
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS, "getNetworkCountryIsoForPhone");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS, "getNetworkCountryIsoForPhone");
+        }
 
         // Reporting the correct network country is ambiguous when IWLAN could conflict with
         // registered cell info, so return a NULL country instead.
@@ -3801,8 +3804,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     @Override
     public int getSubscriptionCarrierId(int subId) {
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "getSubscriptionCarrierId");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "getSubscriptionCarrierId");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         try {
@@ -3999,8 +4005,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     @Override
     public int getActivePhoneTypeForSlot(int slotIndex) {
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY, "getActivePhoneTypeForSlot");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY, "getActivePhoneTypeForSlot");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         try {
@@ -5842,8 +5851,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      */
     @Override
     public boolean hasIccCardUsingSlotIndex(int slotIndex) {
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "hasIccCardUsingSlotIndex");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "hasIccCardUsingSlotIndex");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         try {
@@ -7256,8 +7268,12 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         TelephonyPermissions.enforceCallingOrSelfReadPrecisePhoneStatePermissionOrCarrierPrivilege(
                 mApp, subId, "getAllowedNetworkTypesForReason");
 
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS, "getAllowedNetworkTypesForReason");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS,
+                            "getAllowedNetworkTypesForReason");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         try {
@@ -7733,9 +7749,12 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     public @Nullable String getCarrierServicePackageNameForLogicalSlot(int logicalSlotIndex) {
         enforceReadPrivilegedPermission("getCarrierServicePackageNameForLogicalSlot");
 
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION,
-                "getCarrierServicePackageNameForLogicalSlot");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION,
+                    "getCarrierServicePackageNameForLogicalSlot");
+        }
 
         final Phone phone = PhoneFactory.getPhone(logicalSlotIndex);
         if (phone == null) {
@@ -8103,8 +8122,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             throw e;
         }
 
-        enforceTelephonyFeatureWithException(callingPackage,
-                PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS, "getRadioAccessFamily");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(callingPackage,
+                    PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS, "getRadioAccessFamily");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         try {
@@ -11300,9 +11322,12 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     @Override
     public boolean isRadioInterfaceCapabilitySupported(
             final @NonNull @TelephonyManager.RadioInterfaceCapability String capability) {
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS,
-                "isRadioInterfaceCapabilitySupported");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS,
+                    "isRadioInterfaceCapabilitySupported");
+        }
 
         Set<String> radioInterfaceCapabilities =
                 mRadioInterfaceCapabilities.getCapabilities();
@@ -12874,8 +12899,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     @Override
     @SimState
     public int getSimStateForSlotIndex(int slotIndex) {
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "getSimStateForSlotIndex");
+        if (!mApp.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "getSimStateForSlotIndex");
+        }
 
         IccCardConstants.State simState;
         if (slotIndex < 0) {

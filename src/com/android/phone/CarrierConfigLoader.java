@@ -1344,7 +1344,10 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
             return new PersistableBundle();
         }
 
-        enforceTelephonyFeatureWithException(callingPackage, "getConfigForSubIdWithFeature");
+        if (!mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(callingPackage, "getConfigForSubIdWithFeature");
+        }
 
         int phoneId = SubscriptionManager.getPhoneId(subscriptionId);
         PersistableBundle retConfig = CarrierConfigManager.getDefaultConfig();

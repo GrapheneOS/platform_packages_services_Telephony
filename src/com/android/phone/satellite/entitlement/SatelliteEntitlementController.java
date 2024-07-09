@@ -145,8 +145,10 @@ public class SatelliteEntitlementController extends Handler {
         mCarrierConfigManager = context.getSystemService(CarrierConfigManager.class);
         mCarrierConfigChangeListener = (slotIndex, subId, carrierId, specificCarrierId) ->
                 handleCarrierConfigChanged(slotIndex, subId, carrierId, specificCarrierId);
-        mCarrierConfigManager.registerCarrierConfigChangeListener(this::post,
-                mCarrierConfigChangeListener);
+        if (mCarrierConfigManager != null) {
+            mCarrierConfigManager.registerCarrierConfigChangeListener(this::post,
+                    mCarrierConfigChangeListener);
+        }
         mConnectivityManager = context.getSystemService(ConnectivityManager.class);
         mNetworkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
@@ -620,11 +622,14 @@ public class SatelliteEntitlementController extends Handler {
 
     @NonNull
     private PersistableBundle getConfigForSubId(int subId) {
-        PersistableBundle config = mCarrierConfigManager.getConfigForSubId(subId,
-                CarrierConfigManager.ImsServiceEntitlement.KEY_ENTITLEMENT_SERVER_URL_STRING,
-                CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_STATUS_REFRESH_DAYS_INT,
-                CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL,
-                CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_APP_NAME_STRING);
+        PersistableBundle config = null;
+        if (mCarrierConfigManager != null) {
+            config = mCarrierConfigManager.getConfigForSubId(subId,
+                    CarrierConfigManager.ImsServiceEntitlement.KEY_ENTITLEMENT_SERVER_URL_STRING,
+                    CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_STATUS_REFRESH_DAYS_INT,
+                    CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL,
+                    CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_APP_NAME_STRING);
+        }
         if (config == null || config.isEmpty()) {
             config = CarrierConfigManager.getDefaultConfig();
         }

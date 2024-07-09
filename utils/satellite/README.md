@@ -15,11 +15,15 @@ Directory structure
   for dumping the binary file into human-readable format.
 - `src/test` Contains the test code for the tools.
 
+`configdatagenerator`
+- `src/main` Contains the tool for generating satellite configdata protobuf file.
+- `src/test` Contains the test code for the configdatagenerator tool.
+
 Run unit tests
 =
 - Build the tools and test code: Go to the tool directory (`packages/services/Telephony/tools/
   satellite`) in the local workspace and run `mm`, e.g.,
-- Run unit tests: `$atest SatelliteToolsTests`
+- Run unit tests: `$atest SatelliteToolsTests`, `$atest SatelliteGenerateProtoTests`
 
 Data file generate tools
 =
@@ -42,6 +46,55 @@ Data file generate tools
   in the local workspace and run `mm`.
 - Example run command: `$satellite_createsats2file --input-file s2cells.txt --s2-level 12
   --is-allowed-list true --output-file sats2.dat`
+
+`satellite_generateprotobuf`
+- Runs the `satellite_generateprotobuf` to create a binary file of TelephonyConfigProto whose format
+  is defined in telephony_config_update.proto
+- Command: `satellite_generateprotobuf --input-file <input.xml> --output-file <telephony_config.pb>`
+  - `--input-file` input XML file contains input information such as carrier id, carrier plmn,
+  allowed service list and country code list. This is example of input file.
+    ```xml
+    <satelliteconfig>
+      <!-- version -->
+       <version>14</version>
+
+      <!-- CarrierSupportedSatelliteServicesProto -->
+      <carriersupportedservices>
+        <carrier_id>1</carrier_id>
+          <providercapability>
+            <carrier_plmn>310160</carrier_plmn>
+            <service>1</service>
+          </providercapability>
+          <providercapability>
+            <carrier_plmn>310240</carrier_plmn>
+            <service>6</service>
+          </providercapability>
+      </carriersupportedservices>
+
+      <carriersupportedservices>
+        <carrier_id>1891</carrier_id>
+        <providercapability>
+          <carrier_plmn>45005</carrier_plmn>
+          <service>1</service>
+          <service>2</service>
+        </providercapability>
+      </carriersupportedservices>
+
+      <!-- SatelliteRegionProto -->
+      <satelliteregion>
+        <s2_cell_file>sats2.dat</s2_cell_file>
+        <country_code>US</country_code>
+        <country_code>KR</country_code>
+        <is_allowed>TRUE</is_allowed>
+      </satelliteregion>
+    </satelliteconfig>
+    ```
+  - `--output-file` The created binary TelephonyConfigProto file, which will be used by
+  the `ConfigUpdater` module for Satellite Project.
+- Build the tools: Go to the tool directory (`packages/services/Telephony/tools/satellite`)
+  in the local workspace and run `mm`.
+- Example run command: `satellite_generateprotobuf --input-file input.xml --output-file
+  telephony_config.pb`
 
 Debug tools
 =
