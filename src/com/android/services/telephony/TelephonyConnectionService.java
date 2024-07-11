@@ -765,6 +765,15 @@ public class TelephonyConnectionService extends ConnectionService {
                 if (cause == android.telephony.DisconnectCause.EMERGENCY_TEMP_FAILURE
                         || cause == android.telephony.DisconnectCause.EMERGENCY_PERM_FAILURE) {
                     if (mEmergencyConnection != null) {
+                        if (Flags.hangupEmergencyCallForCrossSimRedialing()) {
+                            if (mEmergencyConnection.getOriginalConnection() != null) {
+                                if (mEmergencyConnection.getOriginalConnection()
+                                        .getState().isAlive()) {
+                                    mEmergencyConnection.hangup(cause);
+                                }
+                                return;
+                            }
+                        }
                         boolean isPermanentFailure =
                                 cause == android.telephony.DisconnectCause.EMERGENCY_PERM_FAILURE;
                         Log.i(this, "onSelectionTerminated permanent=" + isPermanentFailure);
@@ -2866,9 +2875,19 @@ public class TelephonyConnectionService extends ConnectionService {
                 + "csCause=" +  callFailCause + ", psCause=" + reasonInfo
                 + ", showPreciseCause=" + showPreciseCause + ", overrideCause=" + overrideCause);
 
-        if (c.getOriginalConnection() != null
+        boolean isLocalHangup = c.getOriginalConnection() != null
                 && c.getOriginalConnection().getDisconnectCause()
-                        != android.telephony.DisconnectCause.LOCAL
+                        == android.telephony.DisconnectCause.LOCAL;
+
+        // Do not treat it as local hangup if it is a cross-sim redial.
+        if (Flags.hangupEmergencyCallForCrossSimRedialing()) {
+            isLocalHangup = isLocalHangup
+                    && overrideCause != android.telephony.DisconnectCause.EMERGENCY_TEMP_FAILURE
+                    && overrideCause != android.telephony.DisconnectCause.EMERGENCY_PERM_FAILURE;
+        }
+
+        // If it is neither a local hangup nor a power off hangup, then reselect domain.
+        if (c.getOriginalConnection() != null && (!isLocalHangup)
                 && c.getOriginalConnection().getDisconnectCause()
                         != android.telephony.DisconnectCause.POWER_OFF) {
 
