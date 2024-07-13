@@ -91,6 +91,10 @@
     <string name="reportSatelliteNotSupportedFromModem">reportSatelliteNotSupportedFromModem</string>
     <string name="showCurrentSatelliteSupportedStated">showCurrentSatelliteSupportedStated</string>
 
+    <string name="requestProvisionSubscriberIds">requestProvisionSubscriberIds</string>
+    <string name="requestIsProvisioned">requestIsProvisioned</string>
+    <string name="provisionSatellite">provisionSatellite</string>
+
     <string name="Back">Back</string>
     <string name="ClearLog">Clear Log</string>
 

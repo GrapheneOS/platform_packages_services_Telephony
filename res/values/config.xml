@@ -347,6 +347,8 @@
         <!-- b/317945295 -->
         <item>in</item>
         <item>sg</item>
+        <!-- b/341611911 -->
+        <item>my</item>
     </string-array>
 
     <!-- Array of countries that a CS preferred scan is preferred after CSFB failure

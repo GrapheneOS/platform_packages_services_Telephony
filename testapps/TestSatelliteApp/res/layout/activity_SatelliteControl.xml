@@ -125,6 +125,24 @@
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
             android:text="@string/getIsEmergency"/>
+        <Button
+            android:id="@+id/requestProvisionSubscriberIds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/requestProvisionSubscriberIds"/>
+        <Button
+            android:id="@+id/requestIsProvisioned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/requestIsProvisioned"/>
+        <Button
+            android:id="@+id/provisionSatellite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/provisionSatellite"/>
          <Button
             android:id="@+id/Back"
             android:onClick="Back"

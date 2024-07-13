@@ -23,6 +23,7 @@ import android.os.OutcomeReceiver;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.satellite.EnableRequestAttributes;
+import android.telephony.satellite.ProvisionSubscriberId;
 import android.telephony.satellite.SatelliteCapabilities;
 import android.telephony.satellite.SatelliteManager;
 import android.telephony.satellite.stub.SatelliteResult;
@@ -31,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +47,7 @@ public class SatelliteControl extends Activity {
 
     private SatelliteManager mSatelliteManager;
     private SubscriptionManager mSubscriptionManager;
+    private List<ProvisionSubscriberId> mProvisionSubscriberIdList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,12 @@ public class SatelliteControl extends Activity {
                 .setOnClickListener(this::isRequestIsSatelliteEnabledForCarrierApp);
         findViewById(R.id.getIsEmergency)
                 .setOnClickListener(this::getIsEmergencyApp);
+        findViewById(R.id.requestProvisionSubscriberIds)
+                .setOnClickListener(this::requestProvisionSubscriberIdsApp);
+        findViewById(R.id.requestIsProvisioned)
+                .setOnClickListener(this::requestIsProvisionedApp);
+        findViewById(R.id.provisionSatellite)
+                .setOnClickListener(this::provisionSatelliteApp);
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -382,5 +391,95 @@ public class SatelliteControl extends Activity {
         textView.setText("[SatelliteService] getIsEmergencyApp= "
                 + SatelliteTestApp.getTestSatelliteService()
                 .getIsEmergency());
+    }
+
+    private void requestProvisionSubscriberIdsApp(View view) {
+        final AtomicReference<List<ProvisionSubscriberId>> list = new AtomicReference<>();
+        final AtomicReference<Integer> errorCode = new AtomicReference<>();
+        OutcomeReceiver<List<ProvisionSubscriberId>, SatelliteManager.SatelliteException> receiver =
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(List<ProvisionSubscriberId> result) {
+                        mProvisionSubscriberIdList = result;
+                        list.set(result);
+                        TextView textView = findViewById(R.id.text_id);
+                        String text = "";
+                        for (ProvisionSubscriberId psi : result) {
+                            text += "" + psi + " , ";
+                        }
+                        textView.setText("requestProvisionSubscriberIds: result=" + text);
+                    }
+
+                    @Override
+                    public void onError(SatelliteManager.SatelliteException exception) {
+                        errorCode.set(exception.getErrorCode());
+                        TextView textView = findViewById(R.id.text_id);
+                        textView.setText("Status for requestProvisionSubscriberIds error : "
+                                + SatelliteErrorUtils.mapError(errorCode.get()));
+                    }
+                };
+        mSatelliteManager.requestProvisionSubscriberIds(Runnable::run, receiver);
+    }
+
+    private void requestIsProvisionedApp(View view) {
+        final AtomicReference<Boolean> enabled = new AtomicReference<>();
+        final AtomicReference<Integer> errorCode = new AtomicReference<>();
+        OutcomeReceiver<Boolean, SatelliteManager.SatelliteException> receiver =
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        enabled.set(result);
+                        TextView textView = findViewById(R.id.text_id);
+                        if (enabled.get()) {
+                            textView.setText("requestIsProvisioned is true");
+                        } else {
+                            textView.setText("Status for requestIsProvisioned result : "
+                                    + enabled.get());
+                        }
+                    }
+
+                    @Override
+                    public void onError(SatelliteManager.SatelliteException exception) {
+                        errorCode.set(exception.getErrorCode());
+                        TextView textView = findViewById(R.id.text_id);
+                        textView.setText("Status for requestIsProvisioned error : "
+                                + SatelliteErrorUtils.mapError(errorCode.get()));
+                    }
+                };
+        if (mProvisionSubscriberIdList == null || mProvisionSubscriberIdList.get(0) == null) {
+            TextView textView = findViewById(R.id.text_id);
+            textView.setText("No ProvisionSubscriberIdList");
+            return;
+        }
+        mSatelliteManager.requestIsProvisioned(mProvisionSubscriberIdList.get(0).getSubscriberId(),
+                Runnable::run, receiver);
+    }
+
+    private void provisionSatelliteApp(View view) {
+        final AtomicReference<Boolean> enabled = new AtomicReference<>();
+        final AtomicReference<Integer> errorCode = new AtomicReference<>();
+        OutcomeReceiver<Boolean, SatelliteManager.SatelliteException> receiver =
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        enabled.set(result);
+                        TextView textView = findViewById(R.id.text_id);
+                        if (enabled.get()) {
+                            textView.setText("provisionSatellite is true");
+                        } else {
+                            textView.setText("Status for provisionSatellite result : "
+                                    + enabled.get());
+                        }
+                    }
+
+                    @Override
+                    public void onError(SatelliteManager.SatelliteException exception) {
+                        errorCode.set(exception.getErrorCode());
+                        TextView textView = findViewById(R.id.text_id);
+                        textView.setText("Status for provisionSatellite error : "
+                                + SatelliteErrorUtils.mapError(errorCode.get()));
+                    }
+                };
+        mSatelliteManager.provisionSatellite(mProvisionSubscriberIdList, Runnable::run, receiver);
     }
 }

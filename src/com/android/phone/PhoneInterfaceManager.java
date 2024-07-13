@@ -8140,20 +8140,31 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     @Override
     public void uploadCallComposerPicture(int subscriptionId, String callingPackage,
             String contentType, ParcelFileDescriptor fd, ResultReceiver callback) {
-        try {
-            if (!Objects.equals(mApp.getPackageManager().getPackageUid(callingPackage, 0),
-                    Binder.getCallingUid())) {
+        if (com.android.internal.telephony.flags.Flags.supportPhoneUidCheckForMultiuser()) {
+            enforceCallingPackage(callingPackage, Binder.getCallingUid(),
+                    "Invalid package:" + callingPackage);
+        } else {
+            try {
+                if (!Objects.equals(mApp.getPackageManager().getPackageUid(callingPackage, 0),
+                        Binder.getCallingUid())) {
+                    throw new SecurityException("Invalid package:" + callingPackage);
+                }
+            } catch (PackageManager.NameNotFoundException e) {
                 throw new SecurityException("Invalid package:" + callingPackage);
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new SecurityException("Invalid package:" + callingPackage);
         }
 
         enforceTelephonyFeatureWithException(callingPackage,
                 PackageManager.FEATURE_TELEPHONY_CALLING, "uploadCallComposerPicture");
 
         RoleManager rm = mApp.getSystemService(RoleManager.class);
-        List<String> dialerRoleHolders = rm.getRoleHolders(RoleManager.ROLE_DIALER);
+        List<String> dialerRoleHolders;
+        if (com.android.internal.telephony.flags.Flags.supportPhoneUidCheckForMultiuser()) {
+            dialerRoleHolders = rm.getRoleHoldersAsUser(RoleManager.ROLE_DIALER,
+                    UserHandle.of(ActivityManager.getCurrentUser()));
+        } else {
+            dialerRoleHolders = rm.getRoleHolders(RoleManager.ROLE_DIALER);
+        }
         if (!dialerRoleHolders.contains(callingPackage)) {
             throw new SecurityException("App must be the dialer role holder to"
                     + " upload a call composer pic");
@@ -14326,7 +14337,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      * @throws SecurityException if the caller doesn't have the required permission.
      */
     @Override
-    public void requestIsProvisioned(String satelliteSubscriberId, @NonNull ResultReceiver result) {
+    public void requestIsProvisioned(@NonNull String satelliteSubscriberId,
+            @NonNull ResultReceiver result) {
         enforceSatelliteCommunicationPermission("requestIsProvisioned");
         mSatelliteController.requestIsProvisioned(satelliteSubscriberId, result);
     }
@@ -14340,7 +14352,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      * @throws SecurityException if the caller doesn't have the required permission.
      */
     @Override
-    public void provisionSatellite(List<ProvisionSubscriberId> list,
+    public void provisionSatellite(@NonNull List<ProvisionSubscriberId> list,
             @NonNull ResultReceiver result) {
         enforceSatelliteCommunicationPermission("provisionSatellite");
         mSatelliteController.provisionSatellite(list, result);

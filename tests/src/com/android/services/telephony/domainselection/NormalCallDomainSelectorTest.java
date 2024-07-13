@@ -335,24 +335,23 @@ public class NormalCallDomainSelectorTest {
     public void testOutOfService() {
         final TestTransportSelectorCallback transportSelectorCallback =
                 new TestTransportSelectorCallback(mNormalCallDomainSelector);
-        mNormalCallDomainSelector.post(() -> {
 
-            DomainSelectionService.SelectionAttributes attributes =
-                    new DomainSelectionService.SelectionAttributes.Builder(
-                            SLOT_ID, SUB_ID_1, SELECTOR_TYPE_CALLING)
-                            .setAddress(TEST_URI)
-                            .setCallId(TEST_CALLID)
-                            .setEmergency(false)
-                            .setVideoCall(true)
-                            .setExitedFromAirplaneMode(false)
-                            .build();
+        DomainSelectionService.SelectionAttributes attributes =
+                new DomainSelectionService.SelectionAttributes.Builder(
+                        SLOT_ID, SUB_ID_1, SELECTOR_TYPE_CALLING)
+                        .setAddress(TEST_URI)
+                        .setCallId(TEST_CALLID)
+                        .setEmergency(false)
+                        .setVideoCall(true)
+                        .setExitedFromAirplaneMode(false)
+                        .build();
 
-            ServiceState serviceState = new ServiceState();
-            serviceState.setStateOutOfService();
-            initialize(serviceState, false, false, false, false);
+        ServiceState serviceState = new ServiceState();
+        serviceState.setStateOutOfService();
+        initialize(serviceState, false, false, false, false);
 
-            mNormalCallDomainSelector.selectDomain(attributes, transportSelectorCallback);
-        });
+        mNormalCallDomainSelector.selectDomain(attributes, transportSelectorCallback);
+
 
         processAllMessages();
         assertTrue(transportSelectorCallback.mSelectionTerminated);
