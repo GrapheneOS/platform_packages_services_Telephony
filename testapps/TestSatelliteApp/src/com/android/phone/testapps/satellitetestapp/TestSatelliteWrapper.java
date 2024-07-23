@@ -27,6 +27,7 @@ import android.telephony.satellite.wrapper.CarrierRoamingNtnModeListenerWrapper;
 import android.telephony.satellite.wrapper.NtnSignalStrengthCallbackWrapper;
 import android.telephony.satellite.wrapper.NtnSignalStrengthWrapper;
 import android.telephony.satellite.wrapper.SatelliteCapabilitiesCallbackWrapper;
+import android.telephony.satellite.wrapper.SatelliteCommunicationAllowedStateCallbackWrapper;
 import android.telephony.satellite.wrapper.SatelliteManagerWrapper;
 import android.util.Log;
 import android.view.View;
@@ -55,6 +56,7 @@ public class TestSatelliteWrapper extends Activity {
     private SatelliteManagerWrapper mSatelliteManagerWrapper;
     private NtnSignalStrengthCallback mNtnSignalStrengthCallback = null;
     private CarrierRoamingNtnModeListener mCarrierRoamingNtnModeListener = null;
+    private SatelliteCommunicationAllowedStateCallback mSatelliteCommunicationAllowedStateCallback;
     private SatelliteCapabilitiesCallbackWrapper mSatelliteCapabilitiesCallback;
     private SubscriptionManager mSubscriptionManager;
     private int mSubId;
@@ -105,6 +107,11 @@ public class TestSatelliteWrapper extends Activity {
                 .setOnClickListener(this::registerForCarrierRoamingNtnModeChanged);
         findViewById(R.id.unregisterForCarrierRoamingNtnModeChanged)
                 .setOnClickListener(this::unregisterForCarrierRoamingNtnModeChanged);
+        findViewById(R.id.registerForCommunicationAllowedStateChanged)
+                .setOnClickListener(this::registerForCommunicationAllowedStateChanged);
+        findViewById(R.id.unregisterForCommunicationAllowedStateChanged)
+                .setOnClickListener(this::unregisterForCommunicationAllowedStateChanged);
+
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,6 +225,38 @@ public class TestSatelliteWrapper extends Activity {
         }
     }
 
+    private void registerForCommunicationAllowedStateChanged(View view) {
+        addLogMessage("registerForCommunicationAllowedStateChanged");
+        logd("registerForCommunicationAllowedStateChanged()");
+        if (mSatelliteCommunicationAllowedStateCallback == null) {
+            logd("Creating new CarrierRoamingNtnModeListener instance.");
+            mSatelliteCommunicationAllowedStateCallback =
+                    new SatelliteCommunicationAllowedStateCallback();
+        }
+
+        try {
+            mSatelliteManagerWrapper.registerForCommunicationAllowedStateChanged(mExecutor,
+                    mSatelliteCommunicationAllowedStateCallback);
+        } catch (Exception ex) {
+            String errorMessage = "registerForCommunicationAllowedStateChanged: " + ex.getMessage();
+            logd(errorMessage);
+            addLogMessage(errorMessage);
+            mSatelliteCommunicationAllowedStateCallback = null;
+        }
+    }
+
+    private void unregisterForCommunicationAllowedStateChanged(View view) {
+        addLogMessage("unregisterForCommunicationAllowedStateChanged");
+        logd("unregisterForCommunicationAllowedStateChanged()");
+        if (mSatelliteCommunicationAllowedStateCallback != null) {
+            mSatelliteManagerWrapper.unregisterForCommunicationAllowedStateChanged(
+                    mSatelliteCommunicationAllowedStateCallback);
+            mSatelliteCommunicationAllowedStateCallback = null;
+            addLogMessage("mSatelliteCommunicationAllowedStateCallback was unregistered");
+        } else {
+            addLogMessage("mSatelliteCommunicationAllowedStateCallback is null, ignored.");
+        }
+    }
 
     private void registerForNtnSignalStrengthChanged(View view) {
         addLogMessage("registerForNtnSignalStrengthChanged");
@@ -329,6 +368,18 @@ public class TestSatelliteWrapper extends Activity {
         @Override
         public void onCarrierRoamingNtnModeChanged(boolean active) {
             String message = "Received onCarrierRoamingNtnModeChanged active: " + active;
+            logd(message);
+            addLogMessage(message);
+        }
+    }
+
+    private class SatelliteCommunicationAllowedStateCallback implements
+            SatelliteCommunicationAllowedStateCallbackWrapper {
+
+        @Override
+        public void onSatelliteCommunicationAllowedStateChanged(boolean isAllowed) {
+            String message =
+                    "Received onSatelliteCommunicationAllowedStateChanged isAllowed: " + isAllowed;
             logd(message);
             addLogMessage(message);
         }

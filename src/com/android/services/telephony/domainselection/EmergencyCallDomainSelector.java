@@ -1835,13 +1835,14 @@ public class EmergencyCallDomainSelector extends DomainSelectorBase
         logi("notifyCrossStackTimerExpired");
 
         mCrossStackTimerExpired = true;
-        if (mDomainSelected && !hangupOngoingDialing()) {
+        boolean isHangupOngoingDialing = hangupOngoingDialing();
+        if (mDomainSelected && !isHangupOngoingDialing) {
             // When reselecting domain, terminateSelection will be called.
             return;
         }
         mIsWaitingForDataDisconnection = false;
         removeMessages(MSG_WAIT_DISCONNECTION_TIMEOUT);
-        terminateSelectionForCrossSimRedialing(false);
+        terminateSelectionForCrossSimRedialing(isHangupOngoingDialing);
     }
 
     private boolean hangupOngoingDialing() {

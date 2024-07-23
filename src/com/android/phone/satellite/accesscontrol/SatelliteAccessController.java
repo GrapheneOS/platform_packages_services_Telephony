@@ -1541,6 +1541,25 @@ public class SatelliteAccessController extends Handler {
         }
 
         mSatelliteCommunicationAllowedStateChangedListeners.put(callback.asBinder(), callback);
+
+        if (!mFeatureFlags.geofenceEnhancementForBetterUx()) {
+            plogd("The feature flag geofenceEnhancementForBetterUx is not enabled");
+            return SATELLITE_RESULT_SUCCESS;
+        }
+
+        this.post(() -> {
+            try {
+                synchronized (mSatelliteCommunicationAllowStateLock) {
+                    callback.onSatelliteCommunicationAllowedStateChanged(
+                            mCurrentSatelliteAllowedState);
+                    logd("registerForCommunicationAllowedStateChanged: "
+                            + "mCurrentSatelliteAllowedState " + mCurrentSatelliteAllowedState);
+                }
+            } catch (RemoteException ex) {
+                ploge("registerForCommunicationAllowedStateChanged: RemoteException ex=" + ex);
+            }
+        });
+
         return SATELLITE_RESULT_SUCCESS;
     }
 

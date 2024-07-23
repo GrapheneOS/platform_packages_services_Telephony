@@ -44,6 +44,8 @@
     <string name="stopSatelliteTransmissionUpdates">stopSatelliteTransmissionUpdates</string>
     <string name="showDatagramSendStateTransition">showDatagramSendStateTransition</string>
     <string name="showDatagramReceiveStateTransition">showDatagramReceiveStateTransition</string>
+    <string name="registerForCommunicationAllowedStateChanged">registerForCommunicationAllowedStateChanged</string>
+    <string name="unregisterForCommunicationAllowedStateChanged">unregisterForCommunicationAllowedStateChanged</string>
 
     <string name="provisionSatelliteService">provisionSatelliteService</string>
     <string name="deprovisionSatelliteService">deprovisionSatelliteService</string>

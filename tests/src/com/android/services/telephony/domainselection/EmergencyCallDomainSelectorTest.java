@@ -2831,7 +2831,7 @@ public class EmergencyCallDomainSelectorTest {
         mDomainSelector.notifyCrossStackTimerExpired();
 
         verify(mTransportSelectorCallback)
-                .onSelectionTerminated(eq(DisconnectCause.EMERGENCY_TEMP_FAILURE));
+                .onSelectionTerminated(eq(DisconnectCause.EMERGENCY_PERM_FAILURE));
     }
 
     @Test
