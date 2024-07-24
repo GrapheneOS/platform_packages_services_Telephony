@@ -113,7 +113,7 @@ public class ImsProvisioningLoader {
                     logd("check UT provisioning status " + UtProvisioningStatus);
 
                     if (STATUS_PROVISIONED == UtProvisioningStatus) {
-                        setProvisioningStatusToSubIdBundle(ImsFeature.FEATURE_MMTEL, tech,
+                        setProvisioningStatusToSubIdBundle(subId, ImsFeature.FEATURE_MMTEL, tech,
                                 MmTelFeature.MmTelCapabilities.CAPABILITY_TYPE_UT, subIdBundle,
                                 UtProvisioningStatus);
                     }
@@ -130,7 +130,7 @@ public class ImsProvisioningLoader {
             subIdBundle = mSubIdBundleArray.get(subId, null);
         }
 
-        return getProvisioningStatusFromSubIdBundle(imsFeature, tech,
+        return getProvisioningStatusFromSubIdBundle(subId, imsFeature, tech,
                 capability, subIdBundle);
     }
 
@@ -146,42 +146,44 @@ public class ImsProvisioningLoader {
             }
 
             PersistableBundle subIdBundle = mSubIdBundleArray.get(subId, null);
-            setProvisioningStatusToSubIdBundle(imsFeature, tech, capability, subIdBundle,
+            setProvisioningStatusToSubIdBundle(subId, imsFeature, tech, capability, subIdBundle,
                     newValue);
             saveSubIdBundleToXml(subId, subIdBundle);
         }
         return true;
     }
 
-    private int getProvisioningStatusFromSubIdBundle(int imsFeature, int tech,
+    private int getProvisioningStatusFromSubIdBundle(int subId, int imsFeature, int tech,
             int capability, PersistableBundle subIdBundle) {
         // If it doesn't exist in xml, return STATUS_NOT_SET
         if (subIdBundle == null || subIdBundle.isEmpty()) {
-            logd("xml is empty");
+            logd("getProvisioningStatusFromSubIdBundle", subId, "xml is empty");
             return STATUS_NOT_SET;
         }
 
         PersistableBundle regTechBundle = subIdBundle.getPersistableBundle(
                 String.valueOf(imsFeature));
         if (regTechBundle == null) {
-            logd("ImsFeature " + imsFeature + " is not exist in xml");
+            logd("getProvisioningStatusFromSubIdBundle", subId,
+                    "ImsFeature " + imsFeature + " does not exist in xml");
             return STATUS_NOT_SET;
         }
 
         PersistableBundle capabilityBundle = regTechBundle.getPersistableBundle(
                 String.valueOf(tech));
         if (capabilityBundle == null) {
-            logd("RegistrationTech " + tech + " is not exist in xml");
+            logd("getProvisioningStatusFromSubIdBundle", subId,
+                    "RegistrationTech " + tech + " does not exist in xml");
             return STATUS_NOT_SET;
         }
 
-        return getIntValueFromBundle(String.valueOf(capability), capabilityBundle);
+        return getIntValueFromBundle(subId, tech, String.valueOf(capability), capabilityBundle);
     }
 
-    private void setProvisioningStatusToSubIdBundle(int imsFeature, int tech,
+    private void setProvisioningStatusToSubIdBundle(int subId, int imsFeature, int tech,
             int capability, PersistableBundle subIdBundle, int newStatus) {
-        logd("set provisioning status " + newStatus + " ImsFeature "
-                + imsFeature + " tech " + tech + " capa " + capability);
+        logd("setProvisioningStatusToSubIdBundle", subId, "set provisioning status " + newStatus
+                + " ImsFeature " + imsFeature + " tech " + tech + " capa " + capability);
 
         PersistableBundle regTechBundle = subIdBundle.getPersistableBundle(
                 String.valueOf(imsFeature));
@@ -201,9 +203,10 @@ public class ImsProvisioningLoader {
     }
 
     // Default value is STATUS_NOT_SET
-    private int getIntValueFromBundle(String key, PersistableBundle bundle) {
+    private int getIntValueFromBundle(int subId, int tech, String key, PersistableBundle bundle) {
         int value = bundle.getInt(key, STATUS_NOT_SET);
-        logd("get value " + value);
+        logd("getIntValueFromBundle", subId,
+                "Cache hit, tech=" + tech + " capability=" + key + ": returning " + value);
         return value;
     }
 
@@ -293,7 +296,7 @@ public class ImsProvisioningLoader {
             String[] infoArray) {
         for (String info : infoArray) {
             String[] paramArray = info.split(",");
-            setProvisioningStatusToSubIdBundle(Integer.valueOf(paramArray[0]),
+            setProvisioningStatusToSubIdBundle(subId, Integer.valueOf(paramArray[0]),
                     Integer.valueOf(paramArray[1]), Integer.valueOf(paramArray[2]),
                     subIdBundle, Integer.valueOf(paramArray[3]));
         }
@@ -302,6 +305,10 @@ public class ImsProvisioningLoader {
 
     private void loge(String contents) {
         Log.e(LOG_TAG, contents);
+    }
+
+    private void logd(String prefix, int subId, String contents) {
+        Log.d(LOG_TAG, prefix + "[" + subId + "]: " + contents);
     }
 
     private void logd(String contents) {

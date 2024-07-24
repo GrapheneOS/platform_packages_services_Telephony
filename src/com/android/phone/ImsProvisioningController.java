@@ -49,9 +49,11 @@ import android.os.Message;
 import android.os.PersistableBundle;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.telephony.AnomalyReporter;
 import android.telephony.CarrierConfigManager;
 import android.telephony.CarrierConfigManager.Ims;
 import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.telephony.TelephonyRegistryManager;
 import android.telephony.ims.ProvisioningManager;
 import android.telephony.ims.aidl.IFeatureProvisioningCallback;
@@ -76,6 +78,7 @@ import com.android.telephony.Rlog;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 
 /**
@@ -153,6 +156,10 @@ public class ImsProvisioningController {
             CAPABILITY_TYPE_OPTIONS_UCE, Ims.KEY_CAPABILITY_TYPE_OPTIONS_UCE_INT_ARRAY,
             CAPABILITY_TYPE_PRESENCE_UCE, Ims.KEY_CAPABILITY_TYPE_PRESENCE_UCE_INT_ARRAY
     );
+
+    private static final UUID VOLTE_PROVISIONING_ANOMALY =
+            UUID.fromString("f5f90e4d-3d73-4f63-a0f9-cbe1941ca57c");
+    private static final String VOLTE_PROVISIONING_ANOMALY_DESC = "VoLTE is Not Provisioned";
 
     /**
      * Create a FeatureConnector for this class to use to connect to an ImsManager.
@@ -249,7 +256,7 @@ public class ImsProvisioningController {
                                         (FeatureProvisioningData) msg.obj);
                     } catch (NullPointerException e) {
                         logw(LOG_PREFIX, msg.arg1,
-                                "can not find callback manager message" + msg.what);
+                                "can not find callback manager, message" + msg.what);
                     }
                     break;
                 case EVENT_MULTI_SIM_CONFIGURATION_CHANGE:
@@ -257,9 +264,11 @@ public class ImsProvisioningController {
                     onMultiSimConfigChanged(activeModemCount);
                     break;
                 case EVENT_PROVISIONING_VALUE_CHANGED:
-                    log("subId " + msg.arg1 + " changed provisioning value item : " + msg.arg2
+                    logAttr("ImsConfig", "EVENT_PROVISIONING_VALUE_CHANGED", msg.arg1,
+                            "changed provisioning value, item : " + msg.arg2
                             + " value : " + (int) msg.obj);
-                    updateCapabilityTechFromKey(msg.arg1, msg.arg2, (int) msg.obj);
+                    updateCapabilityTechFromKey("ImsConfig[" + msg.arg1 + "]",
+                            msg.arg1, msg.arg2, (int) msg.obj);
                     break;
                 case EVENT_NOTIFY_INIT_PROVISIONED_VALUE:
                     int slotId = msg.arg1;
@@ -1136,11 +1145,12 @@ public class ImsProvisioningController {
      * return the provisioning status for MmTel capability in specific radio tech
      */
     @VisibleForTesting
-    public boolean getImsProvisioningStatusForCapability(int subId, int capability, int tech) {
+    public boolean getImsProvisioningStatusForCapability(String attributionPackage, int subId,
+            int capability, int tech) {
         boolean mmTelProvisioned = isImsProvisioningRequiredForCapability(subId, capability, tech);
         if (!mmTelProvisioned) { // provisioning not required
-            log("getImsProvisioningStatusForCapability : not required "
-                    + " capability " + capability + " tech " + tech);
+            logAttr(attributionPackage, "getImsProvisioningStatusForCapability", subId,
+                    " not required, capability " + capability + " tech " + tech);
             return true;
         }
 
@@ -1153,14 +1163,15 @@ public class ImsProvisioningController {
             result = getValueFromImsService(subId, capability, tech);
             mmTelProvisioned = getBoolValue(result);
             if (result != ProvisioningManager.PROVISIONING_RESULT_UNKNOWN) {
-                setAndNotifyMmTelProvisioningValue(subId, capability, tech, mmTelProvisioned);
+                setAndNotifyMmTelProvisioningValue(attributionPackage, subId, capability, tech,
+                        mmTelProvisioned);
             }
         } else {
             mmTelProvisioned = getBoolValue(result);
         }
 
-        log("getImsProvisioningStatusForCapability : "
-                + " capability " + capability
+        logAttr(attributionPackage, "getImsProvisioningStatusForCapability", subId,
+                " capability " + capability
                 + " tech " + tech
                 + " result " + mmTelProvisioned);
         return mmTelProvisioned;
@@ -1170,20 +1181,21 @@ public class ImsProvisioningController {
      * set MmTel provisioning status in specific tech
      */
     @VisibleForTesting
-    public void setImsProvisioningStatusForCapability(int subId, int capability, int tech,
-            boolean isProvisioned) {
+    public void setImsProvisioningStatusForCapability(String attributionPackage, int subId,
+            int capability, int tech, boolean isProvisioned) {
         boolean mmTelProvisioned = isImsProvisioningRequiredForCapability(subId, capability, tech);
         if (!mmTelProvisioned) { // provisioning not required
-            log("setImsProvisioningStatusForCapability : not required "
-                    + " capability " + capability + " tech " + tech);
+            logAttr(attributionPackage, "setImsProvisioningStatusForCapability", subId,
+                    "not required, capability " + capability + " tech " + tech);
             return;
         }
 
         // write value to ImsProvisioningLoader
-        boolean isChanged = setAndNotifyMmTelProvisioningValue(subId, capability, tech,
-                isProvisioned);
+        boolean isChanged = setAndNotifyMmTelProvisioningValue(attributionPackage, subId,
+                capability, tech, isProvisioned);
         if (!isChanged) {
-            log("status not changed mmtel capability " + capability + " tech " + tech);
+            logAttr(attributionPackage, "setImsProvisioningStatusForCapability", subId,
+                    "status not changed, capability " + capability + " tech " + tech);
             return;
         }
 
@@ -1192,7 +1204,8 @@ public class ImsProvisioningController {
         int value = getIntValue(isProvisioned);
         int key = getKeyFromCapability(capability, tech);
         if (key != INVALID_VALUE) {
-            log("setImsProvisioningStatusForCapability : matched key " + key);
+            logAttr(attributionPackage, "setImsProvisioningStatusForCapability", subId,
+                    "matched key " + key);
             try {
                 // set key and value to vendor ImsService for MmTel
                 mMmTelFeatureListenersSlotMap.get(slotId).setProvisioningValue(key, value);
@@ -1291,20 +1304,22 @@ public class ImsProvisioningController {
      * {@link ImsConfigImplBase#CONFIG_RESULT_SUCCESS} or
      */
     @VisibleForTesting
-    public int setProvisioningValue(int subId, int key, int value) {
-        log("setProvisioningValue");
+    public int setProvisioningValue(String attributionPackage, int subId, int key, int value) {
+        logAttr(attributionPackage, "setProvisioningValue", subId, key + ": " + value);
 
         int retVal = ImsConfigImplBase.CONFIG_RESULT_FAILED;
         // check key value
         if (!Arrays.stream(LOCAL_IMS_CONFIG_KEYS).anyMatch(keyValue -> keyValue == key)) {
-            log("not matched key " + key);
+            logAttr(attributionPackage, "setProvisioningValue", subId,
+                    "not matched key " + key);
             return ImsConfigImplBase.CONFIG_RESULT_UNKNOWN;
         }
 
         // check subId
         int slotId = getSlotId(subId);
         if (slotId <= SubscriptionManager.INVALID_SIM_SLOT_INDEX || slotId >= mNumSlot) {
-            loge("Fail to retrieve slotId from subId");
+            logAttrE(attributionPackage, "setProvisioningValue", subId,
+                    "Fail to retrieve slotId from subId");
             return ImsConfigImplBase.CONFIG_RESULT_FAILED;
         }
 
@@ -1326,12 +1341,13 @@ public class ImsProvisioningController {
                 retVal = mRcsFeatureListenersSlotMap.get(slotId).setProvisioningValue(key, value);
             }
         } catch (NullPointerException e) {
-            loge("can not access FeatureListener to set provisioning value");
+            logAttrE(attributionPackage, "setProvisioningValue", subId,
+                    "can not access FeatureListener to set provisioning value");
             return ImsConfigImplBase.CONFIG_RESULT_FAILED;
         }
 
         // update and notify provisioning status changed capability and tech from key
-        updateCapabilityTechFromKey(subId, key, value);
+        updateCapabilityTechFromKey(attributionPackage, subId, key, value);
 
         return retVal;
     }
@@ -1349,17 +1365,19 @@ public class ImsProvisioningController {
      * {@link ImsConfigImplBase#CONFIG_RESULT_UNKNOWN}
      */
     @VisibleForTesting
-    public int getProvisioningValue(int subId, int key) {
+    public int getProvisioningValue(String attributionPackage, int subId, int key) {
         // check key value
         if (!Arrays.stream(LOCAL_IMS_CONFIG_KEYS).anyMatch(keyValue -> keyValue == key)) {
-            log("not matched key " + key);
+            logAttr(attributionPackage, "getProvisioningValue", subId,
+                    "not matched key " + key);
             return ImsConfigImplBase.CONFIG_RESULT_UNKNOWN;
         }
 
         // check subId
         int slotId = getSlotId(subId);
         if (slotId <= SubscriptionManager.INVALID_SIM_SLOT_INDEX || slotId >= mNumSlot) {
-            loge("Fail to retrieve slotId from subId");
+            logAttrE(attributionPackage, "getProvisioningValue", subId,
+                    "Fail to retrieve slotId from subId");
             return ImsConfigImplBase.CONFIG_RESULT_UNKNOWN;
         }
 
@@ -1376,7 +1394,8 @@ public class ImsProvisioningController {
                         capability, tech);
             }
             if (result != ImsProvisioningLoader.STATUS_NOT_SET) {
-                log("getProvisioningValue from loader : key " + key + " result " + result);
+                logAttr(attributionPackage, "getProvisioningValue", subId,
+                        "cache hit : key=" + key + ": value=" + result);
                 return result;
             }
         }
@@ -1385,24 +1404,27 @@ public class ImsProvisioningController {
         if (key == KEY_EAB_PROVISIONING_STATUS) {
             result = getRcsValueFromImsService(subId, capability);
             if (result == ImsConfigImplBase.CONFIG_RESULT_UNKNOWN) {
-                logw("getProvisioningValue : fail to get data from ImsService capability"
-                        + capability);
+                logAttrW(attributionPackage, "getProvisioningValue", subId,
+                        "fail to get data from ImsService, capability=" + capability);
                 return result;
             }
-            log("getProvisioningValue from vendor : key " + key + " result " + result);
+            logAttr(attributionPackage, "getProvisioningValue", subId,
+                    "cache miss, get from RCS - key=" + key + ": value=" + result);
 
             setAndNotifyRcsProvisioningValueForAllTech(subId, capability, getBoolValue(result));
             return result;
         } else {
             result = getValueFromImsService(subId, capability, tech);
             if (result == ImsConfigImplBase.CONFIG_RESULT_UNKNOWN) {
-                logw("getProvisioningValue : fail to get data from ImsService capability"
-                        + capability);
+                logAttrW(attributionPackage, "getProvisioningValue", subId,
+                        "fail to get data from ImsService, capability=" + capability);
                 return result;
             }
-            log("getProvisioningValue from vendor : key " + key + " result " + result);
+            logAttr(attributionPackage, "getProvisioningValue", subId,
+                    "cache miss, get from MMTEL - key=" + key + ": value=" + result);
 
-            setAndNotifyMmTelProvisioningValue(subId, capability, tech, getBoolValue(result));
+            setAndNotifyMmTelProvisioningValue(attributionPackage, subId, capability, tech,
+                    getBoolValue(result));
             return result;
         }
     }
@@ -1531,20 +1553,23 @@ public class ImsProvisioningController {
         }
     }
 
-    private void  updateCapabilityTechFromKey(int subId, int key, int value) {
+    private void  updateCapabilityTechFromKey(String attributionPackage, int subId, int key,
+            int value) {
         boolean isProvisioned = getBoolValue(value);
         int capability = getCapabilityFromKey(key);
         int tech = getTechFromKey(key);
 
         if (capability == INVALID_VALUE || tech == INVALID_VALUE) {
-            logw("updateCapabilityTechFromKey : unknown key " + key);
+            logAttrW(attributionPackage, "updateCapabilityTechFromKey", subId,
+                    "unknown key " + key);
             return;
         }
 
         if (key == KEY_VOLTE_PROVISIONING_STATUS
                 || key == KEY_VT_PROVISIONING_STATUS
                 || key == KEY_VOICE_OVER_WIFI_ENABLED_OVERRIDE) {
-            setAndNotifyMmTelProvisioningValue(subId, capability, tech, isProvisioned);
+            setAndNotifyMmTelProvisioningValue(attributionPackage, subId, capability, tech,
+                    isProvisioned);
         }
         if (key == KEY_EAB_PROVISIONING_STATUS) {
             setAndNotifyRcsProvisioningValueForAllTech(subId, capability, isProvisioned);
@@ -1631,12 +1656,33 @@ public class ImsProvisioningController {
         return value == ProvisioningManager.PROVISIONING_VALUE_ENABLED ? true : false;
     }
 
-    private boolean setAndNotifyMmTelProvisioningValue(int subId, int capability, int tech,
+    // If VoLTE is not provisioned, generate an anomaly report as this is not expected.
+    private void checkProvisioningValueForAnomaly(String attributionPackage, int subId,
+            int capability, int tech, boolean isProvisioned) {
+        if (isProvisioned) return;
+        boolean isVolte = capability == CAPABILITY_TYPE_VOICE && tech == REGISTRATION_TECH_LTE;
+        if (!isVolte) return;
+        // We have hit the condition where VoLTE has been de-provisioned
+        int carrierId = TelephonyManager.UNKNOWN_CARRIER_ID;
+        TelephonyManager manager = mApp.getSystemService(TelephonyManager.class);
+        if (manager != null) {
+            carrierId = manager.createForSubscriptionId(subId).getSimCarrierId();
+        }
+        logAttrW(attributionPackage, "checkProvisioningValueForAnomaly", subId,
+                "VoLTE provisioning disabled");
+        AnomalyReporter.reportAnomaly(VOLTE_PROVISIONING_ANOMALY,
+                VOLTE_PROVISIONING_ANOMALY_DESC, carrierId);
+    }
+
+    private boolean setAndNotifyMmTelProvisioningValue(String attributionPackage, int subId,
+            int capability, int tech,
             boolean isProvisioned) {
         boolean changed = mImsProvisioningLoader.setProvisioningStatus(subId, FEATURE_MMTEL,
                 capability, tech, isProvisioned);
         // notify MmTel capability changed
         if (changed) {
+            checkProvisioningValueForAnomaly(attributionPackage, subId, capability, tech,
+                    isProvisioned);
             mHandler.sendMessage(mHandler.obtainMessage(EVENT_PROVISIONING_CAPABILITY_CHANGED,
                     getSlotId(subId), 0, (Object) new FeatureProvisioningData(
                             capability, tech, isProvisioned, /*isMmTel*/true)));
@@ -1764,6 +1810,18 @@ public class ImsProvisioningController {
                 }
             }
         }
+    }
+
+    private void logAttr(String attr, String prefix, int subId, String log) {
+        Rlog.d(TAG, prefix + "[" + subId + "]: " + log + ", attr = [" + attr + "]");
+    }
+
+    private void logAttrW(String attr, String prefix, int subId, String log) {
+        Rlog.w(TAG, prefix + "[" + subId + "]: " + log + ", attr = [" + attr + "]");
+    }
+
+    private void logAttrE(String attr, String prefix, int subId, String log) {
+        Rlog.e(TAG, prefix + "[" + subId + "]: " + log + ", attr = [" + attr + "]");
     }
 
     private void log(String s) {

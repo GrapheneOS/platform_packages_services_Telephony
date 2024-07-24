@@ -112,6 +112,7 @@ public class ImsProvisioningControllerTest {
             REGISTRATION_TECH_NR
     };
     private static final int RADIO_TECH_INVALID = ImsRegistrationImplBase.REGISTRATION_TECH_NONE;
+    private static final String TEST_ATTR = "TEST";
 
     @Mock
     Context mContext;
@@ -636,7 +637,8 @@ public class ImsProvisioningControllerTest {
         for (int i = 0; i < RADIO_TECHS.length; i++) {
             // get provisioning status
             provisioned = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value
             assertEquals(expectedVoiceProvisioningStatus[i], provisioned);
@@ -651,7 +653,8 @@ public class ImsProvisioningControllerTest {
         for (int i = 0; i < RADIO_TECHS.length; i++) {
             // get provisioning status
             provisioned = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value
             assertEquals(expectedVideoProvisioningStatus[i], provisioned);
@@ -666,7 +669,8 @@ public class ImsProvisioningControllerTest {
         for (int i = 0; i < RADIO_TECHS.length; i++) {
             // get provisioning status
             provisioned = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value
             assertEquals(expectedUtProvisioningStatus[i], provisioned);
@@ -718,7 +722,7 @@ public class ImsProvisioningControllerTest {
         int capability = CAPABILITY_TYPE_VOICE;
         int tech = REGISTRATION_TECH_LTE;
         provisioned = mTestImsProvisioningController
-                .getImsProvisioningStatusForCapability(mSubId0, capability, tech);
+                .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability, tech);
 
         // verify return value default false - not provisioned
         assertEquals(true, provisioned);
@@ -741,7 +745,7 @@ public class ImsProvisioningControllerTest {
         capability = CAPABILITY_TYPE_VIDEO;
         tech = REGISTRATION_TECH_LTE;
         provisioned = mTestImsProvisioningController
-                .getImsProvisioningStatusForCapability(mSubId0, capability, tech);
+                .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability, tech);
 
         // verify return value default false - not provisioned
         assertEquals(false, provisioned);
@@ -891,17 +895,19 @@ public class ImsProvisioningControllerTest {
         for (int i = 0; i < RADIO_TECHS.length; i++) {
             // get provisioning status
             provisionedFirst = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value default false - not provisioned
             assertEquals(false, provisionedFirst);
 
             mTestImsProvisioningController.setImsProvisioningStatusForCapability(
-                    mSubId0, capability, RADIO_TECHS[i], !provisionedFirst);
+                    TEST_ATTR, mSubId0, capability, RADIO_TECHS[i], !provisionedFirst);
             processAllMessages();
 
             provisionedSecond = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value default false - provisioned
             assertEquals(!provisionedFirst, provisionedSecond);
@@ -968,17 +974,19 @@ public class ImsProvisioningControllerTest {
         for (int i = 0; i < RADIO_TECHS.length; i++) {
             // get provisioning status
             provisionedFirst = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value default false - not provisioned
             assertEquals(false, provisionedFirst);
 
             mTestImsProvisioningController.setImsProvisioningStatusForCapability(
-                    mSubId0, capability, RADIO_TECHS[i], !provisionedFirst);
+                    TEST_ATTR, mSubId0, capability, RADIO_TECHS[i], !provisionedFirst);
             processAllMessages();
 
             provisionedSecond = mTestImsProvisioningController
-                    .getImsProvisioningStatusForCapability(mSubId0, capability, RADIO_TECHS[i]);
+                    .getImsProvisioningStatusForCapability(TEST_ATTR, mSubId0, capability,
+                            RADIO_TECHS[i]);
 
             // verify return value default false - provisioned
             assertEquals(!provisionedFirst, provisionedSecond);
@@ -1161,7 +1169,7 @@ public class ImsProvisioningControllerTest {
         for (int i = 0; i < keys.length; i++) {
             clearInvocations(mIFeatureProvisioningCallback0);
             result = mTestImsProvisioningController.setProvisioningValue(
-                    mSubId0, keys[i], PROVISIONING_VALUE_ENABLED);
+                    TEST_ATTR, mSubId0, keys[i], PROVISIONING_VALUE_ENABLED);
             processAllMessages();
 
             // check return value
@@ -1220,7 +1228,7 @@ public class ImsProvisioningControllerTest {
         int capa = CAPABILITY_TYPE_PRESENCE_UCE;
 
         int result = mTestImsProvisioningController.setProvisioningValue(
-                    mSubId0, key, PROVISIONING_VALUE_ENABLED);
+                TEST_ATTR, mSubId0, key, PROVISIONING_VALUE_ENABLED);
         processAllMessages();
 
         // check return value
@@ -1271,7 +1279,7 @@ public class ImsProvisioningControllerTest {
         };
         for (int key : keys) {
             int result = mTestImsProvisioningController.setProvisioningValue(
-                    mSubId0, key, PROVISIONING_VALUE_ENABLED);
+                    TEST_ATTR, mSubId0, key, PROVISIONING_VALUE_ENABLED);
             processAllMessages();
 
             // check return value
@@ -1349,7 +1357,8 @@ public class ImsProvisioningControllerTest {
                 REGISTRATION_TECH_IWLAN
         };
         for (int i = 0; i < keys.length; i++) {
-            int result = mTestImsProvisioningController.getProvisioningValue(mSubId0, keys[i]);
+            int result = mTestImsProvisioningController.getProvisioningValue(TEST_ATTR, mSubId0,
+                    keys[i]);
             processAllMessages();
 
             // check return value
@@ -1365,7 +1374,7 @@ public class ImsProvisioningControllerTest {
         int key = KEY_EAB_PROVISIONING_STATUS;
         int capa = CAPABILITY_TYPE_PRESENCE_UCE;
 
-        int result = mTestImsProvisioningController.getProvisioningValue(mSubId0, key);
+        int result = mTestImsProvisioningController.getProvisioningValue(TEST_ATTR, mSubId0, key);
         processAllMessages();
 
         // check return value
@@ -1453,7 +1462,8 @@ public class ImsProvisioningControllerTest {
                 REGISTRATION_TECH_IWLAN
         };
         for (int i = 0; i < keys.length; i++) {
-            int result = mTestImsProvisioningController.getProvisioningValue(mSubId0, keys[i]);
+            int result = mTestImsProvisioningController.getProvisioningValue(TEST_ATTR, mSubId0,
+                    keys[i]);
             processAllMessages();
 
             // check return value
@@ -1481,7 +1491,7 @@ public class ImsProvisioningControllerTest {
         int key = KEY_EAB_PROVISIONING_STATUS;
         int capa = CAPABILITY_TYPE_PRESENCE_UCE;
 
-        int result = mTestImsProvisioningController.getProvisioningValue(mSubId0, key);
+        int result = mTestImsProvisioningController.getProvisioningValue(TEST_ATTR, mSubId0, key);
         processAllMessages();
 
         // check return value
@@ -1590,8 +1600,8 @@ public class ImsProvisioningControllerTest {
         int tech = REGISTRATION_TECH_LTE;
         boolean provisioned;
         provisioned = mTestImsProvisioningController.getImsProvisioningStatusForCapability(
-                mSubId1, capability, tech);
-        mTestImsProvisioningController.setImsProvisioningStatusForCapability(mSubId1,
+                TEST_ATTR, mSubId1, capability, tech);
+        mTestImsProvisioningController.setImsProvisioningStatusForCapability(TEST_ATTR, mSubId1,
                 capability, tech, !provisioned);
         processAllMessages();
 
@@ -1643,7 +1653,7 @@ public class ImsProvisioningControllerTest {
         int capa = CAPABILITY_TYPE_PRESENCE_UCE;
         int tech = REGISTRATION_TECH_LTE;
 
-        int result = mTestImsProvisioningController.getProvisioningValue(mSubId0, key);
+        int result = mTestImsProvisioningController.getProvisioningValue(TEST_ATTR, mSubId0, key);
         processAllMessages();
 
         // check return value
@@ -1668,7 +1678,7 @@ public class ImsProvisioningControllerTest {
         clearInvocations(mImsConfig);
         clearInvocations(mImsProvisioningLoader);
 
-        mTestImsProvisioningController.setProvisioningValue(mSubId0, key,
+        mTestImsProvisioningController.setProvisioningValue(TEST_ATTR, mSubId0, key,
                 PROVISIONING_VALUE_DISABLED);
         processAllMessages();
 

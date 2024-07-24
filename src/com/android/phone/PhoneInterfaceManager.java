@@ -5466,6 +5466,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         enforceTelephonyFeatureWithException(getCurrentPackageName(),
                 FEATURE_TELEPHONY_IMS, "setImsProvisioningStatusForCapability");
 
+        String displayPackageName = getCurrentPackageNameOrPhone();
         final long identity = Binder.clearCallingIdentity();
         try {
             ImsProvisioningController controller = ImsProvisioningController.getInstance();
@@ -5473,7 +5474,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 loge("setImsProvisioningStatusForCapability: Device does not support IMS");
                 return;
             }
-            controller.setImsProvisioningStatusForCapability(
+            controller.setImsProvisioningStatusForCapability(displayPackageName,
                     subId, capability, tech, isProvisioned);
         } finally {
             Binder.restoreCallingIdentity(identity);
@@ -5488,6 +5489,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         enforceTelephonyFeatureWithException(getCurrentPackageName(),
                 FEATURE_TELEPHONY_IMS, "getImsProvisioningStatusForCapability");
 
+        String displayPackageName = getCurrentPackageNameOrPhone();
         final long identity = Binder.clearCallingIdentity();
         try {
             ImsProvisioningController controller = ImsProvisioningController.getInstance();
@@ -5497,7 +5499,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 // device does not support IMS, this method will return true always.
                 return true;
             }
-            return controller.getImsProvisioningStatusForCapability(subId, capability, tech);
+            return controller.getImsProvisioningStatusForCapability(displayPackageName,
+                    subId, capability, tech);
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
@@ -5560,6 +5563,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         enforceTelephonyFeatureWithException(getCurrentPackageName(),
                 FEATURE_TELEPHONY_IMS, "getImsProvisioningInt");
 
+        String displayPackageName = getCurrentPackageNameOrPhone();
         final long identity = Binder.clearCallingIdentity();
         try {
             // TODO: Refactor to remove ImsManager dependence and query through ImsPhone directly.
@@ -5577,7 +5581,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 // device does not support IMS, this method will return CONFIG_RESULT_UNKNOWN.
                 return ImsConfigImplBase.CONFIG_RESULT_UNKNOWN;
             }
-            int retVal = controller.getProvisioningValue(subId, key);
+            int retVal = controller.getProvisioningValue(displayPackageName, subId,
+                    key);
             if (retVal != ImsConfigImplBase.CONFIG_RESULT_UNKNOWN) {
                 return retVal;
             }
@@ -5633,6 +5638,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         enforceTelephonyFeatureWithException(getCurrentPackageName(),
                 FEATURE_TELEPHONY_IMS, "setImsProvisioningInt");
 
+        String displayPackageName = getCurrentPackageNameOrPhone();
         final long identity = Binder.clearCallingIdentity();
         try {
             // TODO: Refactor to remove ImsManager dependence and query through ImsPhone directly.
@@ -5650,7 +5656,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 // device does not support IMS, this method will return CONFIG_RESULT_FAILED.
                 return ImsConfigImplBase.CONFIG_RESULT_FAILED;
             }
-            int retVal = controller.setProvisioningValue(subId, key, value);
+            int retVal = controller.setProvisioningValue(displayPackageName, subId, key,
+                    value);
             if (retVal != ImsConfigImplBase.CONFIG_RESULT_UNKNOWN) {
                 return retVal;
             }
@@ -10850,6 +10857,19 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         PackageManager pm = mApp.getPackageManager();
         String[] packageNames = pm == null ? null : pm.getPackagesForUid(Binder.getCallingUid());
         return packageNames == null ? null : packageNames[0];
+    }
+
+    /**
+     * @return The calling package name or "phone" if the caller is the phone process. This is done
+     * because multiple Phone has multiple packages in it and the first element in the array is not
+     * actually always the caller.
+     * Note: This is for logging purposes only and should not be used for security checks.
+     */
+    private String getCurrentPackageNameOrPhone() {
+        PackageManager pm = mApp.getPackageManager();
+        String uidName = pm == null ? null : pm.getNameForUid(Binder.getCallingUid());
+        if (uidName != null && !uidName.isEmpty()) return uidName;
+        return getCurrentPackageName();
     }
 
     /**
