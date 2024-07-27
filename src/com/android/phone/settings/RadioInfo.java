@@ -68,6 +68,7 @@ import android.telephony.DataSpecificRegistrationInfo;
 import android.telephony.NetworkRegistrationInfo;
 import android.telephony.PhysicalChannelConfig;
 import android.telephony.RadioAccessFamily;
+import android.telephony.RadioAccessSpecifier;
 import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
 import android.telephony.SubscriptionManager;
@@ -303,6 +304,7 @@ public class RadioInfo extends AppCompatActivity {
     private EditText mSmsc;
     private Switch mRadioPowerOnSwitch;
     private Switch mSimulateOutOfServiceSwitch;
+    private Switch mEnforceSatelliteChannel;
     private Switch mMockSatellite;
     private Button mDnsCheckToggleButton;
     private Button mPingTestButton;
@@ -344,6 +346,8 @@ public class RadioInfo extends AppCompatActivity {
     private boolean mCfiValue = false;
 
     private final PersistableBundle[] mCarrierSatelliteOriginalBundle = new PersistableBundle[2];
+    private final ForceSatelliteChannelBundle[] mOriginalSystemChannels =
+            new ForceSatelliteChannelBundle[2];
     private List<CellInfo> mCellInfoResult = null;
     private final boolean[] mSimulateOos = new boolean[2];
     private int[] mSelectedSignalStrengthIndex = new int[2];
@@ -710,8 +714,10 @@ public class RadioInfo extends AppCompatActivity {
         }
 
         mMockSatellite = (Switch) findViewById(R.id.mock_carrier_roaming_satellite);
+        mEnforceSatelliteChannel = (Switch) findViewById(R.id.enforce_satellite_channel);
         if (!TelephonyUtils.IS_DEBUGGABLE) {
             mMockSatellite.setVisibility(View.GONE);
+            mEnforceSatelliteChannel.setVisibility(View.GONE);
         }
 
         mDownlinkKbps = (TextView) findViewById(R.id.dl_kbps);
@@ -848,6 +854,8 @@ public class RadioInfo extends AppCompatActivity {
         mSimulateOutOfServiceSwitch.setOnCheckedChangeListener(mSimulateOosOnChangeListener);
         mMockSatellite.setChecked(mCarrierSatelliteOriginalBundle[mPhone.getPhoneId()] != null);
         mMockSatellite.setOnCheckedChangeListener(mMockSatelliteListener);
+        mEnforceSatelliteChannel.setChecked(mOriginalSystemChannels[mPhone.getPhoneId()] != null);
+        mEnforceSatelliteChannel.setOnCheckedChangeListener(mForceSatelliteChannelOnChangeListener);
         mImsVolteProvisionedSwitch.setOnCheckedChangeListener(mImsVolteCheckedChangeListener);
         mImsVtProvisionedSwitch.setOnCheckedChangeListener(mImsVtCheckedChangeListener);
         mImsWfcProvisionedSwitch.setOnCheckedChangeListener(mImsWfcCheckedChangeListener);
@@ -971,6 +979,10 @@ public class RadioInfo extends AppCompatActivity {
             mPhone = PhoneFactory.getPhone(phoneId);
             if (mSimulateOos[mPhone.getPhoneId()])  {
                 mSimulateOosOnChangeListener.onCheckedChanged(mSimulateOutOfServiceSwitch, false);
+            }
+            if (mOriginalSystemChannels[mPhone.getPhoneId()] != null) {
+                mForceSatelliteChannelOnChangeListener
+                        .onCheckedChanged(mEnforceSatelliteChannel, false);
             }
             if (mCarrierSatelliteOriginalBundle[mPhone.getPhoneId()] != null) {
                 mMockSatelliteListener.onCheckedChanged(mMockSatellite, false);
@@ -1850,8 +1862,7 @@ public class RadioInfo extends AppCompatActivity {
         }
     };
 
-    private final OnCheckedChangeListener mSimulateOosOnChangeListener =
-            (buttonView, isChecked) -> {
+    private final OnCheckedChangeListener mSimulateOosOnChangeListener = (bv, isChecked) -> {
         Intent intent = new Intent("com.android.internal.telephony.TestServiceState");
         if (isChecked) {
             log("Send OOS override broadcast intent.");
@@ -1862,8 +1873,92 @@ public class RadioInfo extends AppCompatActivity {
             intent.putExtra("action", "reset");
             mSimulateOos[mPhone.getPhoneId()] = false;
         }
+    };
 
-        mPhone.getTelephonyTester().setServiceStateTestIntent(intent);
+    private record ForceSatelliteChannelBundle(PersistableBundle bundle,
+                                               List<RadioAccessSpecifier> specifiers) {}
+
+    private final OnCheckedChangeListener mForceSatelliteChannelOnChangeListener =
+            (buttonView, isChecked) -> {
+                if (mPhone == null || mPhone.getSubId() < 1) return;
+                CarrierConfigManager cm = mPhone.getContext()
+                        .getSystemService(CarrierConfigManager.class);
+                if (cm == null) return;
+                TelephonyManager tm = mTelephonyManager.createForSubscriptionId(mPhone.getSubId());
+                // To be used in thread in case mPhone changes.
+                int subId = mPhone.getSubId();
+                int phoneId = mPhone.getPhoneId();
+                if (isChecked) {
+                    (new Thread(() -> {
+                        // Override carrier config
+                        PersistableBundle originalBundle = cm.getConfigForSubId(subId,
+                                CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL,
+                                CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL,
+                                CarrierConfigManager.KEY_EMERGENCY_MESSAGING_SUPPORTED_BOOL
+                        );
+                        PersistableBundle overrideBundle = new PersistableBundle();
+                        overrideBundle.putBoolean(
+                                CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL, true);
+                        overrideBundle.putBoolean(CarrierConfigManager
+                                .KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL, true);
+                        overrideBundle.putBoolean(CarrierConfigManager
+                                .KEY_EMERGENCY_MESSAGING_SUPPORTED_BOOL, true);
+
+                        // Force channel selection
+                        List<RadioAccessSpecifier> originalChannels;
+                        try {
+                            originalChannels = tm.getSystemSelectionChannels();
+                        } catch (Exception e) {
+                            loge("Force satellite channel failed to get channels " + e);
+                            return;
+                        }
+                        List<RadioAccessSpecifier> mock = List.of(
+                                new RadioAccessSpecifier(
+                                        AccessNetworkConstants.AccessNetworkType.EUTRAN,
+                                        new int[]{AccessNetworkConstants.EutranBand.BAND_25},
+                                        new int[]{8665}),
+                                new RadioAccessSpecifier(
+                                        AccessNetworkConstants.AccessNetworkType.NGRAN,
+                                        new int[0],  new int[0]),
+                                new RadioAccessSpecifier(
+                                        AccessNetworkConstants.AccessNetworkType.UTRAN,
+                                        new int[0],  new int[0]),
+                                new RadioAccessSpecifier(
+                                        AccessNetworkConstants.AccessNetworkType.GERAN,
+                                        new int[0],  new int[0]));
+                        try {
+                            log("Force satellite channel new channels " + mock);
+                            tm.setSystemSelectionChannels(mock);
+                        } catch (Exception e) {
+                            loge("Force satellite channel failed to set channels " + e);
+                            return;
+                        }
+                        log("Force satellite channel new config " + overrideBundle);
+                        cm.overrideConfig(subId, overrideBundle, false);
+                        ForceSatelliteChannelBundle original =
+                                new ForceSatelliteChannelBundle(originalBundle, originalChannels);
+                        mOriginalSystemChannels[phoneId] = original;
+                        log("Force satellite channel old " + original);
+                    })).start();
+                } else {
+                    ForceSatelliteChannelBundle original;
+                    original = mOriginalSystemChannels[phoneId];
+                    if (original == null) return;
+                    log("Force satellite channel restoring to " + original);
+                    (new Thread(() -> {
+                        try {
+                            tm.setSystemSelectionChannels(original.specifiers);
+                            log("Force satellite channel successfully restored channels to "
+                                    + original.specifiers);
+                            cm.overrideConfig(subId, original.bundle, false);
+                            log("Force satellite channel successfully restored config to "
+                                    + original.bundle);
+                            mOriginalSystemChannels[phoneId] = null;
+                        } catch (Exception e) {
+                            loge("Force satellite channel: Can't clear mock " + e);
+                        }
+                    })).start();
+                }
     };
 
     private final OnCheckedChangeListener mMockSatelliteListener =

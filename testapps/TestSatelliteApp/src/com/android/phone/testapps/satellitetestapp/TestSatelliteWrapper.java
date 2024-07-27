@@ -371,6 +371,14 @@ public class TestSatelliteWrapper extends Activity {
             logd(message);
             addLogMessage(message);
         }
+
+        @Override
+        public void onCarrierRoamingNtnEligibleStateChanged(boolean eligible) {
+            String message = "Received onCarrierRoamingNtnEligibleStateChanged "
+                    + "eligible: " + eligible;
+            logd(message);
+            addLogMessage(message);
+        }
     }
 
     private class SatelliteCommunicationAllowedStateCallback implements
