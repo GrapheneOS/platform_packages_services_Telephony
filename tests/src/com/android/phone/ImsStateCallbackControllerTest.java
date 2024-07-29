@@ -37,6 +37,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,6 +61,7 @@ import com.android.ims.RcsFeatureManager;
 import com.android.internal.telephony.IImsStateCallback;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.telephony.Phone;
+import com.android.internal.telephony.flags.FeatureFlags;
 import com.android.internal.telephony.ims.ImsResolver;
 
 import org.junit.After;
@@ -121,6 +123,7 @@ public class ImsStateCallbackControllerTest extends TelephonyTestBase {
     @Mock private IImsStateCallback mCallback2;
     @Mock private IImsStateCallback mCallback3;
     @Mock private ImsResolver mImsResolver;
+    @Mock private FeatureFlags mFeatureFlags;
 
     private Executor mExecutor = new Executor() {
         @Override
@@ -908,6 +911,31 @@ public class ImsStateCallbackControllerTest extends TelephonyTestBase {
         assertNull(imsManager);
     }
 
+    @Test
+    @SmallTest
+    public void testImsManagerInstanceWithInvalidSubId() throws Exception {
+        doReturn(true).when(mFeatureFlags).avoidDeletingImsObjectFromCache();
+
+        createController(1);
+
+        // MmTelConnection ready
+        mMmTelConnectorListenerSlot0.getValue()
+                .connectionReady(mMmTelFeatureManager, SLOT_0_SUB_ID);
+        processAllMessages();
+
+        // check ImsManager instance
+        ImsManager imsManager = mImsStateCallbackController.getImsManager(SLOT_0_SUB_ID);
+        assertNotNull(imsManager);
+
+        // SubId changed from SLOT_0_SUB_ID to INVALID_SUBSCRIPTION_ID
+        when(mPhoneSlot0.getSubId()).thenReturn(SubscriptionManager.INVALID_SUBSCRIPTION_ID);
+        mImsStateCallbackController.onSubChanged();
+
+        // ImsStateCallbackController should keep the ImsManager instance for SLOT_0_SUB_ID
+        imsManager = mImsStateCallbackController.getImsManager(SLOT_0_SUB_ID);
+        assertNotNull(imsManager);
+    }
+
     private void createController(int slotCount) throws Exception {
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -929,7 +957,8 @@ public class ImsStateCallbackControllerTest extends TelephonyTestBase {
 
         mImsStateCallbackController =
                 new ImsStateCallbackController(mPhone, mHandlerThread.getLooper(),
-                        slotCount, mMmTelFeatureFactory, mRcsFeatureFactory, mImsResolver);
+                        slotCount, mMmTelFeatureFactory, mRcsFeatureFactory, mImsResolver,
+                        mFeatureFlags);
 
         replaceInstance(ImsStateCallbackController.class,
                 "mPhoneFactoryProxy", mImsStateCallbackController, mPhoneFactoryProxy);

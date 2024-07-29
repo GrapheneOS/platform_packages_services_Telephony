@@ -59,6 +59,7 @@ import com.android.internal.telephony.IImsStateCallback;
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneConfigurationManager;
 import com.android.internal.telephony.PhoneFactory;
+import com.android.internal.telephony.flags.FeatureFlags;
 import com.android.internal.telephony.ims.ImsResolver;
 import com.android.internal.telephony.util.HandlerExecutor;
 import com.android.internal.util.IndentingPrintWriter;
@@ -158,6 +159,8 @@ public class ImsStateCallbackController {
     private final Object mDumpLock = new Object();
 
     private int mNumSlots;
+
+    private final FeatureFlags mFeatureFlags;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -287,11 +290,13 @@ public class ImsStateCallbackController {
             if (mSubId == subId) return;
             logd(mLogPrefix + "setSubId changed subId=" + subId);
 
-            // subId changed from valid to invalid
-            if (subId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
-                if (VDBG) logv(mLogPrefix + "setSubId remove ImsManager " + mSubId);
-                // remove ImsManager reference associated with subId
-                mSubIdToImsManagerCache.remove(mSubId);
+            if (!mFeatureFlags.avoidDeletingImsObjectFromCache()) {
+                // subId changed from valid to invalid
+                if (subId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+                    if (VDBG) logv(mLogPrefix + "setSubId remove ImsManager " + mSubId);
+                    // remove ImsManager reference associated with subId
+                    mSubIdToImsManagerCache.remove(mSubId);
+                }
             }
 
             mSubId = subId;
@@ -709,7 +714,8 @@ public class ImsStateCallbackController {
     /**
      * create an instance
      */
-    public static ImsStateCallbackController make(PhoneGlobals app, int numSlots) {
+    public static ImsStateCallbackController make(PhoneGlobals app, int numSlots,
+            FeatureFlags featureFlags) {
         synchronized (ImsStateCallbackController.class) {
             if (sInstance == null) {
                 logd("ImsStateCallbackController created");
@@ -718,7 +724,7 @@ public class ImsStateCallbackController {
                 handlerThread.start();
                 sInstance = new ImsStateCallbackController(app, handlerThread.getLooper(), numSlots,
                         ImsManager::getConnector, RcsFeatureManager::getConnector,
-                        ImsResolver.getInstance());
+                        ImsResolver.getInstance(), featureFlags);
             }
         }
         return sInstance;
@@ -727,7 +733,7 @@ public class ImsStateCallbackController {
     @VisibleForTesting
     public ImsStateCallbackController(PhoneGlobals app, Looper looper, int numSlots,
             MmTelFeatureConnectorFactory mmTelFactory, RcsFeatureConnectorFactory rcsFactory,
-            ImsResolver imsResolver) {
+            ImsResolver imsResolver, FeatureFlags featureFlags) {
         mApp = app;
         mHandler = new MyHandler(looper);
         mImsResolver = imsResolver;
@@ -735,6 +741,7 @@ public class ImsStateCallbackController {
         mTelephonyRegistryManager = mApp.getSystemService(TelephonyRegistryManager.class);
         mMmTelFeatureFactory = mmTelFactory;
         mRcsFeatureFactory = rcsFactory;
+        mFeatureFlags = featureFlags;
 
         updateFeatureControllerSize(numSlots);
 

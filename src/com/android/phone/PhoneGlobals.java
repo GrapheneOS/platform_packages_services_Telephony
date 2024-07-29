@@ -638,7 +638,8 @@ public class PhoneGlobals extends ContextWrapper {
 
             if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY_IMS)) {
                 mImsStateCallbackController =
-                        ImsStateCallbackController.make(this, PhoneFactory.getPhones().length);
+                        ImsStateCallbackController.make(this, PhoneFactory.getPhones().length,
+                                mFeatureFlags);
                 mTelephonyRcsService = new TelephonyRcsService(this,
                         PhoneFactory.getPhones().length, mFeatureFlags);
                 mTelephonyRcsService.initialize();
