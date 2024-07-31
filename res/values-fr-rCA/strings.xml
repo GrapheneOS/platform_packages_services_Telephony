@@ -845,6 +845,8 @@
     <string name="removable_esim_string" msgid="7931369811671787649">"Définir la carte eSIM amovible comme carte SIM par défaut"</string>
     <string name="radio_info_radio_power" msgid="8805595022160471587">"Alimentation de radio cellulaire"</string>
     <string name="simulate_out_of_service_string" msgid="7787925611727597193">"Simulation de l\'appareil hors service (version de débogage uniquement)"</string>
+    <!-- no translation found for enforce_satellite_channel_string (295306734591329892) -->
+    <skip />
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Mode Satellite de l\'opérateur simulé (version de débogage uniquement)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Tester le mode eSOS par satellite réel (version de débogage uniquement)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Afficher le carnet d\'adresses de la carte SIM"</string>
