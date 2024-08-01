@@ -275,6 +275,15 @@
                 android:text="@string/esos_satellite_string"
         />
 
+        <!-- Satellite enable non-emergency mode-->
+        <Button android:id="@+id/satellite_enable_non_emergency_mode"
+            android:textSize="14sp"
+            android:layout_marginTop="8dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="@string/satellite_enable_non_emergency_mode_string" />
+
         <!-- VoLTE provisioned -->
         <Switch android:id="@+id/volte_provisioned_switch"
                 android:textSize="14sp"

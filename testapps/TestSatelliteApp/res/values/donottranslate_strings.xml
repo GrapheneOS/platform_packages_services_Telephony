@@ -102,4 +102,7 @@
 
     <string name="registerForCarrierRoamingNtnModeChanged">registerForCarrierRoamingNtnModeChanged</string>
     <string name="unregisterForCarrierRoamingNtnModeChanged">unregisterForCarrierRoamingNtnModeChanged</string>
+
+    <string name="registerForModemStateChanged">registerForModemStateChanged</string>
+    <string name="unregisterForModemStateChanged">unregisterForModemStateChanged</string>
 </resources>

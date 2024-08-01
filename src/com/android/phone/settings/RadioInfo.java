@@ -84,6 +84,8 @@ import android.telephony.ims.ImsRcsManager;
 import android.telephony.ims.ProvisioningManager;
 import android.telephony.ims.feature.MmTelFeature;
 import android.telephony.ims.stub.ImsRegistrationImplBase;
+import android.telephony.satellite.EnableRequestAttributes;
+import android.telephony.satellite.SatelliteManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -314,6 +316,7 @@ public class RadioInfo extends AppCompatActivity {
     private Button mCarrierProvisioningButton;
     private Button mTriggerCarrierProvisioningButton;
     private Button mEsosButton;
+    private Button mSatelliteEnableNonEmergencyModeButton;
     private Switch mImsVolteProvisionedSwitch;
     private Switch mImsVtProvisionedSwitch;
     private Switch mImsWfcProvisionedSwitch;
@@ -749,14 +752,19 @@ public class RadioInfo extends AppCompatActivity {
         }
 
         mEsosButton = (Button) findViewById(R.id.esos_questionnaire);
+        mSatelliteEnableNonEmergencyModeButton = (Button) findViewById(
+                R.id.satellite_enable_non_emergency_mode);
         if (!TelephonyUtils.IS_DEBUGGABLE) {
             mEsosButton.setVisibility(View.GONE);
+            mSatelliteEnableNonEmergencyModeButton.setVisibility(View.GONE);
         } else {
             mEsosButton.setOnClickListener(v ->
                     mPhone.getContext().startActivity(
                         new Intent(ACTION_ESOS_TEST)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK))
             );
+            mSatelliteEnableNonEmergencyModeButton.setOnClickListener(v ->
+                    enableSatelliteNonEmergencyMode());
         }
 
         mOemInfoButton = (Button) findViewById(R.id.oem_info);
@@ -2023,6 +2031,29 @@ public class RadioInfo extends AppCompatActivity {
                     }
                 }
             };
+
+    /**
+     * Enable modem satellite for non-emergency mode.
+     */
+    private void enableSatelliteNonEmergencyMode() {
+        SatelliteManager sm = mPhone.getContext().getSystemService(SatelliteManager.class);
+        CarrierConfigManager cm = mPhone.getContext().getSystemService(CarrierConfigManager.class);
+        if (sm == null || cm == null) {
+            loge("enableSatelliteNonEmergencyMode: sm or cm is null");
+            return;
+        }
+        if (cm.getConfigForSubId(mPhone.getSubId(),
+                CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)
+                .getBoolean(CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)) {
+            loge("enableSatelliteNonEmergencyMode: KEY_SATELLITE_ATTACH_SUPPORTED_BOOL is false");
+            return;
+        }
+        log("enableSatelliteNonEmergencyMode: requestEnabled");
+        sm.requestEnabled(new EnableRequestAttributes.Builder(true)
+                        .setDemoMode(false).setEmergencyMode(false).build(),
+                Runnable::run, res -> log("enableSatelliteNonEmergencyMode: " + res)
+        );
+    }
 
     private boolean isImsVolteProvisioned() {
         return getImsConfigProvisionedState(MmTelFeature.MmTelCapabilities.CAPABILITY_TYPE_VOICE,

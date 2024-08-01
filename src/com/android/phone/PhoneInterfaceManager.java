@@ -479,6 +479,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     private static final int MODEM_ACTIVITY_TIME_OFFSET_CORRECTION_MS = 50;
 
+    private static final int LINE1_NUMBER_MAX_LEN = 50;
+
     /**
      * With support for MEP(multiple enabled profile) in Android T, a SIM card can have more than
      * one ICCID active at the same time.
@@ -7581,8 +7583,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             }
         }
 
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_DATA, "isDataEnabledForReason");
+        if (!mApp.getResources().getBoolean(
+                    com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_DATA, "isDataEnabledForReason");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         try {
@@ -7669,9 +7674,12 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     public int checkCarrierPrivilegesForPackageAnyPhone(String pkgName) {
         enforceReadPrivilegedPermission("checkCarrierPrivilegesForPackageAnyPhone");
 
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION,
-                "checkCarrierPrivilegesForPackageAnyPhone");
+        if (!mApp.getResources().getBoolean(
+                    com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION,
+                    "checkCarrierPrivilegesForPackageAnyPhone");
+        }
 
         return checkCarrierPrivilegesForPackageAnyPhoneWithPermission(pkgName);
     }
@@ -7850,6 +7858,10 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             final String iccId = getIccId(subId);
             final Phone phone = getPhone(subId);
             if (phone == null) {
+                return false;
+            }
+            if (!TextUtils.isEmpty(number) && number.length() > LINE1_NUMBER_MAX_LEN) {
+                Rlog.e(LOG_TAG, "Number is too long");
                 return false;
             }
             final String subscriberId = phone.getSubscriberId();

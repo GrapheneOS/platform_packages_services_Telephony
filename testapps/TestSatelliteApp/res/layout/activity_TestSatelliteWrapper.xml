@@ -155,6 +155,18 @@
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
             android:text="@string/unregisterForCommunicationAllowedStateChanged"/>
+        <Button
+            android:id="@+id/registerForModemStateChanged"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/registerForModemStateChanged"/>
+        <Button
+            android:id="@+id/unregisterForModemStateChanged"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/unregisterForModemStateChanged"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

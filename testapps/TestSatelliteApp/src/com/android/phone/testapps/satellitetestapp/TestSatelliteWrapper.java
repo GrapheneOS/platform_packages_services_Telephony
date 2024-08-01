@@ -29,6 +29,7 @@ import android.telephony.satellite.wrapper.NtnSignalStrengthWrapper;
 import android.telephony.satellite.wrapper.SatelliteCapabilitiesCallbackWrapper;
 import android.telephony.satellite.wrapper.SatelliteCommunicationAllowedStateCallbackWrapper;
 import android.telephony.satellite.wrapper.SatelliteManagerWrapper;
+import android.telephony.satellite.wrapper.SatelliteModemStateCallbackWrapper;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,6 +56,7 @@ public class TestSatelliteWrapper extends Activity {
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SatelliteManagerWrapper mSatelliteManagerWrapper;
     private NtnSignalStrengthCallback mNtnSignalStrengthCallback = null;
+    private SatelliteModemStateCallback mModemStateCallback = null;
     private CarrierRoamingNtnModeListener mCarrierRoamingNtnModeListener = null;
     private SatelliteCommunicationAllowedStateCallback mSatelliteCommunicationAllowedStateCallback;
     private SatelliteCapabilitiesCallbackWrapper mSatelliteCapabilitiesCallback;
@@ -111,6 +113,10 @@ public class TestSatelliteWrapper extends Activity {
                 .setOnClickListener(this::registerForCommunicationAllowedStateChanged);
         findViewById(R.id.unregisterForCommunicationAllowedStateChanged)
                 .setOnClickListener(this::unregisterForCommunicationAllowedStateChanged);
+        findViewById(R.id.registerForModemStateChanged)
+                .setOnClickListener(this::registerForModemStateChanged);
+        findViewById(R.id.unregisterForModemStateChanged)
+                .setOnClickListener(this::unregisterForModemStateChanged);
 
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
@@ -353,6 +359,38 @@ public class TestSatelliteWrapper extends Activity {
         }
     }
 
+    private void registerForModemStateChanged(View view) {
+        addLogMessage("registerForModemStateChanged");
+        logd("registerForSatelliteModemStateChanged()");
+        if (mModemStateCallback == null) {
+            logd("create new ModemStateCallback instance.");
+            mModemStateCallback = new SatelliteModemStateCallback();
+        }
+
+        try {
+            mSatelliteManagerWrapper.registerForModemStateChanged(mExecutor, mModemStateCallback);
+        } catch (Exception ex) {
+            String errorMessage = "registerForModemStateChanged: " + ex.getMessage();
+            logd(errorMessage);
+            addLogMessage(errorMessage);
+            mModemStateCallback = null;
+        }
+    }
+
+    private void unregisterForModemStateChanged(View view) {
+        addLogMessage("unregisterForModemStateChanged");
+        logd("unregisterForModemStateChanged()");
+        if (mModemStateCallback != null) {
+            mSatelliteManagerWrapper.unregisterForModemStateChanged(mModemStateCallback);
+            mModemStateCallback = null;
+            addLogMessage("mModemStateCallback was unregistered");
+        } else {
+            addLogMessage("mModemStateCallback is null, ignored.");
+        }
+    }
+
+
+
     public class NtnSignalStrengthCallback implements NtnSignalStrengthCallbackWrapper {
         @Override
         public void onNtnSignalStrengthChanged(
@@ -388,6 +426,22 @@ public class TestSatelliteWrapper extends Activity {
         public void onSatelliteCommunicationAllowedStateChanged(boolean isAllowed) {
             String message =
                     "Received onSatelliteCommunicationAllowedStateChanged isAllowed: " + isAllowed;
+            logd(message);
+            addLogMessage(message);
+        }
+    }
+
+    private class SatelliteModemStateCallback implements SatelliteModemStateCallbackWrapper {
+        @Override
+        public void onSatelliteModemStateChanged(int state) {
+            String message = "Received onSatelliteModemStateChanged state: " + state;
+            logd(message);
+            addLogMessage(message);
+        }
+
+        @Override
+        public void onEmergencyModeChanged(boolean isEmergency) {
+            String message = "Received onEmergencyModeChanged isEmergency: " + isEmergency;
             logd(message);
             addLogMessage(message);
         }
