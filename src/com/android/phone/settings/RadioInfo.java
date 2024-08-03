@@ -754,6 +754,12 @@ public class RadioInfo extends AppCompatActivity {
         mEsosButton = (Button) findViewById(R.id.esos_questionnaire);
         mSatelliteEnableNonEmergencyModeButton = (Button) findViewById(
                 R.id.satellite_enable_non_emergency_mode);
+        CarrierConfigManager cm = mPhone.getContext().getSystemService(CarrierConfigManager.class);
+        if (!cm.getConfigForSubId(mPhone.getSubId(),
+                        CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)
+                .getBoolean(CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)) {
+            mSatelliteEnableNonEmergencyModeButton.setVisibility(View.GONE);
+        }
         if (!TelephonyUtils.IS_DEBUGGABLE) {
             mEsosButton.setVisibility(View.GONE);
             mSatelliteEnableNonEmergencyModeButton.setVisibility(View.GONE);
@@ -2042,7 +2048,7 @@ public class RadioInfo extends AppCompatActivity {
             loge("enableSatelliteNonEmergencyMode: sm or cm is null");
             return;
         }
-        if (cm.getConfigForSubId(mPhone.getSubId(),
+        if (!cm.getConfigForSubId(mPhone.getSubId(),
                 CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)
                 .getBoolean(CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)) {
             loge("enableSatelliteNonEmergencyMode: KEY_SATELLITE_ATTACH_SUPPORTED_BOOL is false");

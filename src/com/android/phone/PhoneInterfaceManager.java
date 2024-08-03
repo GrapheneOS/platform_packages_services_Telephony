@@ -8605,7 +8605,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             cleanUpSmsRawTable(getDefaultPhone().getContext());
             // Clean up IMS settings as well here.
             int slotId = getSlotIndex(subId);
-            if (slotId > SubscriptionManager.INVALID_SIM_SLOT_INDEX) {
+            if (isImsAvailableOnDevice() && slotId > SubscriptionManager.INVALID_SIM_SLOT_INDEX) {
                 ImsManager.getInstance(mApp, slotId).factoryReset();
             }
 
