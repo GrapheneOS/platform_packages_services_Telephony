@@ -369,4 +369,9 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/emergency_shortcut_tap_hint_text_size</item>
     </style>
+
+    <!--    <style name="RadioInfoTheme" parent="@android:style/Theme.DeviceDefault.DayNight">-->
+    <style name="RadioInfoTheme" parent="Theme.AppCompat.DayNight">
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
 </resources>
