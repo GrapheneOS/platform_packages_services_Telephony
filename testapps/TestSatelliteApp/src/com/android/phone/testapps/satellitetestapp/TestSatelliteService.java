@@ -93,7 +93,6 @@ public class TestSatelliteService extends SatelliteImplBase {
 
     private boolean mIsCommunicationAllowedInLocation;
     private boolean mIsEnabled;
-    private boolean mIsProvisioned;
     private boolean mIsSupported;
     private int mModemState;
     private boolean mIsCellularModemEnabledMode;
@@ -113,7 +112,6 @@ public class TestSatelliteService extends SatelliteImplBase {
         super(executor);
         mIsCommunicationAllowedInLocation = true;
         mIsEnabled = false;
-        mIsProvisioned = false;
         mIsSupported = true;
         mModemState = SatelliteModemState.SATELLITE_MODEM_STATE_OFF;
         mIsCellularModemEnabledMode = false;
@@ -297,41 +295,6 @@ public class TestSatelliteService extends SatelliteImplBase {
     }
 
     @Override
-    public void provisionSatelliteService(@NonNull String token, @NonNull byte[] provisionData,
-            @NonNull IIntegerConsumer errorCallback) {
-        logd("provisionSatelliteService: mErrorCode=" + mErrorCode);
-        if (mErrorCode != SatelliteResult.SATELLITE_RESULT_SUCCESS) {
-            runWithExecutor(() -> errorCallback.accept(mErrorCode));
-            return;
-        }
-        runWithExecutor(() -> errorCallback.accept(SatelliteResult.SATELLITE_RESULT_SUCCESS));
-        updateSatelliteProvisionState(true);
-    }
-
-    @Override
-    public void deprovisionSatelliteService(@NonNull String token,
-            @NonNull IIntegerConsumer errorCallback) {
-        logd("deprovisionSatelliteService: mErrorCode=" + mErrorCode);
-        if (mErrorCode != SatelliteResult.SATELLITE_RESULT_SUCCESS) {
-            runWithExecutor(() -> errorCallback.accept(mErrorCode));
-            return;
-        }
-        runWithExecutor(() -> errorCallback.accept(SatelliteResult.SATELLITE_RESULT_SUCCESS));
-        updateSatelliteProvisionState(false);
-    }
-
-    @Override
-    public void requestIsSatelliteProvisioned(@NonNull IIntegerConsumer errorCallback,
-            @NonNull IBooleanConsumer callback) {
-        logd("requestIsSatelliteProvisioned: mErrorCode=" + mErrorCode);
-        if (mErrorCode != SatelliteResult.SATELLITE_RESULT_SUCCESS) {
-            runWithExecutor(() -> errorCallback.accept(mErrorCode));
-            return;
-        }
-        runWithExecutor(() -> callback.accept(mIsProvisioned));
-    }
-
-    @Override
     public void pollPendingSatelliteDatagrams(@NonNull IIntegerConsumer errorCallback) {
         logd("pollPendingSatelliteDatagrams: mErrorCode=" + mErrorCode);
         if (mErrorCode != SatelliteResult.SATELLITE_RESULT_SUCCESS) {
@@ -512,11 +475,6 @@ public class TestSatelliteService extends SatelliteImplBase {
                     SatelliteResult.SATELLITE_RESULT_REQUEST_NOT_SUPPORTED));
             return false;
         }
-        if (!mIsProvisioned) {
-            runWithExecutor(() -> errorCallback.accept(
-                    SatelliteResult.SATELLITE_RESULT_SERVICE_NOT_PROVISIONED));
-            return false;
-        }
         if (!mIsEnabled) {
             runWithExecutor(() -> errorCallback.accept(
                     SatelliteResult.SATELLITE_RESULT_INVALID_MODEM_STATE));
@@ -542,24 +500,6 @@ public class TestSatelliteService extends SatelliteImplBase {
         mRemoteListeners.values().forEach(listener -> runWithExecutor(() ->
                 listener.onSatelliteModemStateChanged(modemState)));
         mModemState = modemState;
-    }
-
-    /**
-     * Update the satellite provision state and notify listeners if it changed.
-     *
-     * @param isProvisioned {@code true} if the satellite is currently provisioned and
-     *                      {@code false} if it is not.
-     */
-    private void updateSatelliteProvisionState(boolean isProvisioned) {
-        logd("updateSatelliteProvisionState: isProvisioned=" + isProvisioned
-                + ", mIsProvisioned=" + mIsProvisioned);
-        if (isProvisioned == mIsProvisioned) {
-            return;
-        }
-        mIsProvisioned = isProvisioned;
-        logd("updateSatelliteProvisionState: mRemoteListeners.size=" + mRemoteListeners.size());
-        mRemoteListeners.values().forEach(listener -> runWithExecutor(() ->
-                listener.onSatelliteProvisionStateChanged(mIsProvisioned)));
     }
 
     /**

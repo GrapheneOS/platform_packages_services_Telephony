@@ -13770,17 +13770,22 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      * This API can be used by only CTS to update satellite vendor service package name.
      *
      * @param servicePackageName The package name of the satellite vendor service.
+     * @param provisioned Whether satellite should be provisioned or not.
+     *
      * @return {@code true} if the satellite vendor service is set successfully,
      * {@code false} otherwise.
      */
-    public boolean setSatelliteServicePackageName(String servicePackageName) {
-        Log.d(LOG_TAG, "setSatelliteServicePackageName - " + servicePackageName);
+    public boolean setSatelliteServicePackageName(String servicePackageName,
+            String provisioned) {
+        Log.d(LOG_TAG, "setSatelliteServicePackageName - " + servicePackageName
+                + ", provisioned=" + provisioned);
         TelephonyPermissions.enforceShellOnly(
                 Binder.getCallingUid(), "setSatelliteServicePackageName");
         TelephonyPermissions.enforceCallingOrSelfModifyPermissionOrCarrierPrivilege(mApp,
                 SubscriptionManager.INVALID_SUBSCRIPTION_ID,
                 "setSatelliteServicePackageName");
-        return mSatelliteController.setSatelliteServicePackageName(servicePackageName);
+        return mSatelliteController.setSatelliteServicePackageName(servicePackageName,
+                provisioned);
     }
 
     /**

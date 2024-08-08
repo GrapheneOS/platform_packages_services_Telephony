@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Provisioning extends Activity {
 
-    private static final String TAG = "Provisioning";
+    private static final String TAG = "SatelliteProvisioning";
 
     private boolean mProvisioned = false;
 
