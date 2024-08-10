@@ -23,9 +23,9 @@ import android.os.OutcomeReceiver;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.satellite.EnableRequestAttributes;
-import android.telephony.satellite.ProvisionSubscriberId;
 import android.telephony.satellite.SatelliteCapabilities;
 import android.telephony.satellite.SatelliteManager;
+import android.telephony.satellite.SatelliteSubscriberInfo;
 import android.telephony.satellite.stub.SatelliteResult;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,7 +47,7 @@ public class SatelliteControl extends Activity {
 
     private SatelliteManager mSatelliteManager;
     private SubscriptionManager mSubscriptionManager;
-    private List<ProvisionSubscriberId> mProvisionSubscriberIdList = new ArrayList<>();
+    private List<SatelliteSubscriberInfo> mSatelliteSubscriberInfoList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -394,17 +394,18 @@ public class SatelliteControl extends Activity {
     }
 
     private void requestProvisionSubscriberIdsApp(View view) {
-        final AtomicReference<List<ProvisionSubscriberId>> list = new AtomicReference<>();
+        final AtomicReference<List<SatelliteSubscriberInfo>> list = new AtomicReference<>();
         final AtomicReference<Integer> errorCode = new AtomicReference<>();
-        OutcomeReceiver<List<ProvisionSubscriberId>, SatelliteManager.SatelliteException> receiver =
+        OutcomeReceiver<List<SatelliteSubscriberInfo>, SatelliteManager.SatelliteException>
+                receiver =
                 new OutcomeReceiver<>() {
                     @Override
-                    public void onResult(List<ProvisionSubscriberId> result) {
-                        mProvisionSubscriberIdList = result;
+                    public void onResult(List<SatelliteSubscriberInfo> result) {
+                        mSatelliteSubscriberInfoList = result;
                         list.set(result);
                         TextView textView = findViewById(R.id.text_id);
                         String text = "";
-                        for (ProvisionSubscriberId psi : result) {
+                        for (SatelliteSubscriberInfo psi : result) {
                             text += "" + psi + " , ";
                         }
                         textView.setText("requestProvisionSubscriberIds: result=" + text);
@@ -446,13 +447,13 @@ public class SatelliteControl extends Activity {
                                 + SatelliteErrorUtils.mapError(errorCode.get()));
                     }
                 };
-        if (mProvisionSubscriberIdList == null || mProvisionSubscriberIdList.get(0) == null) {
+        if (mSatelliteSubscriberInfoList == null || mSatelliteSubscriberInfoList.get(0) == null) {
             TextView textView = findViewById(R.id.text_id);
             textView.setText("No ProvisionSubscriberIdList");
             return;
         }
-        mSatelliteManager.requestIsProvisioned(mProvisionSubscriberIdList.get(0).getSubscriberId(),
-                Runnable::run, receiver);
+        mSatelliteManager.requestIsProvisioned(
+                mSatelliteSubscriberInfoList.get(0).getSubscriberId(), Runnable::run, receiver);
     }
 
     private void provisionSatelliteApp(View view) {
@@ -480,6 +481,6 @@ public class SatelliteControl extends Activity {
                                 + SatelliteErrorUtils.mapError(errorCode.get()));
                     }
                 };
-        mSatelliteManager.provisionSatellite(mProvisionSubscriberIdList, Runnable::run, receiver);
+        mSatelliteManager.provisionSatellite(mSatelliteSubscriberInfoList, Runnable::run, receiver);
     }
 }

@@ -41,7 +41,8 @@ public final class SatS2LocationLookup {
                      SatS2RangeFileReader.open(new File(arguments.inputFile))) {
             S2CellId s2CellId = getS2CellId(arguments.latDegrees, arguments.lngDegrees,
                     satS2RangeFileReader.getS2Level());
-            System.out.println("s2CellId=" + Long.toUnsignedString(s2CellId.id()));
+            System.out.println("s2CellId=" + Long.toUnsignedString(s2CellId.id())
+                    + ", token=" + s2CellId.toToken());
             if (satS2RangeFileReader.findEntryByCellId(s2CellId.id()) == null) {
                 System.out.println("The input file does not contain the input location");
             } else {
