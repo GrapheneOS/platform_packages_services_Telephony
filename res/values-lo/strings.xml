@@ -845,10 +845,10 @@
     <string name="removable_esim_string" msgid="7931369811671787649">"ຕັ້ງຄ່າ eSIM ແບບຖອດໄດ້ໃຫ້ເປັນຄ່າເລີ່ມຕົ້ນ"</string>
     <string name="radio_info_radio_power" msgid="8805595022160471587">"ພະລັງງານວິທະຍຸມືຖື"</string>
     <string name="simulate_out_of_service_string" msgid="7787925611727597193">"ຈໍາລອງເຫດການບໍ່ພ້ອມໃຫ້ບໍລິການ (ສໍາລັບ Build ດີບັກເທົ່ານັ້ນ)"</string>
-    <!-- no translation found for enforce_satellite_channel_string (295306734591329892) -->
-    <skip />
+    <string name="enforce_satellite_channel_string" msgid="295306734591329892">"ບັງຄັບໃຫ້ໃຊ້ຊ່ອງສັນຍານດາວທຽມ LTE ຂອງຄ້າຍ (ສຳລັບ Build ດີບັກເທົ່ານັ້ນ)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"ຈຳລອງໂໝດດາວທຽມຂອງຜູ້ໃຫ້ບໍລິການ (ສຳລັບ Build ດີບັກເທົ່ານັ້ນ)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"ທົດສອບໂໝດ eSOS ດາວທຽມແທ້ (ສຳລັບ Build ດີບັກເທົ່ານັ້ນ)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"ທົດສອບໂໝດດາວທຽມແທ້ທີ່ບໍ່ແມ່ນ eSOS (ສຳລັບ Build ດີບັກເທົ່ານັ້ນ)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"ເບິ່ງສະໝຸດທີ່ຢູ່ໃນຊິມ"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"ເບິ່ງໝາຍເລກໂທອອກທີ່ກຳນົດ"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"ເບິ່ງໝາຍເລກບໍລິການໂທອອກ"</string>

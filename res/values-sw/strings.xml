@@ -566,7 +566,7 @@
     <string name="emergency_information_owner_hint" msgid="6256909888049185316">"Mmiliki"</string>
     <string name="emergency_information_confirm_hint" msgid="5109017615894918914">"Gusa tena ili uangalie maelezo"</string>
     <string name="emergency_enable_radio_dialog_title" msgid="2667568200755388829">"Simu ya dharura"</string>
-    <string name="single_emergency_number_title" msgid="8413371079579067196">"Nambari ya dharura"</string>
+    <string name="single_emergency_number_title" msgid="8413371079579067196">"Namba ya dharura"</string>
     <string name="numerous_emergency_numbers_title" msgid="8972398932506755510">"Nambari za dharura"</string>
     <string name="emergency_call_shortcut_hint" msgid="1290485125107779500">"Gusa tena ili upige <xliff:g id="EMERGENCY_NUMBER">%s</xliff:g>"</string>
     <string name="emergency_enable_radio_dialog_message" msgid="1695305158151408629">"Inawasha redio..."</string>
@@ -845,10 +845,10 @@
     <string name="removable_esim_string" msgid="7931369811671787649">"Weka eSIM Inayoweza Kuondolewa kama Chaguomsingi"</string>
     <string name="radio_info_radio_power" msgid="8805595022160471587">"Nishati ya Redio ya Vifaa vya Mkononi"</string>
     <string name="simulate_out_of_service_string" msgid="7787925611727597193">"Kifaa cha Kuiga Hakifanyi Kazi (Muundo wa Utatuzi pekee)"</string>
-    <!-- no translation found for enforce_satellite_channel_string (295306734591329892) -->
-    <skip />
+    <string name="enforce_satellite_channel_string" msgid="295306734591329892">"Chaneli ya Setilaiti ya LTE ya Force Camp (Muundo wa Utatuzi Pekee)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Hali ya Setilaiti ya Jaribio la Mtoa Huduma (Muundo wa Utatuzi pekee)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Kujaribu hali ya msaada halisi wa mtandaoni kupitia setilaiti (Muundo wa Utatuzi pekee)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Kujaribu hali ya non-eSOS kwenye setilaiti halisi (Muundo wa Utatuzi pekee)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Angalia Kitabu cha Anwani katika SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Ona Nambari za Simu Zilizobainishwa"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Angalia Nambari Zilizowekwa na Mtoa Huduma"</string>

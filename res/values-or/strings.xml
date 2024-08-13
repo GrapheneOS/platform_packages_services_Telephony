@@ -624,7 +624,7 @@
     <string name="ota_hfa_activation_dialog_message" msgid="7921718445773342996">"ଏହି ଫୋନ୍‌ ଆପଣଙ୍କର ମୋବାଇଲ୍‌ ଡାଟା ସେବାକୁ ସକ୍ରିୟ କରୁଛି। \n\nଏଥି ପାଇଁ ପ୍ରାୟ 5 ମିନିଟ୍‌ ସମୟ ଲାଗିପାରେ।"</string>
     <string name="ota_skip_activation_dialog_title" msgid="7666611236789203797">"ସକ୍ରିୟ କରିବା ଛାଡ଼ିଯିବେ?"</string>
     <string name="ota_skip_activation_dialog_message" msgid="6691722887019708713">"ଯଦି ଆପଣ ସକ୍ରିୟ କରିବା କାର୍ଯ୍ୟକୁ ଛାଡ଼ିଯା’ନ୍ତି ତେବେ ଆପଣ କଲ୍ କରିପାରିବେ ନାହିଁ କିମ୍ବା ମୋବାଇଲ୍ ନେଟ୍‌ୱର୍କ (ଯଦିଓ ଆପଣ ୱାଇ-ଫାଇ ନେଟ୍‌ୱର୍କ ସହିତ ଯୋଡ଼ିହୋ‌ଇପାରିବେ) ସହିତ ଯୋଡ଼ିହୋ‌ଇପାରିବେ ନାହିଁ। ଆପଣ ନିଜର ଫୋନ୍‌କୁ ସକ୍ରିୟ ନକରିବା ପର୍ଯ୍ୟନ୍ତ ପ୍ରତ୍ୟେକଥର ଏହାକୁ ଚାଲୁ କରିବା ସମୟରେ ସକ୍ରିୟ କରିବା ପାଇଁ କୁହାଯିବ।"</string>
-    <string name="ota_skip_activation_dialog_skip_label" msgid="5908029466817825633">"ଛାଡ଼ିଦିଅନ୍ତୁ"</string>
+    <string name="ota_skip_activation_dialog_skip_label" msgid="5908029466817825633">"ବାଦ ଦିଅନ୍ତୁ"</string>
     <string name="ota_activate" msgid="7939695753665438357">"ସକ୍ରିୟ କରନ୍ତୁ"</string>
     <string name="ota_title_activate_success" msgid="1272135024761004889">"ଫୋନ୍ ସକ୍ରିୟ ହୋ‌ଇଯାଇଛି।"</string>
     <string name="ota_title_problem_with_activation" msgid="7019745985413368726">"ସକ୍ରିୟ ହେବାରେ ସମସ୍ୟା"</string>
@@ -845,10 +845,10 @@
     <string name="removable_esim_string" msgid="7931369811671787649">"କାଢ଼ି ହେଉଥିବା eSIMକୁ ଡିଫଲ୍ଟ ଭାବେ ସେଟ କରନ୍ତୁ"</string>
     <string name="radio_info_radio_power" msgid="8805595022160471587">"ମୋବାଇଲ୍ ରେଡିଓ ପାୱାର୍"</string>
     <string name="simulate_out_of_service_string" msgid="7787925611727597193">"\"କାମ କରୁନାହିଁ\"ରେ ସିମୁଲେଟ କରନ୍ତୁ (କେବଳ ଡିବଗ ବିଲ୍ଡ)"</string>
-    <!-- no translation found for enforce_satellite_channel_string (295306734591329892) -->
-    <skip />
+    <string name="enforce_satellite_channel_string" msgid="295306734591329892">"ଫୋର୍ସ କେମ୍ପ ସେଟେଲାଇଟ LTE ଚେନେଲ (କେବଳ ଡିବଗ ବିଲ୍ଡ)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"ମକ କେରିଅର ସେଟେଲାଇଟ ମୋଡ (କେବଳ ଡିବଗ ବିଲ୍ଡ)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"ପ୍ରକୃତ ସେଟେଲାଇଟର eSOS ମୋଡ ପରୀକ୍ଷା କରନ୍ତୁ (କେବଳ ଡିବଗ ବିଲ୍ଡ)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"ପ୍ରକୃତ ସେଟେଲାଇଟର ଅଣ-eSOS ମୋଡ ପରୀକ୍ଷା କରନ୍ତୁ (କେବଳ ଡିବଗ ବିଲ୍ଡ)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"ସିମ୍‌ରେ ଥିବା ଠିକଣା ପୁସ୍ତକ ଦେଖନ୍ତୁ"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"ସ୍ଥାୟୀ ଡାଏଲିଂ ନମ୍ୱରଗୁଡ଼ିକୁ ଦେଖନ୍ତୁ"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"ସର୍ଭିସ୍ ଡାଏଲିଂ ନମ୍ୱରଗୁଡ଼ିକ ଦେଖନ୍ତୁ"</string>

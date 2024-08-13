@@ -848,6 +848,7 @@
     <string name="enforce_satellite_channel_string" msgid="295306734591329892">"Forzar o canal LTE do satélite do campamento (só compilación de depuración)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Simular o modo Satélite do operador (só compilación de depuración)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Probar o modo real eSOS por satélite (só compilación de depuración)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Probar o modo real non eSOS por satélite (só compilación de depuración)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Ver axenda de enderezos da SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Ver números de marcación fixa"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Ver números de marcación de servizo"</string>

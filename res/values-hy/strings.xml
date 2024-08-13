@@ -848,6 +848,7 @@
     <string name="enforce_satellite_channel_string" msgid="295306734591329892">"Force Camp արբանյակային LTE ալիք (միայն վրիպազերծման կառուցման մեջ)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Օպերատորի արբանյակի ռեժիմի սիմուլյացիա (միայն վրիպազերծման կառուցում)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Փորձարկել իրական արբանյակային eSOS ռեժիմը (միայն վրիպազերծման կառուցման մեջ)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Փորձարկել իրական արբանյակային ոչ eSOS ռեժիմը (միայն վրիպազերծման կառուցման մեջ)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Դիտել SIM քարտի հասցեագիրքը"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Տեսնել ամրակցված հեռախոսահամարները"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Տեսնել ծառայությունների հեռախոսահամարները"</string>

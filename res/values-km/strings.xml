@@ -848,6 +848,7 @@
     <string name="enforce_satellite_channel_string" msgid="295306734591329892">"Force Camp Satellite LTE Channel (តែកំណែបង្កើតសម្រាប់ជួសជុលប៉ុណ្ណោះ)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"មុខងារ​ផ្កាយរណប​ក្រុមហ៊ុន​សេវាទូរសព្ទ​សាកល្បង (កំណែបង្កើត​សម្រាប់​ជួសជុល​តែប៉ុណ្ណោះ)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"មុខងារ​ធ្វើតេស្ត eSOS ផ្កាយរណប​ជាក់ស្ដែង (កំណែបង្កើត​សម្រាប់​ជួសជុល​តែប៉ុណ្ណោះ)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"មុខងារ​ធ្វើតេស្ត​ដែល​មិនមែនជា eSOS ផ្កាយរណប​ជាក់ស្ដែង (កំណែបង្កើត​សម្រាប់​ជួសជុល​តែប៉ុណ្ណោះ)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"មើលសៀវភៅអាសយដ្ឋានក្នុងស៊ីមកាត"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"មើល​លេខ​ហៅ​ថេរ"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"មើល​លេខ​ហៅ​សេវាកម្ម"</string>

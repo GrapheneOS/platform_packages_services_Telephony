@@ -377,9 +377,9 @@
     <item msgid="6685082338652847671">"7"</item>
   </string-array>
     <string name="list_language_dtitle" msgid="7457017255633587047">"Мовы"</string>
-    <string name="enable_disable_local_weather" msgid="7734933941872511543">"Мясцовае надвор\'е"</string>
-    <string name="local_weather_enable" msgid="2143929735295254729">"Мясцовае надвор\'е ўключана"</string>
-    <string name="local_weather_disable" msgid="4209936355998349647">"Мясцовае надвор\'е адключана"</string>
+    <string name="enable_disable_local_weather" msgid="7734933941872511543">"Мясцовае надвор’е"</string>
+    <string name="local_weather_enable" msgid="2143929735295254729">"Мясцовае надвор’е ўключана"</string>
+    <string name="local_weather_disable" msgid="4209936355998349647">"Мясцовае надвор’е адключана"</string>
     <string name="enable_disable_atr" msgid="821714821057385390">"Мясцовыя транспартныя паведамленні"</string>
     <string name="atr_enable" msgid="1799097759998768186">"Мясцовыя транспартныя паведамленні ўключаны"</string>
     <string name="atr_disable" msgid="6456758173289065766">"Мясцовыя транспартныя паведамленні адключаны"</string>
@@ -554,7 +554,7 @@
     <string name="incall_error_supp_service_resume" msgid="1276861499306817035">"Не ўдалося ўзнавіць выклік."</string>
     <string name="incall_error_supp_service_separate" msgid="8932660028965274353">"Немагчыма аддзяліць выклік."</string>
     <string name="incall_error_supp_service_transfer" msgid="8211925891867334323">"Немагчыма перадаць выклік."</string>
-    <string name="incall_error_supp_service_conference" msgid="27578082433544702">"Не ўдалося аб\'яднаць выклікі."</string>
+    <string name="incall_error_supp_service_conference" msgid="27578082433544702">"Не ўдалося аб’яднаць выклікі."</string>
     <string name="incall_error_supp_service_reject" msgid="3044363092441655912">"Немагчыма адхіліць выклік."</string>
     <string name="incall_error_supp_service_hangup" msgid="836524952243836735">"Немагчыма скончыць выклік(і)."</string>
     <string name="incall_error_supp_service_hold" msgid="8535056414643540997">"Немагчыма ўтрымліваць выклікі."</string>
@@ -572,7 +572,7 @@
     <string name="emergency_enable_radio_dialog_message" msgid="1695305158151408629">"Уключэнне радыё..."</string>
     <string name="emergency_enable_radio_dialog_retry" msgid="4329131876852608587">"Не абслугоўваецца. Паўтор спробы..."</string>
     <string name="radio_off_during_emergency_call" msgid="8011154134040481609">"Немагчыма ўвайсцi ў рэжым палёту падчас экстранага выклiку"</string>
-    <string name="dial_emergency_error" msgid="825822413209026039">"Выклік немагчымы. <xliff:g id="NON_EMERGENCY_NUMBER">%s</xliff:g> не з\'яўляецца нумарам экстраннай службы."</string>
+    <string name="dial_emergency_error" msgid="825822413209026039">"Выклік немагчымы. <xliff:g id="NON_EMERGENCY_NUMBER">%s</xliff:g> не з’яўляецца нумарам экстраннай службы."</string>
     <string name="dial_emergency_empty_error" msgid="2785803395047793634">"Выклік немагчымы. Набраць нумар экстраннай службы."</string>
     <string name="dial_emergency_calling_not_available" msgid="6485846193794727823">"Экстранныя выклікі недаступныя"</string>
     <string name="pin_puk_system_user_only" msgid="1045147220686867922">"Толькі ўладальнік прылады можа ўводзіць PIN-код ці PUK-код."</string>
@@ -682,7 +682,7 @@
     <string name="status_hint_label_wifi_call" msgid="942993035689809853">"Выклік праз Wi-Fi"</string>
     <string name="message_decode_error" msgid="1061856591500290887">"Памылка расшыфравання паведамлення."</string>
     <string name="callFailed_cdma_activation" msgid="5392057031552253550">"SIM-карта актывавала вашу службу і абнавіла функцыі роўмінгу вашага тэлефона."</string>
-    <string name="callFailed_cdma_call_limit" msgid="1074219746093031412">"Занадта шмат актыўных выклікаў. Скончыце ці аб\'яднайце існуючыя выклікі, перш чым рабіць новы выклік."</string>
+    <string name="callFailed_cdma_call_limit" msgid="1074219746093031412">"Занадта шмат актыўных выклікаў. Скончыце ці аб’яднайце існуючыя выклікі, перш чым рабіць новы выклік."</string>
     <string name="callFailed_imei_not_accepted" msgid="7257903653685147251">"Немагчыма падключыцца, устаўце сапраўдную SIM-карту."</string>
     <string name="callFailed_wifi_lost" msgid="1788036730589163141">"Страчана падключэнне да Wi-Fi. Выклік завершаны."</string>
     <string name="dialFailed_low_battery" msgid="6857904237423407056">"Немагчыма наладзіць злучэнне для відэавыкліку: нізкі зарад акумулятара."</string>
@@ -824,7 +824,7 @@
     <string name="callFailed_already_dialing" msgid="7250591188960691086">"Немагчыма зрабіць выклік, паколькі зараз ідзе выходны выклік."</string>
     <string name="callFailed_already_ringing" msgid="2376603543544289303">"Нельга зрабіць выклік, паколькі ёсць уваходны выклік без адказу. Адкажыце на ўваходны выклік або адхіліце яго, каб зрабіць новы."</string>
     <string name="callFailed_calling_disabled" msgid="5010992739401206283">"Немагчыма зрабіць выклік, паколькі выклікі адключаны ў сістэмных наладах ro.telephony.disable-call."</string>
-    <string name="callFailed_too_many_calls" msgid="2761754044990799580">"Немагчыма зрабіць новы выклік, бо ўжо выконваюцца два іншыя. Каб зрабіць новы выклік, завяршыце адзін з бягучых ці аб\'яднайце іх у канферэнц-выклік."</string>
+    <string name="callFailed_too_many_calls" msgid="2761754044990799580">"Немагчыма зрабіць новы выклік, бо ўжо выконваюцца два іншыя. Каб зрабіць новы выклік, завяршыце адзін з бягучых ці аб’яднайце іх у канферэнц-выклік."</string>
     <string name="supp_service_over_ut_precautions" msgid="2145018231396701311">"Уключыце перадачу мабільных даных для выкарыстання сэрвісу <xliff:g id="SUPP_SERVICE">%s</xliff:g>. Гэта можна зрабіць у наладах мабільнай сеткі."</string>
     <string name="supp_service_over_ut_precautions_roaming" msgid="670342104569972327">"Уключыце перадачу мабільных даных і інтэрнэт-роўмінг для выкарыстання сэрвісу <xliff:g id="SUPP_SERVICE">%s</xliff:g>. Гэта можна зрабіць у наладах мабільнай сеткі."</string>
     <string name="supp_service_over_ut_precautions_dual_sim" msgid="5166866975550910474">"Уключыце перадачу мабільных даных на SIM-карце <xliff:g id="SIM_NUMBER">%2$d</xliff:g> для выкарыстання сэрвісу <xliff:g id="SUPP_SERVICE">%1$s</xliff:g>. Гэта можна зрабіць у наладах мабільнай сеткі."</string>
@@ -845,10 +845,10 @@
     <string name="removable_esim_string" msgid="7931369811671787649">"Зрабіць здымную eSIM-карту стандартнай"</string>
     <string name="radio_info_radio_power" msgid="8805595022160471587">"Магутнасць радыёсігналу"</string>
     <string name="simulate_out_of_service_string" msgid="7787925611727597193">"Мадэляванне знаходжання па-за сеткай (толькі ў зборцы для адладкі)"</string>
-    <!-- no translation found for enforce_satellite_channel_string (295306734591329892) -->
-    <skip />
+    <string name="enforce_satellite_channel_string" msgid="295306734591329892">"Прымусова прымяняць спадарожнікавы канал LTE (толькі для адладачнай зборкі)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Імітацыя рэжыму спадарожніка з SIM-картай ад аператара (толькі ў зборцы для адладкі)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Тэсціраванне рэальнага рэжыму спадарожнікавага падключэння eSOS (толькі ў зборцы для адладкі)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Тэсціраванне рэальнага няэкстраннага (non-eSOS) рэжыму спадарожнікавага падключэння (толькі ў зборцы для адладкі)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Праглядзець адрасную кнігу на SIM-карце"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Прагляд фіксаваных нумароў"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Паглядзець сэрвісныя нумары"</string>

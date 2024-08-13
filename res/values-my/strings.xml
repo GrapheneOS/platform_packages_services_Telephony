@@ -848,6 +848,7 @@
     <string name="enforce_satellite_channel_string" msgid="295306734591329892">"Force Camp Satellite LTE ချန်နယ် (အမှားရှာပြင်ခြင်းအတွက်သာ)"</string>
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Mock Carrier Satellite Mode (အမှားရှာပြင်ခြင်း အတွက်သာ)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"ဂြိုဟ်တုအစစ် eSOS မုဒ်ကို စမ်းသပ်ခြင်း (အမှားရှာပြင်ခြင်းအတွက်သာ)"</string>
+    <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"ဂြိုဟ်တုအစစ် eSOS မဟုတ်သော မုဒ်ကို စမ်းသပ်ခြင်း (အမှားရှာပြင်ခြင်းအတွက်သာ)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"SIM ထဲရှိ လိပ်စာ စာအုပ်ကိုကြည့်ပါ"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"ခေါ်ဆိုရန် ကန့်သတ် နံပါတ်ကို ကြည့်မည်"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"ခေါ်ဆိုသည့်ဝန်ဆောင်မှုနံပါတ်အားကြည့်မည်"</string>
