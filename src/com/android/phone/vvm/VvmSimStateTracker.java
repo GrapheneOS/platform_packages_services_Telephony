@@ -116,12 +116,13 @@ public class VvmSimStateTracker extends BroadcastReceiver {
 
         final String action = intent.getAction();
         if (action == null) {
-            VvmLog.w(TAG, "Null action for intent.");
+            VvmLog.w(TAG, "onReceive: Null action for intent.");
             return;
         }
         VvmLog.i(TAG, action);
         switch (action) {
             case Intent.ACTION_BOOT_COMPLETED:
+                VvmLog.i(TAG, "onReceive: ACTION_BOOT_COMPLETED");
                 onBootCompleted(context);
                 break;
             case TelephonyIntents.ACTION_SIM_STATE_CHANGED:
@@ -131,6 +132,7 @@ public class VvmSimStateTracker extends BroadcastReceiver {
                     // which SIM is removed.
                     // ACTION_SIM_STATE_CHANGED only provides subId which cannot be converted to a
                     // PhoneAccountHandle when the SIM is absent.
+                    VvmLog.i(TAG, "onReceive: ACTION_SIM_STATE_CHANGED");
                     checkRemovedSim(context);
                 }
                 break;
@@ -139,7 +141,7 @@ public class VvmSimStateTracker extends BroadcastReceiver {
                         SubscriptionManager.INVALID_SUBSCRIPTION_ID);
 
                 if (!SubscriptionManager.isValidSubscriptionId(subId)) {
-                    VvmLog.i(TAG, "Received SIM change for invalid subscription id.");
+                    VvmLog.i(TAG, "onReceive: Received carrier config for invalid sub id.");
                     checkRemovedSim(context);
                     return;
                 }
@@ -149,10 +151,11 @@ public class VvmSimStateTracker extends BroadcastReceiver {
 
                 if ("null".equals(phoneAccountHandle.getId())) {
                     VvmLog.e(TAG,
-                            "null phone account handle ID, possible modem crash."
+                            "onReceive: null phone account handle ID, possible modem crash."
                                     + " Ignoring carrier config changed event");
                     return;
                 }
+                VvmLog.i(TAG, "onReceive: ACTION_CARRIER_CONFIG_CHANGED; subId=" + subId);
                 onCarrierConfigChanged(context, phoneAccountHandle);
         }
     }
@@ -174,7 +177,7 @@ public class VvmSimStateTracker extends BroadcastReceiver {
     }
 
     private void sendConnected(Context context, PhoneAccountHandle phoneAccountHandle) {
-        VvmLog.i(TAG, "Service connected on " + phoneAccountHandle);
+        VvmLog.i(TAG, "sendConnected: Service connected on " + phoneAccountHandle);
         RemoteVvmTaskManager.startCellServiceConnected(context, phoneAccountHandle);
     }
 
@@ -210,7 +213,7 @@ public class VvmSimStateTracker extends BroadcastReceiver {
     }
 
     private void sendSimRemoved(Context context, PhoneAccountHandle phoneAccountHandle) {
-        VvmLog.i(TAG, "Sim removed on " + phoneAccountHandle);
+        VvmLog.i(TAG, "sendSimRemoved: Sim removed on " + phoneAccountHandle);
         RemoteVvmTaskManager.startSimRemoved(context, phoneAccountHandle);
     }
 
@@ -233,6 +236,8 @@ public class VvmSimStateTracker extends BroadcastReceiver {
         }
         if (telephonyManager.getServiceState().getState()
                 == ServiceState.STATE_IN_SERVICE) {
+            VvmLog.i(TAG, "onCarrierConfigChanged: in service; send connected "
+                    + phoneAccountHandle);
             sendConnected(context, phoneAccountHandle);
             sListeners.put(phoneAccountHandle, null);
         } else {
@@ -243,6 +248,7 @@ public class VvmSimStateTracker extends BroadcastReceiver {
     private void listenToAccount(Context context, PhoneAccountHandle phoneAccountHandle) {
         ServiceStateListener listener = new ServiceStateListener(context, phoneAccountHandle);
         listener.listen();
+        VvmLog.i(TAG, "listenToAccount: " + phoneAccountHandle);
         sListeners.put(phoneAccountHandle, listener);
     }
 

@@ -80,24 +80,29 @@ public class CarrierVvmPackageInstalledReceiver extends BroadcastReceiver {
                     .createForPhoneAccountHandle(phoneAccountHandle);
 
             if (pinnedTelephonyManager == null) {
-                VvmLog.e(TAG, "cannot create TelephonyManager from " + phoneAccountHandle);
+                VvmLog.e(TAG, "carrierVvmPkgAdded: cannot create TelephonyManager from "
+                        + phoneAccountHandle);
                 continue;
             }
 
             if (!getCarrierVvmPackages(telephonyManager).contains(packageName)) {
+                VvmLog.w(TAG, "carrierVvmPkgAdded: carrier vvm packages doesn't contain "
+                        + packageName);
                 continue;
             }
 
-            VvmLog.i(TAG, "Carrier VVM app " + packageName + " installed");
+            VvmLog.i(TAG, "carrierVvmPkgAdded: Carrier VVM app " + packageName + " installed");
 
             String vvmPackage = pinnedTelephonyManager.getVisualVoicemailPackageName();
             if (!TextUtils.equals(vvmPackage, systemDialer)) {
                 // Non system dialer do not need to prioritize carrier vvm app.
-                VvmLog.i(TAG, "non system dialer " + vvmPackage + " ignored");
+                VvmLog.i(TAG, "carrierVvmPkgAdded: non system dialer "
+                        + vvmPackage + " ignored");
                 continue;
             }
 
-            VvmLog.i(TAG, "sending broadcast to " + vvmPackage);
+            VvmLog.i(TAG, "carrierVvmPkgAdded: sending vvm package installed broadcast to "
+                    + vvmPackage);
             Intent broadcast = new Intent(ACTION_CARRIER_VVM_PACKAGE_INSTALLED);
             broadcast.putExtra(Intent.EXTRA_PACKAGE_NAME, packageName);
             broadcast.setPackage(vvmPackage);

@@ -170,22 +170,23 @@ public class RemoteVvmTaskManager extends Service {
             }
             if (info.serviceInfo == null) {
                 VvmLog.w(TAG,
-                        "Component " + TelephonyUtils.getComponentInfo(info)
+                        "getRemotePackage: Component " + TelephonyUtils.getComponentInfo(info)
                             + " is not a service, ignoring");
                 continue;
             }
             if (!android.Manifest.permission.BIND_VISUAL_VOICEMAIL_SERVICE
                     .equals(info.serviceInfo.permission)) {
-                VvmLog.w(TAG, "package " + info.serviceInfo.packageName
+                VvmLog.w(TAG, "getRemotePackage: package " + info.serviceInfo.packageName
                         + " does not enforce BIND_VISUAL_VOICEMAIL_SERVICE, ignoring");
                 continue;
             }
             if (targetPackage != null && !TextUtils.equals(packageName, targetPackage)) {
-                VvmLog.w(TAG, "target package " + targetPackage
+                VvmLog.w(TAG, "getRemotePackage: target package " + targetPackage
                         + " is no longer the active VisualVoicemailService, ignoring");
                 continue;
             }
             ComponentInfo componentInfo = TelephonyUtils.getComponentInfo(info);
+            VvmLog.i(TAG, "getRemotePackage: found package " + targetPackage);
             return new ComponentName(componentInfo.packageName, componentInfo.name);
 
         }
@@ -206,6 +207,7 @@ public class RemoteVvmTaskManager extends Service {
             return null;
         }
         ComponentInfo componentInfo = TelephonyUtils.getComponentInfo(info.get(0));
+        VvmLog.i(TAG, "getBroadcastPackage: found package " + componentInfo.packageName);
         return new ComponentName(componentInfo.packageName, componentInfo.name);
     }
 
@@ -234,7 +236,7 @@ public class RemoteVvmTaskManager extends Service {
         mTaskReferenceCount++;
 
         if (intent == null) {
-            VvmLog.i(TAG, "received intent is null");
+            VvmLog.i(TAG, "onStartCommand: received intent is null");
             checkReference();
             return START_NOT_STICKY;
         }
@@ -245,7 +247,8 @@ public class RemoteVvmTaskManager extends Service {
         ComponentName remotePackage = getRemotePackage(this, subId,
                 intent.getStringExtra(EXTRA_TARGET_PACKAGE));
         if (remotePackage == null) {
-            VvmLog.i(TAG, "No service to handle " + intent.getAction() + ", ignoring");
+            VvmLog.i(TAG, "onStartCommand: No service to handle "
+                    + intent.getAction() + ", ignoring");
             checkReference();
             return START_NOT_STICKY;
         }
@@ -309,6 +312,7 @@ public class RemoteVvmTaskManager extends Service {
 
         public void onServiceConnected(ComponentName className,
                 IBinder service) {
+            VvmLog.i(TAG, "onServiceConnected: " + className);
             mRemoteMessenger = new Messenger(service);
             mConnected = true;
             runQueue();
@@ -318,7 +322,8 @@ public class RemoteVvmTaskManager extends Service {
             mConnection = null;
             mConnected = false;
             mRemoteMessenger = null;
-            VvmLog.e(TAG, "Service disconnected, " + mTaskReferenceCount + " tasks dropped.");
+            VvmLog.e(TAG, "onServiceDisconnected: remoteService disconnected, "
+                    + mTaskReferenceCount + " tasks dropped.");
             mTaskReferenceCount = 0;
             checkReference();
         }
@@ -333,7 +338,7 @@ public class RemoteVvmTaskManager extends Service {
                 try {
                     mRemoteMessenger.send(message);
                 } catch (RemoteException e) {
-                    VvmLog.e(TAG, "Error sending message to remote service", e);
+                    VvmLog.e(TAG, "runQueue: Error sending message to remote service", e);
                 }
                 message = mTaskQueue.poll();
             }
@@ -351,7 +356,7 @@ public class RemoteVvmTaskManager extends Service {
              * a different repository so it can not be updated in sync with android SDK. It is also
              * hard to make a manifest service to work in the intermittent state.
              */
-            VvmLog.i(TAG, "sending broadcast " + what + " to " + remotePackage);
+            VvmLog.i(TAG, "send: sending broadcast " + what + " to " + remotePackage);
             Intent intent = new Intent(ACTION_VISUAL_VOICEMAIL_SERVICE_EVENT);
             intent.putExtras(extras);
             intent.putExtra(EXTRA_WHAT, what);
@@ -371,7 +376,7 @@ public class RemoteVvmTaskManager extends Service {
         if (!mConnection.isConnected()) {
             Intent intent = newBindIntent(this);
             intent.setComponent(remotePackage);
-            VvmLog.i(TAG, "Binding to " + intent.getComponent());
+            VvmLog.i(TAG, "send: Binding to " + intent.getComponent());
             bindServiceAsUser(intent, mConnection, Context.BIND_AUTO_CREATE, userHandle);
         }
     }
