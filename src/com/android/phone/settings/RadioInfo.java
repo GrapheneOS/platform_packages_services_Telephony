@@ -206,7 +206,7 @@ public class RadioInfo extends AppCompatActivity {
             ServiceState.RIL_RADIO_TECHNOLOGY_LTE_CA,
             ServiceState.RIL_RADIO_TECHNOLOGY_NR
     };
-    private static String[] sPhoneIndexLabels;
+    private static String[] sPhoneIndexLabels = new String[0];
 
     private static final int sCellInfoListRateDisabled = Integer.MAX_VALUE;
     private static final int sCellInfoListRateMax = 0;
@@ -547,8 +547,10 @@ public class RadioInfo extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        if (!android.os.Process.myUserHandle().isSystem()) {
-            Log.e(TAG, "Not run from system user, don't do anything.");
+        try {
+            PhoneFactory.getDefaultPhone();
+        } catch (Exception e) {
+            loge("Do nothing due to getDefaultPhone " + e);
             finish();
             return;
         }
