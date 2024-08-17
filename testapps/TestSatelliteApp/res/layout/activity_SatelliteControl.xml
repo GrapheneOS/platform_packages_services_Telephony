@@ -126,17 +126,11 @@
             android:paddingRight="4dp"
             android:text="@string/getIsEmergency"/>
         <Button
-            android:id="@+id/requestProvisionSubscriberIds"
+            android:id="@+id/requestSatelliteSubscriberProvisionStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
-            android:text="@string/requestProvisionSubscriberIds"/>
-        <Button
-            android:id="@+id/requestIsProvisioned"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight="4dp"
-            android:text="@string/requestIsProvisioned"/>
+            android:text="@string/requestSatelliteSubscriberProvisionStatus"/>
         <Button
             android:id="@+id/provisionSatellite"
             android:layout_width="match_parent"

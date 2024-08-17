@@ -14358,25 +14358,9 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      * @throws SecurityException if the caller doesn't have the required permission.
      */
     @Override
-    public void requestProvisionSubscriberIds(@NonNull ResultReceiver result) {
-        enforceSatelliteCommunicationPermission("requestProvisionSubscriberIds");
-        mSatelliteController.requestProvisionSubscriberIds(result);
-    }
-
-    /**
-     * Request to get provisioned status for given a satellite subscriber id.
-     *
-     * @param satelliteSubscriberId Satellite subscriber id requiring provisioned status check.
-     * @param result The result receiver, which returns the provisioned status of the token if the
-     * request is successful or an error code if the request failed.
-     *
-     * @throws SecurityException if the caller doesn't have the required permission.
-     */
-    @Override
-    public void requestIsProvisioned(@NonNull String satelliteSubscriberId,
-            @NonNull ResultReceiver result) {
-        enforceSatelliteCommunicationPermission("requestIsProvisioned");
-        mSatelliteController.requestIsProvisioned(satelliteSubscriberId, result);
+    public void requestSatelliteSubscriberProvisionStatus(@NonNull ResultReceiver result) {
+        enforceSatelliteCommunicationPermission("requestSatelliteSubscriberProvisionStatus");
+        mSatelliteController.requestSatelliteSubscriberProvisionStatus(result);
     }
 
     /**
