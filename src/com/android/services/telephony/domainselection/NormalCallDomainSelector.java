@@ -263,6 +263,12 @@ public class NormalCallDomainSelector extends DomainSelectorBase implements
     }
 
     private void notifyCsSelected() {
+        if (isOutOfService()) {
+            loge("Cannot place call in current ServiceState: " + mServiceState.getState());
+            notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
+            return;
+        }
+
         logd("notifyCsSelected");
         mSelectorState = SelectorState.INACTIVE;
         if (mWwanSelectorCallback == null) {
@@ -317,25 +323,13 @@ public class NormalCallDomainSelector extends DomainSelectorBase implements
             logd("WPS call placed over PS");
             notifyPsSelected();
         } else {
-            if (isOutOfService()) {
-                loge("Cannot place call in current ServiceState: " + mServiceState.getState());
-                notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
-            } else {
-                logd("WPS call placed over CS");
-                notifyCsSelected();
-            }
+            logd("WPS call placed over CS");
+            notifyCsSelected();
         }
     }
 
     private void handleReselectDomain(ImsReasonInfo imsReasonInfo) {
         mReselectDomain = false;
-
-        // Out of service
-        if (isOutOfService()) {
-            loge("Cannot place call in current ServiceState: " + mServiceState.getState());
-            notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
-            return;
-        }
 
         // IMS -> CS
         if (imsReasonInfo != null) {
@@ -413,12 +407,7 @@ public class NormalCallDomainSelector extends DomainSelectorBase implements
 
         if (!mImsStateTracker.isMmTelFeatureAvailable()) {
             logd("MmTelFeatureAvailable unavailable");
-            if (isOutOfService()) {
-                loge("Cannot place call in current ServiceState: " + mServiceState.getState());
-                notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
-            } else {
-                notifyCsSelected();
-            }
+            notifyCsSelected();
             return;
         }
 
@@ -434,23 +423,13 @@ public class NormalCallDomainSelector extends DomainSelectorBase implements
         // Check IMS registration state.
         if (!mImsStateTracker.isImsRegistered()) {
             logd("IMS is NOT registered");
-            if (isOutOfService()) {
-                loge("Cannot place call in current ServiceState: " + mServiceState.getState());
-                notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
-            } else {
-                notifyCsSelected();
-            }
+            notifyCsSelected();
             return;
         }
 
         // Check TTY
         if (isTtyModeEnabled() && !isTtySupportedByIms()) {
-            if (isOutOfService()) {
-                loge("Cannot place call in current ServiceState: " + mServiceState.getState());
-                notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
-            } else {
-                notifyCsSelected();
-            }
+            notifyCsSelected();
             return;
         }
 
@@ -479,12 +458,7 @@ public class NormalCallDomainSelector extends DomainSelectorBase implements
         } else {
             logd("IMS is not voice capable");
             // Voice call CS fallback
-            if (isOutOfService()) {
-                loge("Cannot place call in current ServiceState: " + mServiceState.getState());
-                notifySelectionTerminated(DisconnectCause.OUT_OF_SERVICE);
-            } else {
-                notifyCsSelected();
-            }
+            notifyCsSelected();
         }
     }
 
