@@ -4354,8 +4354,9 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 PackageManager.FEATURE_TELEPHONY_CALLING, "sendVisualVoicemailSmsForSubscriber");
 
         SmsController smsController = PhoneFactory.getSmsController();
-        smsController.sendVisualVoicemailSmsForSubscriber(callingPackage, callingAttributionTag,
-                subId, number, port, text, sentIntent);
+        smsController.sendVisualVoicemailSmsForSubscriber(callingPackage,
+                Binder.getCallingUserHandle().getIdentifier(), callingAttributionTag, subId, number,
+                port, text, sentIntent);
     }
 
     /**
