@@ -135,9 +135,6 @@ public class RadioInfo extends AppCompatActivity {
 
     private static final boolean IS_USER_BUILD = "user".equals(Build.TYPE);
 
-    private static final String ACTION_ESOS_TEST =
-            "com.google.android.apps.stargate.ACTION_ESOS_QUESTIONNAIRE";
-
     private static final String[] PREFERRED_NETWORK_LABELS = {
             "GSM/WCDMA preferred",
             "GSM only",
@@ -317,6 +314,7 @@ public class RadioInfo extends AppCompatActivity {
     private Button mTriggerCarrierProvisioningButton;
     private Button mEsosButton;
     private Button mSatelliteEnableNonEmergencyModeButton;
+    private Button mEsosDemoButton;
     private Switch mImsVolteProvisionedSwitch;
     private Switch mImsVtProvisionedSwitch;
     private Switch mImsWfcProvisionedSwitch;
@@ -360,6 +358,9 @@ public class RadioInfo extends AppCompatActivity {
     private int mPreferredNetworkTypeResult;
     private int mCellInfoRefreshRateIndex;
     private int mSelectedPhoneIndex;
+
+    private String mActionEsos;
+    private String mActionEsosDemo;
 
     private final NetworkRequest mDefaultNetworkRequest = new NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
@@ -568,6 +569,16 @@ public class RadioInfo extends AppCompatActivity {
 
         log("Started onCreate");
 
+        Resources r = getResources();
+        mActionEsos =
+            r.getString(
+                    com.android.internal.R.string
+                            .config_satellite_emergency_handover_intent_action);
+
+        mActionEsosDemo =
+            r.getString(
+                    com.android.internal.R.string.config_satellite_demo_mode_sos_intent_action);
+
         mQueuedWork = new ThreadPoolExecutor(1, 1, RUNNABLE_TIMEOUT_MS, TimeUnit.MICROSECONDS,
                 new LinkedBlockingDeque<Runnable>());
         mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -754,6 +765,7 @@ public class RadioInfo extends AppCompatActivity {
         }
 
         mEsosButton = (Button) findViewById(R.id.esos_questionnaire);
+        mEsosDemoButton  = (Button) findViewById(R.id.demo_esos_questionnaire);
         mSatelliteEnableNonEmergencyModeButton = (Button) findViewById(
                 R.id.satellite_enable_non_emergency_mode);
         CarrierConfigManager cm = mPhone.getContext().getSystemService(CarrierConfigManager.class);
@@ -763,13 +775,24 @@ public class RadioInfo extends AppCompatActivity {
             mSatelliteEnableNonEmergencyModeButton.setVisibility(View.GONE);
         }
         if (!TelephonyUtils.IS_DEBUGGABLE) {
-            mEsosButton.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(mActionEsos)) {
+                mEsosButton.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(mActionEsosDemo)) {
+                mEsosDemoButton.setVisibility(View.GONE);
+            }
             mSatelliteEnableNonEmergencyModeButton.setVisibility(View.GONE);
         } else {
             mEsosButton.setOnClickListener(v ->
                     mPhone.getContext().startActivity(
-                        new Intent(ACTION_ESOS_TEST)
+                        new Intent(mActionEsos)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            );
+            mEsosDemoButton.setOnClickListener(v ->
+                    mPhone.getContext().startActivity(
+                            new Intent(mActionEsosDemo)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                            | Intent.FLAG_ACTIVITY_CLEAR_TASK))
             );
             mSatelliteEnableNonEmergencyModeButton.setOnClickListener(v ->
                     enableSatelliteNonEmergencyMode());

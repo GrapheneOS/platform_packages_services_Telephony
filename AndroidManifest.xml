@@ -181,6 +181,8 @@
 
     <!-- Needed because the DISPLAY_EMERGENCY_MESSAGE ConnectionEvent contains a PendingIntent to activate the satellite feature. -->
     <uses-permission android:name="com.google.android.apps.stargate.permission.SEND_EMERGENCY_INTENTS"/>
+    <!-- Needed to start demo session -->
+    <uses-permission android:name="com.google.android.apps.stargate.permission.SEND_NON_EMERGENCY_INTENTS"/>
 
     <application android:name="PhoneApp"
             android:persistent="true"
