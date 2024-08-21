@@ -1201,17 +1201,20 @@ public class TelephonyConnectionService extends ConnectionService {
             }
         }
 
+        boolean forNormalRoutingEmergencyCall = false;
         if (mDomainSelectionResolver.isDomainSelectionSupported()) {
-            // Normal routing emergency number shall be handled by normal call domain selector.
-            int routing = (isEmergencyNumber)
-                    ? getEmergencyCallRouting(phone, number, needToTurnOnRadio)
-                    : EmergencyNumber.EMERGENCY_CALL_ROUTING_UNKNOWN;
-            if (isEmergencyNumber && routing != EmergencyNumber.EMERGENCY_CALL_ROUTING_NORMAL) {
-                final Connection resultConnection =
-                        placeEmergencyConnection(phone,
-                                request, numberToDial, isTestEmergencyNumber,
-                                handle, needToTurnOnRadio, routing);
-                if (resultConnection != null) return resultConnection;
+            if (isEmergencyNumber) {
+                // Normal routing emergency number shall be handled by normal call domain selector.
+                int routing = getEmergencyCallRouting(phone, number, needToTurnOnRadio);
+                if (routing != EmergencyNumber.EMERGENCY_CALL_ROUTING_NORMAL) {
+                    final Connection resultConnection =
+                            placeEmergencyConnection(phone,
+                                    request, numberToDial, isTestEmergencyNumber,
+                                    handle, needToTurnOnRadio, routing);
+                    if (resultConnection != null) return resultConnection;
+                }
+                forNormalRoutingEmergencyCall = true;
+                Log.d(this, "onCreateOutgoingConnection, forNormalRoutingEmergencyCall");
             }
         }
 
@@ -1300,7 +1303,7 @@ public class TelephonyConnectionService extends ConnectionService {
                     }
                 }
             }, isEmergencyNumber && !isTestEmergencyNumber, phone, isTestEmergencyNumber,
-                    timeoutToOnTimeoutCallback);
+                    timeoutToOnTimeoutCallback, forNormalRoutingEmergencyCall);
             // Return the still unconnected GsmConnection and wait for the Radios to boot before
             // connecting it to the underlying Phone.
             return resultConnection;

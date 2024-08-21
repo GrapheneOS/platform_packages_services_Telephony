@@ -925,8 +925,7 @@ public class EmergencyCallDomainSelector extends DomainSelectorBase
                 requestScan(true);
                 return;
             }
-            // If NGRAN, request scan to trigger emergency registration.
-            if (mPsNetworkType == EUTRAN) {
+            if (mPsNetworkType != UNKNOWN) {
                 onWwanNetworkTypeSelected(mPsNetworkType);
             } else if (mCsNetworkType != UNKNOWN) {
                 checkAndSetTerminateAfterCsFailure(mLastRegResult);
@@ -1344,13 +1343,19 @@ public class EmergencyCallDomainSelector extends DomainSelectorBase
 
         int accessNetwork = regResult.getAccessNetwork();
         List<Integer> ratList = getImsNetworkTypeConfiguration();
+        if (!inService && !ratList.contains(NGRAN) && !isSimReady()
+                && !TextUtils.isEmpty(regResult.getCountryIso())) {
+            ratList.add(NGRAN);
+            logi("getSelectablePsNetworkType ratList=" + ratList);
+        }
         if (ratList.contains(accessNetwork)) {
             if (mIsEmergencyBarred) {
                 logi("getSelectablePsNetworkType barred");
                 return UNKNOWN;
             }
             if (accessNetwork == NGRAN) {
-                return (regResult.getNwProvidedEmc() > 0 && regResult.isVopsSupported())
+                return (regResult.getNwProvidedEmc() > 0
+                        && (regResult.isVopsSupported() || !inService))
                         ? NGRAN : UNKNOWN;
             } else if (accessNetwork == EUTRAN) {
                 return (regResult.isEmcBearerSupported()

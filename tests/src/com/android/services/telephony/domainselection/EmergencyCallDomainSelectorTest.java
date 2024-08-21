@@ -3612,7 +3612,108 @@ public class EmergencyCallDomainSelectorTest {
 
         EmergencyRegistrationResult regResult = getEmergencyRegResult(NGRAN,
                 REGISTRATION_STATE_UNKNOWN,
-                0, false, true, 0, 0, "", "");
+                0, false, true, 1, 0, "", "", "us");
+        SelectionAttributes attr = getSelectionAttributes(SLOT_0, SLOT_0_SUB_ID, regResult);
+        mDomainSelector.selectDomain(attr, mTransportSelectorCallback);
+        processAllMessages();
+
+        bindImsServiceUnregistered();
+
+        verifyScanPsPreferred();
+    }
+
+    @Test
+    public void testNrSaOnlyLimitedServiceNgranEmc() throws Exception {
+        PersistableBundle bundle = getDefaultPersistableBundle();
+        bundle.putIntArray(KEY_EMERGENCY_OVER_IMS_SUPPORTED_3GPP_NETWORK_TYPES_INT_ARRAY,
+                new int[] { NGRAN, EUTRAN });
+        when(mCarrierConfigManager.getConfigForSubId(anyInt(), anyVararg())).thenReturn(bundle);
+
+        createSelector(SLOT_0_SUB_ID);
+        unsolBarringInfoChanged(false);
+
+        EmergencyRegistrationResult regResult = getEmergencyRegResult(NGRAN,
+                REGISTRATION_STATE_UNKNOWN,
+                0, false, false, 1, 0, "", "", "us");
+        SelectionAttributes attr = getSelectionAttributes(SLOT_0, SLOT_0_SUB_ID, regResult);
+        mDomainSelector.selectDomain(attr, mTransportSelectorCallback);
+        processAllMessages();
+
+        bindImsServiceUnregistered();
+
+        verifyPsDialed();
+    }
+
+    @Test
+    public void testNrSaOnlyLimitedServiceNgranNoEmc() throws Exception {
+        PersistableBundle bundle = getDefaultPersistableBundle();
+        bundle.putIntArray(KEY_EMERGENCY_OVER_IMS_SUPPORTED_3GPP_NETWORK_TYPES_INT_ARRAY,
+                new int[] { NGRAN, EUTRAN });
+        when(mCarrierConfigManager.getConfigForSubId(anyInt(), anyVararg())).thenReturn(bundle);
+
+        createSelector(SLOT_0_SUB_ID);
+        unsolBarringInfoChanged(false);
+
+        EmergencyRegistrationResult regResult = getEmergencyRegResult(NGRAN,
+                REGISTRATION_STATE_UNKNOWN,
+                0, false, false, 0, 0, "", "", "us");
+        SelectionAttributes attr = getSelectionAttributes(SLOT_0, SLOT_0_SUB_ID, regResult);
+        mDomainSelector.selectDomain(attr, mTransportSelectorCallback);
+        processAllMessages();
+
+        bindImsServiceUnregistered();
+
+        verifyScanPreferred(DomainSelectionService.SCAN_TYPE_NO_PREFERENCE, NGRAN);
+    }
+
+    @Test
+    public void testDefaultLimitedServiceNgranEmcWhenSimNotReady() throws Exception {
+        createSelector(SLOT_0_SUB_ID);
+        unsolBarringInfoChanged(false);
+        doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
+                .when(mTelephonyManager).getSimState(anyInt());
+
+        EmergencyRegistrationResult regResult = getEmergencyRegResult(NGRAN,
+                REGISTRATION_STATE_UNKNOWN,
+                0, false, false, 1, 0, "", "", "us");
+        SelectionAttributes attr = getSelectionAttributes(SLOT_0, SLOT_0_SUB_ID, regResult);
+        mDomainSelector.selectDomain(attr, mTransportSelectorCallback);
+        processAllMessages();
+
+        bindImsServiceUnregistered();
+
+        verifyPsDialed();
+    }
+
+    @Test
+    public void testDefaultLimitedServiceNgranNoEmcWhenSimNotReady() throws Exception {
+        createSelector(SLOT_0_SUB_ID);
+        unsolBarringInfoChanged(false);
+        doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
+            .when(mTelephonyManager).getSimState(anyInt());
+
+        EmergencyRegistrationResult regResult = getEmergencyRegResult(NGRAN,
+                REGISTRATION_STATE_UNKNOWN,
+                0, false, false, 0, 0, "", "", "us");
+        SelectionAttributes attr = getSelectionAttributes(SLOT_0, SLOT_0_SUB_ID, regResult);
+        mDomainSelector.selectDomain(attr, mTransportSelectorCallback);
+        processAllMessages();
+
+        bindImsServiceUnregistered();
+
+        verifyScanPsPreferred();
+    }
+
+    @Test
+    public void testNrSaOnlyLimitedServiceNgranEmcNoCountryIsoWhenSimNotReady() throws Exception {
+        createSelector(SLOT_0_SUB_ID);
+        unsolBarringInfoChanged(false);
+        doReturn(TelephonyManager.SIM_STATE_PIN_REQUIRED)
+                .when(mTelephonyManager).getSimState(anyInt());
+
+        EmergencyRegistrationResult regResult = getEmergencyRegResult(NGRAN,
+                REGISTRATION_STATE_UNKNOWN,
+                0, false, false, 1, 0, "", "", "");
         SelectionAttributes attr = getSelectionAttributes(SLOT_0, SLOT_0_SUB_ID, regResult);
         mDomainSelector.selectDomain(attr, mTransportSelectorCallback);
         processAllMessages();
