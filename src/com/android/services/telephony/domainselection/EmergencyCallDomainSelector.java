@@ -1850,6 +1850,18 @@ public class EmergencyCallDomainSelector extends DomainSelectorBase
         terminateSelectionForCrossSimRedialing(isHangupOngoingDialing);
     }
 
+    /**
+     * If another slot has already permanently failed,
+     * and IMS REG is not completed in the current slot, hang up the ongoing call.
+     */
+    public void maybeHangupOngoingDialing() {
+        logi("maybeHangupOngoingDialing");
+
+        if (mDomainSelected && hangupOngoingDialing()) {
+            notifyCrossStackTimerExpired();
+        }
+    }
+
     private boolean hangupOngoingDialing() {
         return Flags.hangupEmergencyCallForCrossSimRedialing()
                 && (mCallSetupTimerOnCurrentRat > 0)

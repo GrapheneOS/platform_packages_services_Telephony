@@ -33,6 +33,7 @@ import android.telephony.satellite.stub.PointingInfo;
 import android.telephony.satellite.stub.SatelliteCapabilities;
 import android.telephony.satellite.stub.SatelliteDatagram;
 import android.telephony.satellite.stub.SatelliteImplBase;
+import android.telephony.satellite.stub.SatelliteModemEnableRequestAttributes;
 import android.telephony.satellite.stub.SatelliteModemState;
 import android.telephony.satellite.stub.SatelliteResult;
 import android.telephony.satellite.stub.SatelliteService;
@@ -184,21 +185,25 @@ public class TestSatelliteService extends SatelliteImplBase {
     }
 
     @Override
-    public void requestSatelliteEnabled(boolean enableSatellite, boolean enableDemoMode,
-            boolean isEmergency, @NonNull IIntegerConsumer errorCallback) {
-        logd("requestSatelliteEnabled: mErrorCode=" + mErrorCode + " enable = " + enableSatellite
-                + " isEmergency=" + isEmergency);
+    public void requestSatelliteEnabled(SatelliteModemEnableRequestAttributes enableAttributes,
+            @NonNull IIntegerConsumer errorCallback) {
+        logd("requestSatelliteEnabled: mErrorCode=" + mErrorCode
+                + ", isEnabled=" + enableAttributes.isEnabled
+                + ", isDemoMode=" + enableAttributes.isDemoMode
+                + ", isEmergency= " + enableAttributes.isEmergencyMode
+                + ", iccId=" + enableAttributes.satelliteSubscriptionInfo.iccId
+                + ", niddApn=" + enableAttributes.satelliteSubscriptionInfo.niddApn);
         if (mErrorCode != SatelliteResult.SATELLITE_RESULT_SUCCESS) {
             runWithExecutor(() -> errorCallback.accept(mErrorCode));
             return;
         }
 
-        if (enableSatellite) {
+        if (enableAttributes.isEnabled) {
             enableSatellite(errorCallback);
         } else {
             disableSatellite(errorCallback);
         }
-        mIsEmergnecy = isEmergency;
+        mIsEmergnecy = enableAttributes.isEmergencyMode;
     }
 
     private void enableSatellite(@NonNull IIntegerConsumer errorCallback) {

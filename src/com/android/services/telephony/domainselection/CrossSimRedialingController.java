@@ -227,6 +227,8 @@ public class CrossSimRedialingController extends Handler {
 
         if (isThereOtherSlot()) {
             mSelector.notifyCrossStackTimerExpired();
+        } else if (!mPermanentRejectedSlots.isEmpty()) {
+            mSelector.maybeHangupOngoingDialing();
         }
     }
 
