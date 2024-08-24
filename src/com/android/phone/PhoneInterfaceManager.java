@@ -13972,9 +13972,9 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         TelephonyPermissions.enforceCallingOrSelfModifyPermissionOrCarrierPrivilege(mApp,
                 SubscriptionManager.INVALID_SUBSCRIPTION_ID,
                 "setCachedLocationCountryCode");
-        return TelephonyCountryDetector.getInstance(getDefaultPhone().getContext()).setCountryCodes(
-                reset, currentNetworkCountryCodes, cachedNetworkCountryCodes, locationCountryCode,
-                locationCountryCodeTimestampNanos);
+        return TelephonyCountryDetector.getInstance(getDefaultPhone().getContext(), mFeatureFlags)
+                .setCountryCodes(reset, currentNetworkCountryCodes, cachedNetworkCountryCodes,
+                        locationCountryCode, locationCountryCodeTimestampNanos);
     }
 
     /**
