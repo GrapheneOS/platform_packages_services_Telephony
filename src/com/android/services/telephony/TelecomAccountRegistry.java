@@ -477,11 +477,13 @@ public class TelecomAccountRegistry {
                         isHandoverFromSupported);
             }
 
-            final boolean isTelephonyAudioDeviceSupported = mContext.getResources().getBoolean(
-                    R.bool.config_support_telephony_audio_device);
-            if (isTelephonyAudioDeviceSupported && !isEmergency
-                    && isCarrierUseCallRecordingTone()) {
-                extras.putBoolean(PhoneAccount.EXTRA_PLAY_CALL_RECORDING_TONE, true);
+            if (!com.android.server.telecom.flags.Flags.telecomResolveHiddenDependencies()) {
+                final boolean isTelephonyAudioDeviceSupported = mContext.getResources().getBoolean(
+                        R.bool.config_support_telephony_audio_device);
+                if (isTelephonyAudioDeviceSupported && !isEmergency
+                        && isCarrierUseCallRecordingTone()) {
+                    extras.putBoolean(PhoneAccount.EXTRA_PLAY_CALL_RECORDING_TONE, true);
+                }
             }
 
             extras.putBoolean(EXTRA_SUPPORTS_VIDEO_CALLING_FALLBACK,
