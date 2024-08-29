@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Mock Carrier ಉಪಗ್ರಹ ಮೋಡ್ (ಡೀಬಗ್ ಬಿಲ್ಡ್ ಮಾತ್ರ)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"ನೈಜ ಸ್ಯಾಟಲೈಟ್ eSOS ಮೋಡ್ ಅನ್ನು ಪರೀಕ್ಷಿಸಿ (ಡೀಬಗ್ ಬಿಲ್ಡ್ ಮಾತ್ರ)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"ರಿಯಲ್ ಸ್ಯಾಟಲೈಟ್ ನಾನ್-eSOS ಮೋಡ್ (ಡೀಬಗ್ ಬಿಲ್ಡ್ ಮಾತ್ರ) ಅನ್ನು ಟೆಸ್ಟ್ ಮಾಡಿ"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"ಸ್ಯಾಟಲೈಟ್‌ eSOS ಮೋಡ್‌ ಅನ್ನು ಟೆಸ್ಟ್‌ ಡೆಮೋ ನೀಡಿ (ಡೀಬಗ್ ಬಿಲ್ಡ್ ಮಾತ್ರ)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"ಸಿಮ್ ವಿಳಾಸ ಪುಸ್ತಕವನ್ನು ವೀಕ್ಷಿಸಿ"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"ಸ್ಥಿರ ಡಯಲಿಂಗ್ ಸಂಖ್ಯೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"ಸೇವಾ ಡಯಲಿಂಗ್ ಸಂಖ್ಯೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ"</string>

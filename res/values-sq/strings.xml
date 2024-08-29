@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Simulo modalitetin e satelitit të operatorit celular (vetëm versioni i korrigjimit)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Testo modalitetin real të \"eSOS satelitor\" (vetëm versioni i korrigjimit)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Testo modalitetin real satelitor jo për eSOS (vetëm versioni i korrigjimit)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Testo modalitetin e demonstrimit të \"eSOS satelitor\" (vetëm versioni i korrigjimit)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Shiko librin e adresave të kartës SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Shiko numrat me telefonim të përzgjedhur"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Shiko numrat e telefonit të shërbimit"</string>

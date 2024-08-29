@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Mock സേവനദാതാവ് ഉപഗ്രഹ മോഡ് (ഡീബഗ് ബിൽഡ് മാത്രം)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"യഥാർത്ഥ സാറ്റലൈറ്റ് eSOS മോഡ് പരീക്ഷിക്കുക (ഡീബഗ് ബിൽഡ് മാത്രം)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"യഥാർത്ഥ സാറ്റലൈറ്റ് eSOS ഇതര മോഡ് പരീക്ഷിക്കുക (ഡീബഗ് ബിൽഡ് മാത്രം)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"ഡെമോ സാറ്റലൈറ്റ് eSOS മോഡ് പരീക്ഷിക്കുക (ഡീബഗ് ബിൽഡ് മാത്രം)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"സിം വിലാസ പുസ്‌തകം കാണുക"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"സ്ഥിര ഡയലിംഗ് നമ്പറുകൾ കാണുക"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"സർവീസ് ഡയലിംഗ് നമ്പറുകൾ കാണുക"</string>

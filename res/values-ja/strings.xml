@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"携帯通信会社の疑似航空写真モード（デバッグビルドのみ）"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"実際に衛星経由の緊急 SOS モードをテストする（デバッグビルドのみ）"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"実際に衛星経由の非緊急 SOS モードをテストする（デバッグビルドのみ）"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"デモ用の衛星による緊急 SOS モードをテストする（デバッグビルドのみ）"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"SIM のアドレス帳を表示"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"発信番号制限を表示"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"サービス電話番号を表示"</string>

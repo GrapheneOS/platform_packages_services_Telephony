@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Mobilo sakaru operatora satelīta režīma imitēšana (tikai atkļūdošanas būvējums)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Izmēģināt īsta satelīta eSOS režīmu (tikai atkļūdošanas būvējumā)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Izmēģināt īsta satelīta režīmu, kas nav eSOS režīms (tikai atkļūdošanas būvējumā)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Izmēģināt demonstrācijas satelīta eSOS režīmu (tikai atkļūdošanas būvējumā)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Skatīt SIM adrešu grāmatu"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Skatīt ierobežotā zvanu saraksta numurus"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Pakalpojuma iezvanes numuru skatīšana"</string>

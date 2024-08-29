@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Симуляцияланган байланыш операторунун спутниги (Мүчүлүштүктөрдү оңдоо үчүн гана)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Чыныгы спутник eSOS режимин сыноо (Мүчүлүштүктөрдү оңдоо үчүн гана)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"eSOS болбогон чыныгы спутник режимин сыноо (Мүчүлүштүктөрдү оңдоо үчүн гана)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Демо спутник eSOS режимин сыноо (Мүчүлүштүктөрдү оңдоо үчүн гана)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"SIM картадагы дарек китепчесин көрүү"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Туруктуу терүү номерлерин көрүү"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Кызматтык терүү номерлерин көрүү"</string>

@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Satellite Mode ng Mock Carrier (Debug Build lang)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Test real satellite eSOS mode (Build sa Pag-debug lang)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Test real satellite non-eSOS mode (Build sa Pag-debug lang)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Test demo satellite eSOS mode (Build sa Pag-debug lang)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Tingnan ang Address Book ng SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Tingnan ang Mga Fixed Dialing Number"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Tingnan ang Mga Service Dialing Number"</string>

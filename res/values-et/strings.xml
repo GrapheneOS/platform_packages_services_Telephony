@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Simuleeritud operaatori satelliidirežiim (ainult silumisjärgus)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Režiimi eSOS katsetamine reaalse satelliitsidesüsteemi puhul (ainult silumisjärk)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Režiimi mitte-eSOS katsetamine reaalse satelliitsidesüsteemi puhul (ainult silumisjärk)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Režiimi eSOS katsetamine demo satelliitsidesüsteemi puhul (ainult silumisjärk)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Kuva SIM-i aadressiraamat"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Kuva fikseeritud valimisnumbrid"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Kuva teenuse valimise numbrid"</string>

@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Modo Satélite del operador de prueba (solo en la compilación de depuración)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Prueba el modo eSOS de satélite real (solo en la compilación de depuración)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Prueba el modo que no es eSOS por satélite real (solo en la compilación de depuración)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Prueba el modo de demostración de eSOS de satélite (solo en la compilación de depuración)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Ver libreta de direcciones de SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Ver números de marcación fija"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Ver números de marcación de servicio"</string>

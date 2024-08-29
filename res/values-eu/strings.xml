@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Simulatu operadorearen satelite modua (arazketa-konpilazioa soilik)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Probatu satelite bidezko SOS larrialdien modua (arazketa-konpilazioa soilik)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Probatu satelite bidezko SOS larrialdien modua ez dena (arazketa-konpilazioa soilik)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Probatu satelite bidezko SOS larrialdien moduaren demo-bertsioa (arazketa-konpilazioa soilik)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Ikusi SIMeko kontaktuak"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Ikusi markatze finkoko zenbakiak"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Ikusi zerbitzuaren markatze-zenbakiak"</string>
@@ -871,7 +872,7 @@
     <string name="radioInfo_data_disconnected" msgid="8085447971880814541">"Deskonektatuta"</string>
     <string name="radioInfo_data_connecting" msgid="925092271092152472">"Konektatzen"</string>
     <string name="radioInfo_data_connected" msgid="7637335645634239508">"Konektatuta"</string>
-    <string name="radioInfo_data_suspended" msgid="8695262782642002785">"Aldi baterako itxitakoak"</string>
+    <string name="radioInfo_data_suspended" msgid="8695262782642002785">"Aldi baterako etenda"</string>
     <string name="radioInfo_unknown" msgid="5401423738500672850">"Ezezaguna"</string>
     <string name="radioInfo_imei_primary" msgid="5948747378637224400">"Nagusia"</string>
     <string name="radioInfo_display_packets" msgid="6794302192441084157">"pkts"</string>

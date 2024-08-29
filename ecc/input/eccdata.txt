@@ -838,11 +838,6 @@ countries {
     routing: EMERGENCY
   }
   eccs {
-    phone_number: "088"
-    types: POLICE
-    routing: NORMAL
-  }
-  eccs {
     phone_number: "085"
     types: FIRE
     routing: NORMAL
@@ -1383,6 +1378,11 @@ countries {
     types: POLICE
     types: AMBULANCE
     types: FIRE
+  }
+  eccs {
+    phone_number: "108"
+    types: AMBULANCE
+    routing: NORMAL
   }
   eccs {
     phone_number: "100"

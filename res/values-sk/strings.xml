@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Simulácia satelitného režimu operátora (iba ladiaca zostava)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Testovať režim pomoci v tiesni cez skutočné satelity (iba ladiaca zostava)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Testovať štandardný režim cez skutočné satelity (iba ladiaca zostava)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Testovať režim pomoci v tiesni cez demo satelity (iba ladiaca zostava)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Zobraziť adresár SIM karty"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Zobraziť povolené čísla"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Zobraziť čísla volaní služieb"</string>

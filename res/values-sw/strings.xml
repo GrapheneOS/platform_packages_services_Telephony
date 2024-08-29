@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Hali ya Setilaiti ya Jaribio la Mtoa Huduma (Muundo wa Utatuzi pekee)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Kujaribu hali ya msaada halisi wa mtandaoni kupitia setilaiti (Muundo wa Utatuzi pekee)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Kujaribu hali ya non-eSOS kwenye setilaiti halisi (Muundo wa Utatuzi pekee)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Kujaribu hali ya eSOS kwenye setilaiti ya jaribio (Muundo wa Utatuzi pekee)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Angalia Kitabu cha Anwani katika SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Ona Nambari za Simu Zilizobainishwa"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Angalia Nambari Zilizowekwa na Mtoa Huduma"</string>

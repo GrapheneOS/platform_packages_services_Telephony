@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Lažni satelitski način operaterja (samo gradnja za odpravljanje napak)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Preizkus pravega satelitskega načina eSOS (samo gradnja za odpravljanje napak)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Preizkus pravega satelitskega (nenujnega) načina eSOS (samo gradnja za odpravljanje napak)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Preizkus predstavitvenega satelitskega načina eSOS (samo gradnja za odpravljanje napak)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"Prikaži imenik na kartici SIM"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Prikaži številke za zaporo odhodnih klicev"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Prikaži številke za klicanje storitev"</string>

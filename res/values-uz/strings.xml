@@ -849,6 +849,7 @@
     <string name="mock_carrier_roaming_satellite_string" msgid="4796300252858292593">"Soxta operator sputnik rejimi (faqat debag nashrida)"</string>
     <string name="esos_satellite_string" msgid="7274794226125968657">"Haqiqiy sputnik eSOS rejimini sinash (faqat debag nashrida)"</string>
     <string name="satellite_enable_non_emergency_mode_string" msgid="9005332650950637932">"Haqiqiy sputnik non-eSOS rejimini sinash (faqat debag nashrida)"</string>
+    <string name="demo_esos_satellite_string" msgid="2941811482168709730">"Demo sputnik eSOS rejimini sinash (faqat debag nashrida)"</string>
     <string name="radioInfo_menu_viewADN" msgid="4533179730908559846">"SIM kartadagi abonentlar ro‘yxatini ochish"</string>
     <string name="radioInfo_menu_viewFDN" msgid="1847236480527032061">"Ruxsat etilgan raqamlar ro‘yxatini ochish"</string>
     <string name="radioInfo_menu_viewSDN" msgid="2613431584522392842">"Xizmatlarni terish raqamlarini ochish"</string>
