@@ -112,6 +112,8 @@ import com.android.internal.telephony.gsm.SuppServiceNotification;
 import com.android.internal.telephony.imsphone.ImsPhone;
 import com.android.internal.telephony.satellite.SatelliteController;
 import com.android.internal.telephony.satellite.SatelliteSOSMessageRecommender;
+import com.android.internal.telephony.subscription.SubscriptionInfoInternal;
+import com.android.internal.telephony.subscription.SubscriptionManagerService;
 
 import org.junit.After;
 import org.junit.Before;
@@ -1475,29 +1477,45 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
      */
     @Test
     @SmallTest
-    public void testCreateOutgoingEmergencyConnection_exitingSatellite_CarrierRoaming() {
-        when(mSatelliteController.isSatelliteEnabled()).thenReturn(true);
+    public void testCreateOutgoingEmergencyConnection_exitingSatellite_EmergencySatellite()
+            throws Exception {
+        doReturn(true).when(mFeatureFlags).carrierRoamingNbIotNtn();
+        doReturn(true).when(mSatelliteController).isSatelliteEnabled();
+
+        // Set config_turn_off_oem_enabled_satellite_during_emergency_call as false
+        doReturn(true).when(mTelephonyManagerProxy).isCurrentEmergencyNumber(anyString());
+        doReturn(false).when(mSatelliteController).isDemoModeEnabled();
+
+        // Satellite is not for emergency, allow EMC
+        doReturn(false).when(mSatelliteController).getRequestIsEmergency();
+        // Setup outgoing emergency call
+        setupConnectionServiceInApm();
+
+        // Verify emergency call go through
+        assertNull(mConnection.getDisconnectCause());
+    }
+
+    @Test
+    @SmallTest
+    public void testCreateOutgoingEmergencyConnection_exitingSatellite_OEM() throws Exception {
+        doReturn(true).when(mFeatureFlags).carrierRoamingNbIotNtn();
+        doReturn(true).when(mSatelliteController).isSatelliteEnabled();
 
         // Set config_turn_off_oem_enabled_satellite_during_emergency_call as false
         doReturn(false).when(mMockResources).getBoolean(anyInt());
         doReturn(true).when(mTelephonyManagerProxy).isCurrentEmergencyNumber(anyString());
         doReturn(false).when(mSatelliteController).isDemoModeEnabled();
 
-        doReturn(true).when(mFeatureFlags).carrierRoamingNbIotNtn();
-        // Disable CarrierRoaming mode
-        doReturn(false).when(mSatelliteController).isInSatelliteModeForCarrierRoaming(any());
-        doReturn(false).when(mSatelliteController).getRequestIsEmergency();
-        // Setup outgoing emergency call
-        setupConnectionServiceInApm();
-
-        // Verify DisconnectCause which not allows emergency call
-        assertNotNull(mConnection.getDisconnectCause());
-        assertEquals(android.telephony.DisconnectCause.SATELLITE_ENABLED,
-                mConnection.getDisconnectCause().getTelephonyDisconnectCause());
-
-        // Enable CarrierRoaming but satellite request was not for an emergency
-        doReturn(true).when(mSatelliteController).isInSatelliteModeForCarrierRoaming(any());
+        // Satellite is for emergency
         doReturn(true).when(mSatelliteController).getRequestIsEmergency();
+        Phone phone = mock(Phone.class);
+        doReturn(1).when(phone).getSubId();
+        doReturn(phone).when(mSatelliteController).getSatellitePhone();
+        SubscriptionManagerService isub = mock(SubscriptionManagerService.class);
+        replaceInstance(SubscriptionManagerService.class, "sInstance", null, isub);
+        SubscriptionInfoInternal info = mock(SubscriptionInfoInternal.class);
+        doReturn(info).when(isub).getSubscriptionInfoInternal(1);
+
         // Setup outgoing emergency call
         setupConnectionServiceInApm();
 
@@ -1506,13 +1524,52 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
         assertEquals(android.telephony.DisconnectCause.SATELLITE_ENABLED,
                 mConnection.getDisconnectCause().getTelephonyDisconnectCause());
 
-        // Enable CarrierRoaming and satellite request was for an emergency
-        doReturn(true).when(mSatelliteController).isInSatelliteModeForCarrierRoaming(any());
-        doReturn(false).when(mSatelliteController).getRequestIsEmergency();
+        // OEM: config_turn_off_oem_enabled_satellite_during_emergency_call = true
+        doReturn(1).when(info).getOnlyNonTerrestrialNetwork();
+        doReturn(true).when(mMockResources).getBoolean(anyInt());
         // Setup outgoing emergency call
         setupConnectionServiceInApm();
 
-        // Verify there is no DisconnectCause which allows emergency call
+        // Verify emergency call go through
+        assertNull(mConnection.getDisconnectCause());
+    }
+
+    @Test
+    @SmallTest
+    public void testCreateOutgoingEmergencyConnection_exitingSatellite_Carrier() throws Exception {
+        doReturn(true).when(mFeatureFlags).carrierRoamingNbIotNtn();
+        doReturn(true).when(mSatelliteController).isSatelliteEnabled();
+
+        // Set config_turn_off_oem_enabled_satellite_during_emergency_call as false
+        doReturn(false).when(mMockResources).getBoolean(anyInt());
+        doReturn(true).when(mTelephonyManagerProxy).isCurrentEmergencyNumber(anyString());
+        doReturn(false).when(mSatelliteController).isDemoModeEnabled();
+
+        // Satellite is for emergency
+        doReturn(true).when(mSatelliteController).getRequestIsEmergency();
+        Phone phone = mock(Phone.class);
+        doReturn(1).when(phone).getSubId();
+        doReturn(phone).when(mSatelliteController).getSatellitePhone();
+        SubscriptionManagerService isub = mock(SubscriptionManagerService.class);
+        replaceInstance(SubscriptionManagerService.class, "sInstance", null, isub);
+        SubscriptionInfoInternal info = mock(SubscriptionInfoInternal.class);
+        doReturn(info).when(isub).getSubscriptionInfoInternal(1);
+
+        // Carrier: shouldTurnOffCarrierSatelliteForEmergencyCall = false
+        doReturn(0).when(info).getOnlyNonTerrestrialNetwork();
+        doReturn(false).when(mSatelliteController).shouldTurnOffCarrierSatelliteForEmergencyCall();
+        setupConnectionServiceInApm();
+
+        // Verify DisconnectCause which not allows emergency call
+        assertNotNull(mConnection.getDisconnectCause());
+        assertEquals(android.telephony.DisconnectCause.SATELLITE_ENABLED,
+                mConnection.getDisconnectCause().getTelephonyDisconnectCause());
+
+        // Carrier: shouldTurnOffCarrierSatelliteForEmergencyCall = true
+        doReturn(true).when(mSatelliteController).shouldTurnOffCarrierSatelliteForEmergencyCall();
+        setupConnectionServiceInApm();
+
+        // Verify emergency call go through
         assertNull(mConnection.getDisconnectCause());
     }
 
