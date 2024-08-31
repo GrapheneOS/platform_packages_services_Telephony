@@ -17,7 +17,7 @@ android_app {
         "libphonenumber-platform",
     ],
 
-    libs: ["org.apache.http.legacy"],
+    libs: ["org.apache.http.legacy.stubs.system"],
 
     certificate: "platform",
     privileged: true,

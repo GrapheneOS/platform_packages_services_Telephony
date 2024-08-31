@@ -17,7 +17,7 @@ android_library {
 
     libs: [
         "auto_value_annotations",
-        "org.apache.http.legacy",
+        "org.apache.http.legacy.stubs.system",
     ],
 
     plugins: [

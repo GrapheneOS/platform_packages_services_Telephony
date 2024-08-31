@@ -25,12 +25,12 @@ android_test {
     srcs: ["src/**/*.java"],
 
     libs: [
-        "android.test.mock",
-        "android.test.runner",
+        "android.test.mock.stubs.system",
+        "android.test.runner.stubs.system",
         "telephony-common",
-        "android.test.base",
+        "android.test.base.stubs.system",
         "ims-common",
-        "android.test.mock",
+        "android.test.mock.stubs.system",
     ],
     platform_apis: true,
     certificate: "platform",

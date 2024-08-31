@@ -12,7 +12,7 @@ android_app {
         "androidx-constraintlayout_constraintlayout",
         "androidx.appcompat_appcompat",
     ],
-    libs: ["org.apache.http.legacy"],
+    libs: ["org.apache.http.legacy.stubs.system"],
     certificate: "platform",
     privileged: true,
     product_specific: true,
