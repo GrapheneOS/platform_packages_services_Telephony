@@ -101,6 +101,8 @@ public class TelecomAccountRegistry {
 
     private static final int REGISTER_START_DELAY_MS = 1 * 1000; // 1 second
     private static final int REGISTER_MAXIMUM_DELAY_MS = 60 * 1000; // 1 minute
+    private static final int TELECOM_CONNECT_START_DELAY_MS = 250; // 250 milliseconds
+    private static final int TELECOM_CONNECT_MAX_DELAY_MS = 4 * 1000; // 4 second
 
     /**
      * Indicates the {@link SubscriptionManager.OnSubscriptionsChangedListener} has not yet been
@@ -1224,7 +1226,8 @@ public class TelecomAccountRegistry {
                 setupAccounts();
             } else if (CarrierConfigManager.ACTION_CARRIER_CONFIG_CHANGED.equals(
                     intent.getAction())) {
-                Log.i(this, "Carrier-config changed, checking for phone account updates.");
+                Log.i(this, "TelecomAccountRegistry: Carrier-config changed, "
+                        + "checking for phone account updates.");
                 int subId = intent.getIntExtra(SubscriptionManager.EXTRA_SUBSCRIPTION_INDEX,
                         SubscriptionManager.INVALID_SUBSCRIPTION_ID);
                 handleCarrierConfigChange(subId);
@@ -1235,7 +1238,8 @@ public class TelecomAccountRegistry {
     private BroadcastReceiver mLocaleChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(this, "Locale change; re-registering phone accounts.");
+            Log.i(this, "TelecomAccountRegistry: Locale change; re-registering "
+                    + "phone accounts.");
             tearDownAccounts();
             setupAccounts();
         }
@@ -1249,10 +1253,11 @@ public class TelecomAccountRegistry {
         @Override
         public void onServiceStateChanged(ServiceState serviceState) {
             int newState = serviceState.getState();
-            Log.i(this, "onServiceStateChanged: newState=%d, mServiceState=%d",
-                    newState, mServiceState);
+            Log.i(this, "TelecomAccountRegistry: onServiceStateChanged: "
+                            + "newState=%d, mServiceState=%d", newState, mServiceState);
             if (newState == ServiceState.STATE_IN_SERVICE && mServiceState != newState) {
-                Log.i(this, "onServiceStateChanged: Tearing down and re-setting up accounts.");
+                Log.i(this, "TelecomAccountRegistry: onServiceStateChanged: "
+                        + "Tearing down and re-setting up accounts.");
                 tearDownAccounts();
                 setupAccounts();
             } else {
@@ -1289,6 +1294,7 @@ public class TelecomAccountRegistry {
     private int mActiveDataSubscriptionId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
     private boolean mIsPrimaryUser = UserHandle.of(ActivityManager.getCurrentUser()).isSystem();
     private ExponentialBackoff mRegisterSubscriptionListenerBackoff;
+    private ExponentialBackoff mTelecomReadyBackoff;
     private final HandlerThread mHandlerThread = new HandlerThread("TelecomAccountRegistry");
 
     // TODO: Remove back-pointer from app singleton to Service, since this is not a preferred
@@ -1307,6 +1313,53 @@ public class TelecomAccountRegistry {
         }
     };
 
+    /**
+     * When {@link #setupOnBoot()} is called, there is a chance that Telecom is not up yet. This
+     * runnable checks whether or not Telecom is up and if it isn't we wait until ready.
+     */
+    private final Runnable mCheckTelecomReadyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isTelecomReady()) {
+                setupOnBootInternal();
+            } else {
+                mTelecomReadyBackoff.notifyFailed();
+                Log.i(this, "TelecomAccountRegistry: telecom not ready, retrying in "
+                        + mTelecomReadyBackoff.getCurrentDelay() + " ms");
+            }
+        }
+    };
+
+    /**
+     * Test TelecomManager to determine if telecom is up yet.
+     * @return true if telecom is ready, false if it is not
+     */
+    private boolean isTelecomReady() {
+        if (mTelecomManager == null) {
+            Log.i(this, "TelecomAccountRegistry: isTelecomReady: "
+                    + "telecom null");
+            return true;
+        }
+        try {
+            // Assumption: this method should not return null unless Telecom is not ready yet
+            String result = mTelecomManager.getSystemDialerPackage();
+            if (result == null) {
+                Log.i(this, "TelecomAccountRegistry: isTelecomReady: "
+                        + "telecom not ready");
+                return false;
+            } else {
+                Log.i(this, "TelecomAccountRegistry: isTelecomReady: "
+                        + "telecom ready");
+                return true;
+            }
+        } catch (Exception e) {
+            Log.i(this, "TelecomAccountRegistry: isTelecomReady: "
+                    + "telecom exception");
+            // Any exception means that the service is at least up!
+            return true;
+        }
+    }
+
     TelecomAccountRegistry(Context context) {
         mContext = context;
         mTelecomManager = context.getSystemService(TelecomManager.class);
@@ -1321,6 +1374,12 @@ public class TelecomAccountRegistry {
                 2, /* multiplier */
                 mHandlerThread.getLooper(),
                 mRegisterOnSubscriptionsChangedListenerRunnable);
+        mTelecomReadyBackoff = new ExponentialBackoff(
+                TELECOM_CONNECT_START_DELAY_MS,
+                TELECOM_CONNECT_MAX_DELAY_MS,
+                2, /* multiplier */
+                mContext.getMainLooper(),
+                mCheckTelecomReadyRunnable);
     }
 
     /**
@@ -1548,9 +1607,21 @@ public class TelecomAccountRegistry {
     }
 
     /**
-     * Sets up all the phone accounts for SIMs on first boot.
+     * Waits for Telecom to come up first and then sets up.
      */
     public void setupOnBoot() {
+        if (Flags.delayPhoneAccountRegistration() && !isTelecomReady()) {
+            Log.i(this, "setupOnBoot: delaying start for Telecom...");
+            mTelecomReadyBackoff.start();
+        } else {
+            setupOnBootInternal();
+        }
+    }
+
+    /**
+     * Sets up all the phone accounts for SIMs on first boot.
+     */
+    private void setupOnBootInternal() {
         // TODO: When this object "finishes" we should unregister by invoking
         // SubscriptionManager.getInstance(mContext).unregister(mOnSubscriptionsChangedListener);
         // This is not strictly necessary because it will be unregistered if the
@@ -1558,7 +1629,8 @@ public class TelecomAccountRegistry {
 
         // Register for SubscriptionInfo list changes which is guaranteed
         // to invoke onSubscriptionsChanged the first time.
-        Log.i(this, "TelecomAccountRegistry: setupOnBoot - register subscription listener");
+        Log.i(this, "TelecomAccountRegistry: setupOnBootInternal - register "
+                + "subscription listener");
         SubscriptionManager.from(mContext).addOnSubscriptionsChangedListener(
                 mOnSubscriptionsChangedListener);
 

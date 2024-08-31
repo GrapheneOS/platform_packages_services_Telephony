@@ -916,7 +916,6 @@
     <string name="radio_info_smsc_label" msgid="3749927072726033763">"SMSC:"</string>
     <string name="radio_info_smsc_update_label" msgid="5141996256097115753">"અપડેટ કરો"</string>
     <string name="radio_info_smsc_refresh_label" msgid="8409923721451604560">"રિફ્રેશ કરો"</string>
-    <string name="radio_info_toggle_dns_check_label" msgid="1394078554927787350">"DNS તપાસ ટૉગલ કરો"</string>
     <string name="oem_radio_info_label" msgid="2914167475119997456">"OEM-વિશિષ્ટ માહિતી/સેટિંગ"</string>
     <string name="radio_info_endc_available" msgid="2983767110681230019">"EN-DC ઉપલબ્ધ (NSA):"</string>
     <string name="radio_info_dcnr_restricted" msgid="7147511536420148173">"DCNR પ્રતિબંધિત (NSA):"</string>

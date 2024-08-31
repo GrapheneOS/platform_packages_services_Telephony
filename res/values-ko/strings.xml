@@ -916,7 +916,6 @@
     <string name="radio_info_smsc_label" msgid="3749927072726033763">"SMSC:"</string>
     <string name="radio_info_smsc_update_label" msgid="5141996256097115753">"업데이트"</string>
     <string name="radio_info_smsc_refresh_label" msgid="8409923721451604560">"새로고침"</string>
-    <string name="radio_info_toggle_dns_check_label" msgid="1394078554927787350">"DNS 확인 전환"</string>
     <string name="oem_radio_info_label" msgid="2914167475119997456">"OEM별 정보/설정"</string>
     <string name="radio_info_endc_available" msgid="2983767110681230019">"EN-DC 사용 가능(NSA):"</string>
     <string name="radio_info_dcnr_restricted" msgid="7147511536420148173">"DCNR 제한됨(NSA):"</string>

@@ -333,7 +333,7 @@ public class SatelliteAccessController extends Handler {
                 logd("onSatelliteSupportedStateChanged: isSupported=" + isSupported);
                 if (isSupported) {
                     requestIsCommunicationAllowedForCurrentLocation(
-                            SubscriptionManager.DEFAULT_SUBSCRIPTION_ID, new ResultReceiver(null) {
+                            new ResultReceiver(null) {
                                 @Override
                                 protected void onReceiveResult(int resultCode, Bundle resultData) {
                                     // do nothing
@@ -343,7 +343,6 @@ public class SatelliteAccessController extends Handler {
             }
         };
         mSatelliteController.registerForSatelliteSupportedStateChanged(
-                SubscriptionManager.DEFAULT_SUBSCRIPTION_ID,
                 mInternalSatelliteSupportedStateCallback);
 
         mInternalSatelliteProvisionStateCallback = new ISatelliteProvisionStateCallback.Stub() {
@@ -352,7 +351,7 @@ public class SatelliteAccessController extends Handler {
                 logd("onSatelliteProvisionStateChanged: isProvisioned=" + isProvisioned);
                 if (isProvisioned) {
                     requestIsCommunicationAllowedForCurrentLocation(
-                            SubscriptionManager.DEFAULT_SUBSCRIPTION_ID, new ResultReceiver(null) {
+                            new ResultReceiver(null) {
                                 @Override
                                 protected void onReceiveResult(int resultCode, Bundle resultData) {
                                     // do nothing
@@ -369,7 +368,6 @@ public class SatelliteAccessController extends Handler {
             }
         };
         mSatelliteController.registerForSatelliteProvisionStateChanged(
-                SubscriptionManager.DEFAULT_SUBSCRIPTION_ID,
                 mInternalSatelliteProvisionStateCallback);
 
         // Init the SatelliteOnDeviceAccessController so that the S2 level can be cached
@@ -432,20 +430,19 @@ public class SatelliteAccessController extends Handler {
     /**
      * Request to get whether satellite communication is allowed for the current location.
      *
-     * @param subId  The subId of the subscription to check whether satellite communication is
-     *               allowed for the current location for.
      * @param result The result receiver that returns whether satellite communication is allowed
      *               for the current location if the request is successful or an error code
      *               if the request failed.
      */
-    public void requestIsCommunicationAllowedForCurrentLocation(int subId,
+    public void requestIsCommunicationAllowedForCurrentLocation(
             @NonNull ResultReceiver result) {
         if (!mFeatureFlags.oemEnabledSatelliteFlag()) {
             plogd("oemEnabledSatelliteFlag is disabled");
             result.send(SATELLITE_RESULT_REQUEST_NOT_SUPPORTED, null);
             return;
         }
-        sendRequestAsync(CMD_IS_SATELLITE_COMMUNICATION_ALLOWED, new Pair<>(subId, result));
+        sendRequestAsync(CMD_IS_SATELLITE_COMMUNICATION_ALLOWED,
+                new Pair<>(mSatelliteController.getSatellitePhone().getSubId(), result));
     }
 
     /**
@@ -894,7 +891,7 @@ public class SatelliteAccessController extends Handler {
             }
             mTotalCheckingStartTimeMillis = System.currentTimeMillis();
             mSatelliteController.requestIsSatelliteSupported(
-                    requestArguments.first, mInternalSatelliteSupportedResultReceiver);
+                    mInternalSatelliteSupportedResultReceiver);
         }
     }
 
@@ -1091,7 +1088,6 @@ public class SatelliteAccessController extends Handler {
             logd("handleSatelliteAllowedRegionPossiblyChanged");
             setIsSatelliteAllowedRegionPossiblyChanged(true);
             requestIsCommunicationAllowedForCurrentLocation(
-                    SubscriptionManager.DEFAULT_SUBSCRIPTION_ID,
                     mHandlerForSatelliteAllowedResult);
         }
     }
