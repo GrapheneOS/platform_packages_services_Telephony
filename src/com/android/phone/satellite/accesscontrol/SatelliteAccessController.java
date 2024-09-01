@@ -28,7 +28,10 @@ import static com.android.internal.telephony.satellite.SatelliteController.SATEL
 import android.annotation.ArrayRes;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.Location;
@@ -133,7 +136,8 @@ public class SatelliteAccessController extends Handler {
     protected static final int EVENT_WAIT_FOR_CURRENT_LOCATION_TIMEOUT = 2;
     protected static final int EVENT_KEEP_ON_DEVICE_ACCESS_CONTROLLER_RESOURCES_TIMEOUT = 3;
     protected static final int EVENT_CONFIG_DATA_UPDATED = 4;
-    protected static final int CMD_HANDLE_COUNTRY_CODE_CHANGED = 5;
+    protected static final int EVENT_COUNTRY_CODE_CHANGED = 5;
+    protected static final int EVENT_LOCATION_SETTINGS_ENABLED = 6;
 
     private static SatelliteAccessController sInstance;
 
@@ -263,6 +267,19 @@ public class SatelliteAccessController extends Handler {
     private long mOnDeviceLookupStartTimeMillis;
     private long mTotalCheckingStartTimeMillis;
 
+    protected BroadcastReceiver mLocationModeChangedBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(LocationManager.MODE_CHANGED_ACTION)) {
+                plogd("LocationManager mode is changed");
+                if (mLocationManager.isLocationEnabled()) {
+                    plogd("Location settings is just enabled");
+                    sendRequestAsync(EVENT_LOCATION_SETTINGS_ENABLED, null);
+                }
+            }
+        }
+    };
+
     /**
      * Create a SatelliteAccessController instance.
      *
@@ -295,7 +312,7 @@ public class SatelliteAccessController extends Handler {
 
         mCountryDetector = TelephonyCountryDetector.getInstance(context, mFeatureFlags);
         mCountryDetector.registerForCountryCodeChanged(this,
-                CMD_HANDLE_COUNTRY_CODE_CHANGED, null);
+                EVENT_COUNTRY_CODE_CHANGED, null);
         initializeHandlerForSatelliteAllowedResult();
         setIsSatelliteAllowedRegionPossiblyChanged(false);
 
@@ -372,6 +389,7 @@ public class SatelliteAccessController extends Handler {
 
         // Init the SatelliteOnDeviceAccessController so that the S2 level can be cached
         initSatelliteOnDeviceAccessController();
+        registerLocationModeChangedBroadcastReceiver(context);
     }
 
     private void updateCurrentSatelliteAllowedState(boolean isAllowed) {
@@ -418,7 +436,9 @@ public class SatelliteAccessController extends Handler {
                 AsyncResult ar = (AsyncResult) msg.obj;
                 updateSatelliteConfigData((Context) ar.userObj);
                 break;
-            case CMD_HANDLE_COUNTRY_CODE_CHANGED:
+            case EVENT_LOCATION_SETTINGS_ENABLED:
+                // Fall through
+            case EVENT_COUNTRY_CODE_CHANGED:
                 handleSatelliteAllowedRegionPossiblyChanged();
                 break;
             default:
@@ -907,6 +927,17 @@ public class SatelliteAccessController extends Handler {
                         + "mLocationRequestCancellationSignal is null");
             }
         }
+    }
+
+    private void registerLocationModeChangedBroadcastReceiver(Context context) {
+        if (!mFeatureFlags.oemEnabledSatelliteFlag()) {
+            plogd("registerLocationModeChangedBroadcastReceiver: Flag "
+                    + "oemEnabledSatellite is disabled");
+            return;
+        }
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(LocationManager.MODE_CHANGED_ACTION);
+        context.registerReceiver(mLocationModeChangedBroadcastReceiver, intentFilter);
     }
 
     /**
