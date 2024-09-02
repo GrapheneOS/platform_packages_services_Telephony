@@ -198,7 +198,7 @@ public class SatelliteAccessController extends Handler {
     };
     @GuardedBy("mLock")
     @Nullable
-    CancellationSignal mLocationRequestCancellationSignal = null;
+    protected CancellationSignal mLocationRequestCancellationSignal = null;
     private int mS2Level = DEFAULT_S2_LEVEL;
     @GuardedBy("mLock")
     @Nullable
@@ -948,14 +948,14 @@ public class SatelliteAccessController extends Handler {
      */
     private boolean isRegionDisallowed(List<String> networkCountryIsoList) {
         if (networkCountryIsoList.isEmpty()) {
-            plogd("isRegionDisallowed : true : it's not sure if empty is disallowed");
+            plogd("isRegionDisallowed : false : network country code is not available");
             return false;
         }
 
         for (String countryCode : networkCountryIsoList) {
             if (isSatelliteAccessAllowedForLocation(List.of(countryCode))) {
                 plogd("isRegionDisallowed : false : Country Code " + countryCode
-                        + " is in the list from the configuration");
+                        + " is allowed but not sure if current location should be allowed.");
                 return false;
             }
         }
@@ -1279,18 +1279,20 @@ public class SatelliteAccessController extends Handler {
         }
     }
 
-    private void queryCurrentLocation() {
+    @VisibleForTesting(visibility = VisibleForTesting.Visibility.PRIVATE)
+    protected void queryCurrentLocation() {
         synchronized (mLock) {
             if (mLocationRequestCancellationSignal != null) {
-                plogd("Request for current location was already sent to LocationManager");
+                plogd("queryCurrentLocation : "
+                        + "Request for current location was already sent to LocationManager");
                 return;
             }
             mLocationRequestCancellationSignal = new CancellationSignal();
             mLocationQueryStartTimeMillis = System.currentTimeMillis();
-            mLocationManager.getCurrentLocation(LocationManager.GPS_PROVIDER,
+            mLocationManager.getCurrentLocation(LocationManager.FUSED_PROVIDER,
                     new LocationRequest.Builder(0)
                             .setQuality(LocationRequest.QUALITY_HIGH_ACCURACY)
-                            .setLocationSettingsIgnored(true)
+                            .setLocationSettingsIgnored(isInEmergency())
                             .build(),
                     mLocationRequestCancellationSignal, this::post,
                     this::onCurrentLocationAvailable);
