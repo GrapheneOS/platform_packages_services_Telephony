@@ -1497,10 +1497,8 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
         if (!SubscriptionManager.isValidPhoneId(phoneId)) {
             final String msg =
                     "Ignore invalid phoneId: " + phoneId + " for subId: " + subscriptionId;
-            if (mFeatureFlags.addAnomalyWhenNotifyConfigChangedWithInvalidPhone()) {
-                AnomalyReporter.reportAnomaly(
-                        UUID.fromString(UUID_NOTIFY_CONFIG_CHANGED_WITH_INVALID_PHONE), msg);
-            }
+            AnomalyReporter.reportAnomaly(
+                    UUID.fromString(UUID_NOTIFY_CONFIG_CHANGED_WITH_INVALID_PHONE), msg);
             logd(msg);
             throw new IllegalArgumentException(msg);
         }

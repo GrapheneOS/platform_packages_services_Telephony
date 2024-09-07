@@ -212,7 +212,9 @@
 
         <!-- Mock signal strength -->
         <LinearLayout style="@style/RadioInfo_entry_layout">
-            <TextView android:text="@string/radio_info_signal_strength_label" style="@style/info_label" />
+            <TextView android:id="@+id/signal_strength_label"
+                android:text="@string/radio_info_signal_strength_label"
+                style="@style/info_label" />
             <Spinner android:id="@+id/signalStrength"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"/>
@@ -220,7 +222,9 @@
 
        <!-- Mock data network type -->
        <LinearLayout style="@style/RadioInfo_entry_layout">
-            <TextView android:text="@string/radio_info_data_network_type_label" style="@style/info_label" />
+            <TextView android:id="@+id/data_network_type_label"
+                android:text="@string/radio_info_data_network_type_label"
+                style="@style/info_label" />
             <Spinner android:id="@+id/dataNetworkType"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"/>

@@ -25,13 +25,13 @@
     <string name="private_num" msgid="4487990167889159992">"ખાનગી નંબર"</string>
     <string name="payphone" msgid="7936735771836716941">"પેફોન"</string>
     <string name="onHold" msgid="6132725550015899006">"હોલ્ડ પર"</string>
-    <string name="carrier_mmi_msg_title" msgid="6050165242447507034">"<xliff:g id="MMICARRIER">%s</xliff:g> સંદેશ"</string>
-    <string name="default_carrier_mmi_msg_title" msgid="7754317179938537213">"કૅરિઅરનો સંદેશ"</string>
+    <string name="carrier_mmi_msg_title" msgid="6050165242447507034">"<xliff:g id="MMICARRIER">%s</xliff:g> મેસેજ"</string>
+    <string name="default_carrier_mmi_msg_title" msgid="7754317179938537213">"કૅરિઅર મેસેજ"</string>
     <string name="mmiStarted" msgid="9212975136944568623">"MMI કોડ પ્રારંભ કર્યો"</string>
     <string name="ussdRunning" msgid="1163586813106772717">"USSD કોડ ચાલે છે…"</string>
     <string name="mmiCancelled" msgid="5339191899200678272">"MMI કોડ રદ કર્યો"</string>
     <string name="cancel" msgid="8984206397635155197">"રદ કરો"</string>
-    <string name="enter_input" msgid="6193628663039958990">"USSD સંદેશ <xliff:g id="MIN_LEN">%1$d</xliff:g> અને <xliff:g id="MAX_LEN">%2$d</xliff:g> વર્ણ વચ્ચેનો હોવો આવશ્યક છે. કૃપા કરીને ફરી પ્રયાસ કરો."</string>
+    <string name="enter_input" msgid="6193628663039958990">"USSD મેસેજ <xliff:g id="MIN_LEN">%1$d</xliff:g> અને <xliff:g id="MAX_LEN">%2$d</xliff:g> અક્ષરો વચ્ચે હોવો આવશ્યક છે. કૃપા કરીને ફરી પ્રયાસ કરો."</string>
     <string name="manageConferenceLabel" msgid="8415044818156353233">"કોન્ફરન્સ કૉલ સંચાલિત કરો"</string>
     <string name="ok" msgid="7818974223666140165">"ઓકે"</string>
     <string name="audio_mode_speaker" msgid="243689733219312360">"સ્પીકર્સ"</string>
@@ -173,7 +173,7 @@
     <string name="vm_change_pin_error_mismatch" msgid="5364847280026257331">"જૂનો PIN મેળ ખાતો નથી."</string>
     <string name="vm_change_pin_error_invalid" msgid="5230002671175580674">"નવો PIN અમાન્ય અક્ષરો ધરાવે છે."</string>
     <string name="vm_change_pin_error_system_error" msgid="9116483527909681791">"PIN બદલવામાં અસમર્થ"</string>
-    <string name="vvm_unsupported_message_format" msgid="4206402558577739713">"અસમર્થિત સંદેશ પ્રકાર, સાંભળવા માટે <xliff:g id="NUMBER">%s</xliff:g> પર કૉલ કરો."</string>
+    <string name="vvm_unsupported_message_format" msgid="4206402558577739713">"અનસપોર્ટેડ મેસેજ પ્રકાર, સાંભળવા માટે <xliff:g id="NUMBER">%s</xliff:g> પર કૉલ કરો."</string>
     <string name="network_settings_title" msgid="7560807107123171541">"મોબાઇલ નેટવર્ક"</string>
     <string name="label_available" msgid="1316084116670821258">"ઉપલબ્ધ નેટવર્ક્સ"</string>
     <string name="load_networks_progress" msgid="4051433047717401683">"શોધી રહ્યું છે..."</string>
@@ -548,7 +548,7 @@
     <string name="incall_error_out_of_service_wfc_2g_user" msgid="8218768986365299663">"મોબાઇલ નેટવર્ક ઉપલબ્ધ નથી.\n\nકોઈ કૉલ કરવા માટે, વાયરલેસ નેટવર્કથી કનેક્ટ કરો.\n\nઆ ડિવાઇસ પર 2G સેવા બંધ છે, જે તમારી કનેક્ટિવિટીને અસર કરી શકે છે. સેટિંગમાં જાઓ અને આ સેવાને ચાલુ રાખવા માટે \'2Gને મંજૂરી આપો\' ચાલુ કરો."</string>
     <string name="incall_error_no_phone_number_supplied" msgid="8680831089508851894">"કૉલ કરવા માટે, માન્ય નંબર દાખલ કરો."</string>
     <string name="incall_error_call_failed" msgid="393508653582682539">"કૉલ નિષ્ફળ થયો."</string>
-    <string name="incall_error_cannot_add_call" msgid="5425764862628655443">"આ સમયે કૉલ ઉમેરી શકાતો નથી. તમે એક સંદેશ મોકલીને સંપર્ક કરવાનો પ્રયાસ કરી શકો છો."</string>
+    <string name="incall_error_cannot_add_call" msgid="5425764862628655443">"આ સમયે કૉલ ઉમેરી શકાતો નથી. તમે એક મેસેજ મોકલીને સંપર્ક કરવાનો પ્રયાસ કરી શકો છો."</string>
     <string name="incall_error_supp_service_unknown" msgid="8751177117194592623">"સેવા સમર્થિત નથી"</string>
     <string name="incall_error_supp_service_switch" msgid="5272822448189448479">"કૉલ્સ સ્વિચ કરી શકાતા નથી."</string>
     <string name="incall_error_supp_service_resume" msgid="1276861499306817035">"કૉલ ફરી શરૂ કરી શકતા નથી."</string>
@@ -601,8 +601,8 @@
     <string name="hac_mode_title" msgid="4127986689621125468">"સાંભળવામાં સહાયતા"</string>
     <string name="hac_mode_summary" msgid="7774989500136009881">"સાંભળવામાં સહાયતા સુસંગતતા ચાલુ કરો"</string>
     <string name="rtt_mode_title" msgid="3075948111362818043">"રિઅલ-ટાઇમ ટેક્સ્ટ(RTT) કૉલ"</string>
-    <string name="rtt_mode_summary" msgid="8631541375609989562">"વૉઇસ કૉલ અંતર્ગત સંદેશ મોકલવાની મંજૂરી આપો"</string>
-    <string name="rtt_mode_more_information" msgid="587500128658756318">"RTT બહેરા, સાંભળવા અને બોલવામાં મુશ્કેલી પડતી હોય અથવા વૉઇસ કરતાં પણ વધુ કંઈકની જરૂર હોય એવા કૉલરની સહાય કરે છે.&lt;br&gt; &lt;a href=<xliff:g id="URL">http://support.google.com/mobile?p=telephony_rtt</xliff:g>&gt;વધુ જાણો&lt;/a&gt;\n       &lt;br&gt;&lt;br&gt; - RTT કૉલને સંદેશ ટ્રાન્સક્રિપ્ટ તરીકે સાચવવામાં આવે છે\n       &lt;br&gt; - RTT વીડિઓ કૉલ માટે ઉપલબ્ધ નથી"</string>
+    <string name="rtt_mode_summary" msgid="8631541375609989562">"વૉઇસ કૉલ અંતર્ગત મેસેજ મોકલવાની મંજૂરી આપો"</string>
+    <string name="rtt_mode_more_information" msgid="587500128658756318">"RTT બહેરા, સાંભળવા અને બોલવામાં મુશ્કેલી પડતી હોય અથવા વૉઇસ કરતાં પણ વધુ કંઈકની જરૂર હોય એવા કૉલરની સહાય કરે છે.&lt;br&gt; &lt;a href=<xliff:g id="URL">http://support.google.com/mobile?p=telephony_rtt</xliff:g>&gt;વધુ જાણો&lt;/a&gt;\n       &lt;br&gt;&lt;br&gt; - RTT કૉલને મેસેજ ટ્રાન્સક્રિપ્ટ તરીકે સાચવવામાં આવે છે\n       &lt;br&gt; - RTT વીડિયો કૉલ માટે ઉપલબ્ધ નથી"</string>
     <string name="no_rtt_when_roaming" msgid="5268008247378355389">"નોંધ: રોમિંગ વખતે RTT ઉપલબ્ધ નથી"</string>
   <string-array name="tty_mode_entries">
     <item msgid="3238070884803849303">"TTY બંધ"</item>
@@ -616,8 +616,8 @@
     <item msgid="2271798469250155310">"સામાન્ય"</item>
     <item msgid="6044210222666533564">"લાંબુ"</item>
   </string-array>
-    <string name="network_info_message" msgid="7599413947016532355">"નેટવર્ક સંદેશ"</string>
-    <string name="network_error_message" msgid="4271579424089326618">"ભૂલ સંદેશ"</string>
+    <string name="network_info_message" msgid="7599413947016532355">"નેટવર્ક મેસેજ"</string>
+    <string name="network_error_message" msgid="4271579424089326618">"ભૂલ મેસેજ"</string>
     <string name="ota_title_activate" msgid="4049645324841263423">"તમારા ફોનને સક્રિય કરો"</string>
     <string name="ota_touch_activate" msgid="838764494319694754">"તમારી ફોન સેવાને સક્રિય કરવા માટે એક વિશિષ્ટ કૉલની જરૂર છે. \n\n\"સક્રિય કરો\" દબાવ્યાં પછી, તમારા ફોનને સક્રિય કરવા માટે પ્રદાન કરવામાં આવેલ સૂચનાઓને અનુસરો."</string>
     <string name="ota_hfa_activation_title" msgid="3300556778212729671">"સક્રિય કરી રહ્યું છે…"</string>
@@ -680,7 +680,7 @@
     <string name="accessibility_settings_activity_title" msgid="7883415189273700298">"ઍક્સેસિબિલિટી"</string>
     <string name="status_hint_label_incoming_wifi_call" msgid="2606052595898044071">"આમના તરફથી Wi-Fi કૉલ"</string>
     <string name="status_hint_label_wifi_call" msgid="942993035689809853">"Wi-Fi કૉલ"</string>
-    <string name="message_decode_error" msgid="1061856591500290887">"સંદેશ ડીકોડિંગ કરતી વખતે ભૂલ આવી હતી."</string>
+    <string name="message_decode_error" msgid="1061856591500290887">"મેસેજ ડિકોડિંગ કરતી વખતે ભૂલ આવી હતી."</string>
     <string name="callFailed_cdma_activation" msgid="5392057031552253550">"એક SIM કાર્ડ એ તમારી સેવા સક્રિય કરી છે અને તમારા ફોનની રોમિંગ ક્ષમતાઓને અપડેટ કરી છે."</string>
     <string name="callFailed_cdma_call_limit" msgid="1074219746093031412">"અહીં ઘણા બધા સક્રિય કૉલ્સ છે. કૃપા કરીને એક નવો કૉલ કરવા પહેલાં અસ્તિત્વમાંના કૉલ્સને સમાપ્ત કરો અથવા મર્જ કરો."</string>
     <string name="callFailed_imei_not_accepted" msgid="7257903653685147251">"કનેક્ટ કરવામાં અસમર્થ, કૃપા કરીને એક માન્ય SIM કાર્ડ દાખલ કરો."</string>
@@ -899,7 +899,7 @@
     <string name="radio_info_signal_strength_label" msgid="5545444702102543260">"સિગ્નલની પ્રબળતા:"</string>
     <string name="radio_info_call_status_label" msgid="7693575431923095487">"વૉઇસ કૉલનું સ્ટેટસ:"</string>
     <string name="radio_info_ppp_sent_label" msgid="6542208429356199695">"ડેટા મોકલ્યો:"</string>
-    <string name="radio_info_message_waiting_label" msgid="1886549432566952078">"સંદેશ ઉપલબ્ધ છે:"</string>
+    <string name="radio_info_message_waiting_label" msgid="1886549432566952078">"મેસેજ ઉપલબ્ધ છે:"</string>
     <string name="radio_info_phone_number_label" msgid="2533852539562512203">"ફોન નંબર:"</string>
     <string name="radio_info_voice_network_type_label" msgid="2395347336419593265">"વૉઇસ નેટવર્ક પ્રકાર:"</string>
     <string name="radio_info_data_network_type_label" msgid="8886597029237501929">"ડેટા નેટવર્કનો પ્રકાર:"</string>
