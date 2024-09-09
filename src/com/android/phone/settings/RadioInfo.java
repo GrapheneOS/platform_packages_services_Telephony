@@ -1942,6 +1942,7 @@ public class RadioInfo extends AppCompatActivity {
             intent.putExtra("action", "reset");
             mSimulateOos[mPhoneId] = false;
         }
+        mPhone.getTelephonyTester().setServiceStateTestIntent(intent);
     };
 
     private static final int SATELLITE_CHANNEL = 8665;
