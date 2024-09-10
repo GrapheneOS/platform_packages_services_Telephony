@@ -508,14 +508,9 @@ public class TelecomAccountRegistry {
             // Set CAPABILITY_EMERGENCY_CALLS_ONLY flag if either
             // - Carrier config overrides subscription is not voice capable, or
             // - Resource config overrides it be emergency_calls_only
-            // TODO(b/316183370:): merge the two cases when clearing up flag
-            if (Flags.dataOnlyServiceAllowEmergencyCallOnly()) {
-                if (!isSubscriptionVoiceCapableByCarrierConfig()) {
-                    capabilities |= PhoneAccount.CAPABILITY_EMERGENCY_CALLS_ONLY;
-                }
-            }
-            if (isEmergency && mContext.getResources().getBoolean(
-                    R.bool.config_emergency_account_emergency_calls_only)) {
+            if (!isSubscriptionVoiceCapableByCarrierConfig()
+                    || (isEmergency && mContext.getResources().getBoolean(
+                    R.bool.config_emergency_account_emergency_calls_only))) {
                 capabilities |= PhoneAccount.CAPABILITY_EMERGENCY_CALLS_ONLY;
             }
 
