@@ -600,7 +600,7 @@ public class PhoneGlobals extends ContextWrapper {
                         }
                     }
                 }
-                RcsProvisioningMonitor.make(this);
+                RcsProvisioningMonitor.make(this, mFeatureFlags);
             }
 
             // Start TelephonyDebugService After the default phone is created.

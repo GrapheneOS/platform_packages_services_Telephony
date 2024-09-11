@@ -21,6 +21,7 @@ import static com.android.internal.telephony.TelephonyStatsLog.RCS_CLIENT_PROVIS
 import static com.android.internal.telephony.TelephonyStatsLog.RCS_CLIENT_PROVISIONING_STATS__EVENT__TRIGGER_RCS_RECONFIGURATION;
 
 import android.Manifest;
+import android.annotation.NonNull;
 import android.app.role.OnRoleHoldersChangedListener;
 import android.app.role.RoleManager;
 import android.content.BroadcastReceiver;
@@ -51,6 +52,7 @@ import com.android.ims.FeatureConnector;
 import com.android.ims.FeatureUpdates;
 import com.android.ims.RcsFeatureManager;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.telephony.flags.FeatureFlags;
 import com.android.internal.telephony.metrics.RcsStats;
 import com.android.internal.telephony.metrics.RcsStats.RcsProvisioningCallback;
 import com.android.internal.telephony.util.HandlerExecutor;
@@ -109,6 +111,9 @@ public class RcsProvisioningMonitor {
     private RcsStats mRcsStats;
 
     private static RcsProvisioningMonitor sInstance;
+
+    @NonNull
+    private final FeatureFlags mFeatureFlags;
 
     private final SubscriptionManager.OnSubscriptionsChangedListener mSubChangedListener =
             new SubscriptionManager.OnSubscriptionsChangedListener() {
@@ -481,8 +486,10 @@ public class RcsProvisioningMonitor {
 
     @VisibleForTesting
     public RcsProvisioningMonitor(PhoneGlobals app, Looper looper, RoleManagerAdapter roleManager,
-            FeatureConnectorFactory<RcsFeatureManager> factory, RcsStats rcsStats) {
+            FeatureConnectorFactory<RcsFeatureManager> factory, RcsStats rcsStats,
+            @NonNull FeatureFlags flags) {
         mPhone = app;
+        mFeatureFlags = flags;
         mHandler = new MyHandler(looper);
         mCarrierConfigManager = mPhone.getSystemService(CarrierConfigManager.class);
         mSubscriptionManager = mPhone.getSystemService(SubscriptionManager.class);
@@ -499,14 +506,15 @@ public class RcsProvisioningMonitor {
     /**
      * create an instance
      */
-    public static RcsProvisioningMonitor make(PhoneGlobals app) {
+    public static RcsProvisioningMonitor make(@NonNull PhoneGlobals app,
+            @NonNull FeatureFlags flags) {
         if (sInstance == null) {
             logd("RcsProvisioningMonitor created.");
             HandlerThread handlerThread = new HandlerThread(TAG);
             handlerThread.start();
             sInstance = new RcsProvisioningMonitor(app, handlerThread.getLooper(),
                     new RoleManagerAdapterImpl(app), RcsFeatureManager::getConnector,
-                    RcsStats.getInstance());
+                    RcsStats.getInstance(), flags);
         }
         return sInstance;
     }
@@ -871,9 +879,18 @@ public class RcsProvisioningMonitor {
         // Only send permission to the default sms app if it has the correct permissions
         // except test mode enabled
         if (!mTestModeEnabled) {
-            mPhone.sendBroadcast(intent, Manifest.permission.PERFORM_IMS_SINGLE_REGISTRATION);
+            if (mFeatureFlags.hsumBroadcast()) {
+                mPhone.sendBroadcastAsUser(intent, UserHandle.ALL,
+                        Manifest.permission.PERFORM_IMS_SINGLE_REGISTRATION);
+            } else {
+                mPhone.sendBroadcast(intent, Manifest.permission.PERFORM_IMS_SINGLE_REGISTRATION);
+            }
         } else {
-            mPhone.sendBroadcast(intent);
+            if (mFeatureFlags.hsumBroadcast()) {
+                mPhone.sendBroadcastAsUser(intent, UserHandle.ALL);
+            } else {
+                mPhone.sendBroadcast(intent);
+            }
         }
     }
 

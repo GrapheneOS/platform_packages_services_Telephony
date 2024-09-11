@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.CarrierConfigManager;
@@ -28,6 +29,8 @@ import android.telephony.TelephonyManager;
 import android.telephony.VisualVoicemailService;
 import android.text.TextUtils;
 import android.util.ArraySet;
+
+import com.android.internal.telephony.flags.Flags;
 
 import java.util.Collections;
 import java.util.Set;
@@ -106,7 +109,11 @@ public class CarrierVvmPackageInstalledReceiver extends BroadcastReceiver {
             Intent broadcast = new Intent(ACTION_CARRIER_VVM_PACKAGE_INSTALLED);
             broadcast.putExtra(Intent.EXTRA_PACKAGE_NAME, packageName);
             broadcast.setPackage(vvmPackage);
-            context.sendBroadcast(broadcast);
+            if (Flags.hsumBroadcast()) {
+                context.sendBroadcastAsUser(broadcast, UserHandle.ALL);
+            } else {
+                context.sendBroadcast(broadcast);
+            }
         }
     }
 

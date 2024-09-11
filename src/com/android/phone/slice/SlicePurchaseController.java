@@ -40,6 +40,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.provider.DeviceConfig;
 import android.sysprop.TelephonyProperties;
 import android.telephony.AnomalyReporter;
@@ -832,7 +833,11 @@ public class SlicePurchaseController extends Handler {
         intent.putExtra(EXTRA_INTENT_NOTIFICATION_SHOWN, createPendingIntent(
                 ACTION_SLICE_PURCHASE_APP_RESPONSE_NOTIFICATION_SHOWN, capability, false));
         logd("Broadcasting start intent to SlicePurchaseBroadcastReceiver.");
-        mPhone.getContext().sendBroadcast(intent);
+        if (mFeatureFlags.hsumBroadcast()) {
+            mPhone.getContext().sendBroadcastAsUser(intent, UserHandle.ALL);
+        } else {
+            mPhone.getContext().sendBroadcast(intent);
+        }
 
         // Listen for responses from the slice purchase application
         mSlicePurchaseControllerBroadcastReceivers.put(capability,
@@ -913,7 +918,11 @@ public class SlicePurchaseController extends Handler {
         intent.putExtra(EXTRA_PHONE_ID, mPhone.getPhoneId());
         intent.putExtra(EXTRA_PREMIUM_CAPABILITY, capability);
         logd("Broadcasting timeout intent to SlicePurchaseBroadcastReceiver.");
-        mPhone.getContext().sendBroadcast(intent);
+        if (mFeatureFlags.hsumBroadcast()) {
+            mPhone.getContext().sendBroadcastAsUser(intent, UserHandle.ALL);
+        } else {
+            mPhone.getContext().sendBroadcast(intent);
+        }
 
         handlePurchaseResult(
                 capability, TelephonyManager.PURCHASE_PREMIUM_CAPABILITY_RESULT_TIMEOUT, true);
