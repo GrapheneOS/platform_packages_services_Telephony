@@ -7427,8 +7427,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     public boolean isTetheringApnRequiredForSubscriber(int subId) {
         enforceModifyPermission();
 
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY_DATA, "isTetheringApnRequiredForSubscriber");
+        if (!mApp.getResources().getBoolean(
+                    com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY_DATA, "isTetheringApnRequiredForSubscriber");
+        }
 
         final long identity = Binder.clearCallingIdentity();
         final Phone phone = getPhone(subId);
@@ -8721,8 +8724,11 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     public void requestModemActivityInfo(ResultReceiver result) {
         enforceModifyPermission();
 
-        enforceTelephonyFeatureWithException(getCurrentPackageName(),
-                PackageManager.FEATURE_TELEPHONY, "requestModemActivityInfo");
+        if (!mApp.getResources().getBoolean(
+                    com.android.internal.R.bool.config_force_phone_globals_creation)) {
+            enforceTelephonyFeatureWithException(getCurrentPackageName(),
+                    PackageManager.FEATURE_TELEPHONY, "requestModemActivityInfo");
+        }
 
         WorkSource workSource = getWorkSource(Binder.getCallingUid());
 
