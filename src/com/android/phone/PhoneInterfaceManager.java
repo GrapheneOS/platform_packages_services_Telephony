@@ -2613,7 +2613,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             if (state != PhoneConstants.State.OFFHOOK && state != PhoneConstants.State.RINGING) {
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mApp.startActivity(intent);
+                mApp.startActivityAsUser(intent, UserHandle.CURRENT);
             }
         } finally {
             Binder.restoreCallingIdentity(identity);
@@ -2628,7 +2628,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         if (DBG) log("call: " + number);
 
         // This is just a wrapper around the ACTION_CALL intent, but we still
-        // need to do a permission check since we're calling startActivity()
+        // need to do a permission check since we're calling startActivityAsUser()
         // from the context of the phone app.
         enforceCallPermission();
 
@@ -2664,7 +2664,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
             intent.putExtra(SUBSCRIPTION_KEY, subId);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mApp.startActivity(intent);
+            mApp.startActivityAsUser(intent, UserHandle.CURRENT);
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
@@ -11032,7 +11032,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         // Bring up choose default SMS subscription dialog right now
         intent.putExtra(PickSmsSubscriptionActivity.DIALOG_TYPE_KEY,
                 PickSmsSubscriptionActivity.SMS_PICK_FOR_MESSAGE);
-        mApp.startActivity(intent);
+        mApp.startActivityAsUser(intent, UserHandle.CURRENT);
     }
 
     @Override
@@ -11045,13 +11045,13 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setData(Uri.parse("smsto:"));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mApp.startActivity(intent);
+            mApp.startActivityAsUser(intent, UserHandle.CURRENT);
         } catch (ActivityNotFoundException e) {
             Log.w(LOG_TAG, "Unable to show intent forwarder, try showing error dialog instead");
             Intent intent = new Intent();
             intent.setClass(mApp, ErrorDialogActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mApp.startActivity(intent);
+            mApp.startActivityAsUser(intent, UserHandle.CURRENT);
         }
     }
 
@@ -13170,7 +13170,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 }
             };
             mSatelliteAccessController.requestIsCommunicationAllowedForCurrentLocation(
-                    resultReceiver);
+                    resultReceiver, true);
         } else {
             // No need to check if satellite is allowed at current location when disabling satellite
             mSatelliteController.requestSatelliteEnabled(
@@ -13488,7 +13488,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     public void requestIsCommunicationAllowedForCurrentLocation(int subId,
             @NonNull ResultReceiver result) {
         enforceSatelliteCommunicationPermission("requestIsCommunicationAllowedForCurrentLocation");
-        mSatelliteAccessController.requestIsCommunicationAllowedForCurrentLocation(result);
+        mSatelliteAccessController.requestIsCommunicationAllowedForCurrentLocation(result, false);
     }
 
     /**

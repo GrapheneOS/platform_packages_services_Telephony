@@ -157,6 +157,8 @@
     <string name="mobile_network_settings_package" translatable="false">com.android.settings</string>
     <!-- Class name for the mobile network settings activity [DO NOT TRANSLATE] -->
     <string name="mobile_network_settings_class" translatable="false">com.android.settings.Settings$MobileNetworkActivity</string>
+    <!-- Class name for the SIMs settings activity [DO NOT TRANSLATE] -->
+    <string name="sims_settings_class" translatable="false">com.android.settings.Settings$MobileNetworkListActivity</string>
 
     <!-- CDMA activation goes through HFA -->
     <!-- DEPRECATED: Use CarrierConfigManager#KEY_USE_HFA_FOR_PROVISIONING_BOOL -->

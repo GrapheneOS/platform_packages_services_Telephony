@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.UserHandle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -70,9 +71,9 @@ public class SuppServicesUiUtil {
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         ComponentName mobileNetworkSettingsComponent = new ComponentName(
                                 context.getString(R.string.mobile_network_settings_package),
-                                context.getString(R.string.mobile_network_settings_class));
+                                context.getString(R.string.sims_settings_class));
                         intent.setComponent(mobileNetworkSettingsComponent);
-                        context.startActivity(intent);
+                        context.startActivityAsUser(intent, UserHandle.CURRENT);
                     }
                 };
         return builder.setMessage(message)

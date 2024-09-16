@@ -129,9 +129,9 @@ public class EmergencyCallbackModeService extends Service {
             // Show dialog box
             else if (intent.getAction().equals(
                     TelephonyIntents.ACTION_SHOW_NOTICE_ECM_BLOCK_OTHERS)) {
-                    context.startActivity(
+                    context.startActivityAsUser(
                             new Intent(TelephonyIntents.ACTION_SHOW_NOTICE_ECM_BLOCK_OTHERS)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), UserHandle.CURRENT);
             }
         }
     };

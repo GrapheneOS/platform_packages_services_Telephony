@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
+import android.os.UserHandle;
 import android.telephony.satellite.SatelliteManager;
 import android.telephony.satellite.SatelliteSupportedStateCallback;
 import android.util.Log;
@@ -69,7 +70,8 @@ public class NbIotSatellite extends Activity {
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(NbIotSatellite.this, SatelliteTestApp.class));
+                startActivityAsUser(new Intent(NbIotSatellite.this, SatelliteTestApp.class),
+                        UserHandle.CURRENT);
             }
         });
 

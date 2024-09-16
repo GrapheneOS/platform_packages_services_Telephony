@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.telephony.PhoneNumberUtils;
@@ -186,7 +187,7 @@ public class SpecialCharSequenceMgr {
                                     "com.android.phone.SimContacts");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("index", index);
-                PhoneGlobals.getInstance().startActivity(intent);
+                PhoneGlobals.getInstance().startActivityAsUser(intent, UserHandle.CURRENT);
 
                 return true;
             } catch (NumberFormatException ex) {}
@@ -313,9 +314,9 @@ public class SpecialCharSequenceMgr {
             log("handleRegulatoryInfoDisplay() sending intent to settings app");
             Intent showRegInfoIntent = new Intent(Settings.ACTION_SHOW_REGULATORY_INFO);
             try {
-                context.startActivity(showRegInfoIntent);
+                context.startActivityAsUser(showRegInfoIntent, UserHandle.CURRENT);
             } catch (ActivityNotFoundException e) {
-                Log.e(TAG, "startActivity() failed: " + e);
+                Log.e(TAG, "startActivityAsUser() failed: " + e);
             }
             return true;
         }

@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
 import android.os.Process;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.telecom.TelecomManager;
 import android.telephony.CarrierConfigManager;
@@ -109,6 +110,11 @@ public class TestContext extends MockContext {
     @Override
     public AttributionSource getAttributionSource() {
         return new AttributionSource(Process.myUid(), getPackageName(), "");
+    }
+
+    @Override
+    public void startActivityAsUser(Intent intent, UserHandle user) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

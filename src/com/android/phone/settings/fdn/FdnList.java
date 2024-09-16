@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.telecom.PhoneAccount;
 import android.telephony.CarrierConfigManager;
 import android.telephony.SubscriptionManager;
@@ -167,7 +168,7 @@ public class FdnList extends ADNList {
                 Intent intent = mSubscriptionInfoHelper.getIntent(FdnSetting.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
                 finish();
                 return true;
 
@@ -200,7 +201,7 @@ public class FdnList extends ADNList {
     private void addContact() {
         //If there is no INTENT_EXTRA_NAME provided, EditFdnContactScreen treats it as an "add".
         Intent intent = mSubscriptionInfoHelper.getIntent(EditFdnContactScreen.class);
-        startActivity(intent);
+        startActivityAsUser(intent, UserHandle.CURRENT);
     }
 
     /**
@@ -224,7 +225,7 @@ public class FdnList extends ADNList {
             Intent intent = mSubscriptionInfoHelper.getIntent(EditFdnContactScreen.class);
             intent.putExtra(INTENT_EXTRA_NAME, name);
             intent.putExtra(INTENT_EXTRA_NUMBER, number);
-            startActivity(intent);
+            startActivityAsUser(intent, UserHandle.CURRENT);
         }
     }
 
@@ -240,7 +241,7 @@ public class FdnList extends ADNList {
             Intent intent = mSubscriptionInfoHelper.getIntent(DeleteFdnContactScreen.class);
             intent.putExtra(INTENT_EXTRA_NAME, name);
             intent.putExtra(INTENT_EXTRA_NUMBER, number);
-            startActivity(intent);
+            startActivityAsUser(intent, UserHandle.CURRENT);
         }
     }
 
@@ -254,7 +255,7 @@ public class FdnList extends ADNList {
             if (!TextUtils.isEmpty(number)) {
                 Uri uri = Uri.fromParts(PhoneAccount.SCHEME_TEL, number, null);
                 final Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED, uri);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         }
     }

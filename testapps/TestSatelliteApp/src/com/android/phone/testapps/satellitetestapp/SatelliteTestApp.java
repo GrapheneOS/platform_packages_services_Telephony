@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.UserHandle;
 import android.telephony.satellite.stub.SatelliteDatagram;
 import android.util.Log;
 import android.view.View;
@@ -58,49 +59,49 @@ public class SatelliteTestApp extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, SatelliteControl.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
         findViewById(R.id.Datagram).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, Datagram.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
         findViewById(R.id.Provisioning).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, Provisioning.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
         findViewById(R.id.MultipleSendReceive).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, MultipleSendReceive.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
         findViewById(R.id.SendReceive).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, SendReceive.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
         findViewById(R.id.NbIotSatellite).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, NbIotSatellite.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
         findViewById(R.id.TestSatelliteWrapper).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SatelliteTestApp.this, TestSatelliteWrapper.class);
-                startActivity(intent);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             }
         });
     }

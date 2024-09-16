@@ -42,7 +42,6 @@ import android.text.TextDirectionHeuristics;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
@@ -495,7 +494,7 @@ public class VoicemailSettingsActivity extends PreferenceActivity
                             Intent i = new Intent(ACTION_ADD_VOICEMAIL);
                             i.putExtra(IGNORE_PROVIDER_EXTRA, victim);
                             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            this.startActivity(i);
+                            this.startActivityAsUser(i, UserHandle.CURRENT);
                         }
                         return;
                     }

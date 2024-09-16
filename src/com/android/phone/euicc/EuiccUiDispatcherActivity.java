@@ -90,7 +90,7 @@ public class EuiccUiDispatcherActivity extends Activity {
             }
 
             euiccUiIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-            startActivity(euiccUiIntent);
+            startActivityAsUser(euiccUiIntent, UserHandle.CURRENT);
         } finally {
             // Since we're using Theme.NO_DISPLAY, we must always finish() at the end of onCreate().
             finish();

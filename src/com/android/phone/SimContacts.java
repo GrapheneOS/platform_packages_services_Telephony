@@ -33,6 +33,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
@@ -372,7 +373,7 @@ public class SimContacts extends ADNList {
                             Uri.fromParts(PhoneAccount.SCHEME_TEL, phoneNumber, null));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                           | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    startActivity(intent);
+                    startActivityAsUser(intent, UserHandle.CURRENT);
                     finish();
                     return true;
                 }

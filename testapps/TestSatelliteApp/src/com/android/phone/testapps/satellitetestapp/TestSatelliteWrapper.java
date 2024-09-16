@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
+import android.os.UserHandle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.satellite.wrapper.CarrierRoamingNtnModeListenerWrapper2;
@@ -121,7 +122,8 @@ public class TestSatelliteWrapper extends Activity {
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(TestSatelliteWrapper.this, SatelliteTestApp.class));
+                startActivityAsUser(new Intent(TestSatelliteWrapper.this, SatelliteTestApp.class),
+                        UserHandle.CURRENT);
             }
         });
         findViewById(R.id.ClearLog).setOnClickListener(new OnClickListener() {

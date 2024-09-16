@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.telecom.PhoneAccount;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyFrameworkInitializer;
@@ -136,13 +137,13 @@ public class CallDialTest extends Activity implements View.OnClickListener {
         log("==> intent: " + intent);
 
         try {
-            startActivity(intent);
+            startActivityAsUser(intent, UserHandle.CURRENT);
             Toast.makeText(this, "Starting activity...", Toast.LENGTH_SHORT).show();
         } catch (ActivityNotFoundException e) {
             Log.w(LOG_TAG, "testCall: ActivityNotFoundException for intent: " + intent);
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Log.w(LOG_TAG, "testCall: Unexpected exception from startActivity(): " + e);
+            Log.w(LOG_TAG, "testCall: Unexpected exception from startActivityAsUser(): " + e);
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
         }
     }

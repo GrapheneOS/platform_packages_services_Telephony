@@ -346,7 +346,7 @@ public class EditFdnContactScreen extends BaseFdnContactScreen {
             Intent intent = mSubscriptionInfoHelper.getIntent(DeleteFdnContactScreen.class);
             intent.putExtra(INTENT_EXTRA_NAME, mName);
             intent.putExtra(INTENT_EXTRA_NUMBER, mNumber);
-            startActivity(intent);
+            startActivityAsUser(intent, UserHandle.CURRENT);
         }
         finish();
     }

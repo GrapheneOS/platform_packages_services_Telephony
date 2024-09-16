@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.telephony.satellite.EnableRequestAttributes;
 import android.telephony.satellite.PointingInfo;
 import android.telephony.satellite.SatelliteDatagram;
@@ -108,7 +109,8 @@ public class Datagram extends Activity {
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Datagram.this, SatelliteTestApp.class));
+                startActivityAsUser(new Intent(Datagram.this, SatelliteTestApp.class),
+                        UserHandle.CURRENT);
             }
         });
     }

@@ -1347,7 +1347,7 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
         callback.getValue().onComplete(null, true);
 
         try {
-            doAnswer(invocation -> null).when(mContext).startActivity(any());
+            doAnswer(invocation -> null).when(mContext).startActivityAsUser(any(), any());
             verify(testPhone).dial(anyString(), any(), any());
         } catch (CallStateException e) {
             // This shouldn't happen
@@ -1462,7 +1462,7 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
         callback.getValue().onComplete(null, true);
 
         try {
-            doAnswer(invocation -> null).when(mContext).startActivity(any());
+            doAnswer(invocation -> null).when(mContext).startActivityAsUser(any(), any());
             verify(testPhone).dial(anyString(), any(), any());
         } catch (CallStateException e) {
             // This shouldn't happen
@@ -2158,7 +2158,7 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
             throws Exception {
         setupForCallTest();
         when(mTelephonyManagerProxy.isConcurrentCallsPossible()).thenReturn(true);
-        doNothing().when(mContext).startActivity(any());
+        doNothing().when(mContext).startActivityAsUser(any(), any());
 
         mBinderStub.createConnection(PHONE_ACCOUNT_HANDLE_1, "TC@1",
                 new ConnectionRequest(PHONE_ACCOUNT_HANDLE_1, Uri.parse("tel:16505551212"),
@@ -2191,7 +2191,7 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
             throws Exception {
         setupForCallTest();
         when(mTelephonyManagerProxy.isConcurrentCallsPossible()).thenReturn(true);
-        doNothing().when(mContext).startActivity(any());
+        doNothing().when(mContext).startActivityAsUser(any(), any());
 
         doReturn(true).when(mTelephonyManagerProxy).isCurrentEmergencyNumber(anyString());
         mBinderStub.createConnection(PHONE_ACCOUNT_HANDLE_1, "TC@1",
@@ -2227,7 +2227,7 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
             throws Exception {
         setupForCallTest();
         when(mTelephonyManagerProxy.isConcurrentCallsPossible()).thenReturn(true);
-        doNothing().when(mContext).startActivity(any());
+        doNothing().when(mContext).startActivityAsUser(any(), any());
 
         doReturn(true).when(mTelephonyManagerProxy).isCurrentEmergencyNumber(anyString());
         getTestContext().getCarrierConfig(0 /*subId*/).putBoolean(
@@ -3682,7 +3682,7 @@ public class TelephonyConnectionServiceTest extends TelephonyTestBase {
     @Test
     public void testDomainSelectionWithMmiCode() {
         //UT domain selection should not be handled by new domain selector.
-        doNothing().when(mContext).startActivity(any());
+        doNothing().when(mContext).startActivityAsUser(any(), any());
         setupForCallTest();
         setupForDialForDomainSelection(mPhone0, 0, false);
         mTestConnectionService.onCreateOutgoingConnection(PHONE_ACCOUNT_HANDLE_1,
