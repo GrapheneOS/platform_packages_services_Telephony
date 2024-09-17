@@ -1026,10 +1026,6 @@ public class RadioInfo extends AppCompatActivity {
             if (mSimulateOos[mPhoneId])  {
                 mSimulateOosOnChangeListener.onCheckedChanged(mSimulateOutOfServiceSwitch, false);
             }
-            if (mOriginalSystemChannels[mPhoneId] != null) {
-                mForceSatelliteChannelOnChangeListener
-                        .onCheckedChanged(mEnforceSatelliteChannel, false);
-            }
             if (mCarrierSatelliteOriginalBundle[mPhoneId] != null) {
                 mMockSatelliteListener.onCheckedChanged(mMockSatellite, false);
             }

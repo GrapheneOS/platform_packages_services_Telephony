@@ -9597,7 +9597,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     private WorkSource getWorkSource(int uid) {
         String packageName = mApp.getPackageManager().getNameForUid(uid);
-        if (uid == Process.ROOT_UID && packageName == null) {
+        if (UserHandle.isSameApp(uid, Process.ROOT_UID) && packageName == null) {
             // Downstream WorkSource attribution inside the RIL requires both a UID and package name
             // to be set for wakelock tracking, otherwise RIL requests fail with a runtime
             // exception. ROOT_UID seems not to have a valid package name returned by
@@ -11319,7 +11319,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         // In fact, the current code acquires way too many,
         // and probably has lurking deadlocks.
 
-        if (Binder.getCallingUid() != Process.SYSTEM_UID) {
+        if (!UserHandle.isSameApp(Binder.getCallingUid(), Process.SYSTEM_UID)) {
             throw new SecurityException("Only the OS may call notifyUserActivity()");
         }
 
