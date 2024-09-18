@@ -82,30 +82,7 @@ final class PstnIncomingCallNotifier {
     /**
      * Used to listen to events from {@link #mPhone}.
      */
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what) {
-                case EVENT_NEW_RINGING_CONNECTION:
-                    handleNewRingingConnection((AsyncResult) msg.obj);
-                    break;
-                case EVENT_CDMA_CALL_WAITING:
-                    handleCdmaCallWaiting((AsyncResult) msg.obj);
-                    break;
-                case EVENT_UNKNOWN_CONNECTION:
-                    handleNewUnknownConnection((AsyncResult) msg.obj);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[PstnIncomingCallNotifierHandler; phoneId=[%s]",
-                    getPhoneIdAsString());
-        }
-    };
+    private final Handler mHandler;
 
     /**
      * Persists the specified parameters and starts listening to phone events.
@@ -118,6 +95,30 @@ final class PstnIncomingCallNotifier {
         }
 
         mPhone = phone;
+        mHandler = new Handler(phone.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                switch(msg.what) {
+                    case EVENT_NEW_RINGING_CONNECTION:
+                        handleNewRingingConnection((AsyncResult) msg.obj);
+                        break;
+                    case EVENT_CDMA_CALL_WAITING:
+                        handleCdmaCallWaiting((AsyncResult) msg.obj);
+                        break;
+                    case EVENT_UNKNOWN_CONNECTION:
+                        handleNewUnknownConnection((AsyncResult) msg.obj);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public String toString() {
+                return String.format("[PstnIncomingCallNotifierHandler; phoneId=[%s]",
+                        getPhoneIdAsString());
+            }
+        };
 
         registerForNotifications();
     }

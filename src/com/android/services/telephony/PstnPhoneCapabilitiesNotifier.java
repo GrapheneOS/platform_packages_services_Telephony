@@ -39,18 +39,7 @@ final class PstnPhoneCapabilitiesNotifier {
     private final Phone mPhone;
     private final Listener mListener;
 
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case EVENT_VIDEO_CAPABILITIES_CHANGED:
-                    handleVideoCapabilitesChanged((AsyncResult) msg.obj);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    private final Handler mHandler;
 
     /*package*/
     PstnPhoneCapabilitiesNotifier(Phone phone, Listener listener) {
@@ -59,6 +48,18 @@ final class PstnPhoneCapabilitiesNotifier {
         }
 
         mPhone = phone;
+        mHandler = new Handler(phone.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case EVENT_VIDEO_CAPABILITIES_CHANGED:
+                        handleVideoCapabilitesChanged((AsyncResult) msg.obj);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
         mListener = listener;
 
         registerForNotifications();
