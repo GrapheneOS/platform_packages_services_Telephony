@@ -4827,8 +4827,12 @@ public class TelephonyConnectionService extends ConnectionService {
             mSatelliteSOSMessageRecommender = new SatelliteSOSMessageRecommender(phone.getContext(),
                     phone.getContext().getMainLooper());
         }
+
+        String number = connection.getAddress().getSchemeSpecificPart();
+        final boolean isTestEmergencyNumber = isEmergencyNumberTestNumber(number);
+
         connection.addTelephonyConnectionListener(mEmergencyConnectionSatelliteListener);
-        mSatelliteSOSMessageRecommender.onEmergencyCallStarted(connection);
+        mSatelliteSOSMessageRecommender.onEmergencyCallStarted(connection, isTestEmergencyNumber);
         mSatelliteSOSMessageRecommender.onEmergencyCallConnectionStateChanged(
                 connection.getTelecomCallId(), connection.STATE_DIALING);
     }
