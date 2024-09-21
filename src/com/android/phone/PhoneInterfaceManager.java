@@ -12853,15 +12853,31 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
         Context context = getPhoneFromSubIdOrDefault(subId).getContext();
 
-        UserHandle userHandle = null;
-        final long identity = Binder.clearCallingIdentity();
-        try {
-            userHandle = TelephonyUtils.getSubscriptionUserHandle(context, subId);
-        } finally {
-            Binder.restoreCallingIdentity(identity);
+        if (mTelecomFeatureFlags.telecomMainUserInGetRespondMessageApp()){
+            UserHandle mainUser = null;
+            Context userContext = null;
+            final long identity = Binder.clearCallingIdentity();
+            try {
+                mainUser = mUserManager.getMainUser();
+                userContext = context.createContextAsUser(mainUser, 0);
+                Log.d(LOG_TAG, "getDefaultRespondViaMessageApplication: mainUser = " + mainUser);
+            } finally {
+                Binder.restoreCallingIdentity(identity);
+            }
+            return SmsApplication.getDefaultRespondViaMessageApplicationAsUser(userContext,
+                    updateIfNeeded, mainUser);
+        } else {
+            UserHandle userHandle = null;
+            final long identity = Binder.clearCallingIdentity();
+            try {
+                userHandle = TelephonyUtils.getSubscriptionUserHandle(context, subId);
+            } finally {
+                Binder.restoreCallingIdentity(identity);
+            }
+            return SmsApplication.getDefaultRespondViaMessageApplicationAsUser(context,
+                    updateIfNeeded, userHandle);
         }
-        return SmsApplication.getDefaultRespondViaMessageApplicationAsUser(context,
-                updateIfNeeded, userHandle);
+
     }
 
     /**

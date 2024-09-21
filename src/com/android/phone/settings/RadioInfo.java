@@ -362,6 +362,7 @@ public class RadioInfo extends AppCompatActivity {
     private int mPreferredNetworkTypeResult;
     private int mCellInfoRefreshRateIndex;
     private int mPhoneId = SubscriptionManager.INVALID_PHONE_INDEX;
+    private static final int DEFAULT_PHONE_ID = 0;
 
     private int mSubId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
 
@@ -584,7 +585,15 @@ public class RadioInfo extends AppCompatActivity {
             mPhone = getPhone(SubscriptionManager.getDefaultSubscriptionId());
         }
         mSubId = SubscriptionManager.getDefaultSubscriptionId();
-        mPhoneId = SubscriptionManager.getPhoneId(mSubId);
+        if (mPhone != null) {
+            mPhoneId = mPhone.getPhoneId();
+        } else {
+            mPhoneId = SubscriptionManager.getPhoneId(mSubId);
+        }
+        if (!SubscriptionManager.isValidPhoneId(mPhoneId)) {
+            mPhoneId = DEFAULT_PHONE_ID;
+        }
+
         mTelephonyManager = getSystemService(TelephonyManager.class)
                 .createForSubscriptionId(mSubId);
         mEuiccManager = getSystemService(EuiccManager.class);
