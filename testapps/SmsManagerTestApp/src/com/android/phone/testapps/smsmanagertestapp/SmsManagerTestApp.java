@@ -24,7 +24,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -185,7 +184,7 @@ public class SmsManagerTestApp extends Activity {
         intent.setComponent(SETTINGS_SUB_PICK_ACTIVITY);
         intent.putExtra(DIALOG_TYPE_KEY, SMS_PICK);
         try {
-            startActivityAsUser(intent, UserHandle.CURRENT);
+            startActivity(intent);
         } catch (ActivityNotFoundException anfe) {
             // If Settings is not installed, only log the error as we do not want to break
             // legacy applications.

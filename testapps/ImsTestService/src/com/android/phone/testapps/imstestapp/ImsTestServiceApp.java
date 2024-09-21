@@ -19,7 +19,6 @@ package com.android.phone.testapps.imstestapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -53,16 +52,16 @@ public class ImsTestServiceApp extends Activity {
 
     private void launchRegistrationActivity() {
         Intent intent = new Intent(this, ImsRegistrationActivity.class);
-        startActivityAsUser(intent, UserHandle.CURRENT);
+        startActivity(intent);
     }
 
     private void launchCallingActivity() {
         Intent intent = new Intent(this, ImsCallingActivity.class);
-        startActivityAsUser(intent, UserHandle.CURRENT);
+        startActivity(intent);
     }
 
     private void launchConfigActivity() {
         Intent intent = new Intent(this, ImsConfigActivity.class);
-        startActivityAsUser(intent, UserHandle.CURRENT);
+        startActivity(intent);
     }
 }

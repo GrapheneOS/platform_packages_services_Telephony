@@ -19,7 +19,6 @@ package com.android.phone.testapps.satellitetestapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.telephony.satellite.EnableRequestAttributes;
 import android.telephony.satellite.SatelliteDatagram;
 import android.telephony.satellite.SatelliteManager;
@@ -57,8 +56,7 @@ public class MultipleSendReceive extends Activity {
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityAsUser(new Intent(MultipleSendReceive.this, SatelliteTestApp.class),
-                        UserHandle.CURRENT);
+                startActivity(new Intent(MultipleSendReceive.this, SatelliteTestApp.class));
             }
         });
     }

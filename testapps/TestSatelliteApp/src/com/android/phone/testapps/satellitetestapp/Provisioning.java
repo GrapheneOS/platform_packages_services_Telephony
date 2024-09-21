@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.OutcomeReceiver;
-import android.os.UserHandle;
 import android.telephony.satellite.SatelliteManager;
 import android.telephony.satellite.SatelliteProvisionStateCallback;
 import android.telephony.satellite.stub.SatelliteResult;
@@ -70,8 +69,7 @@ public class Provisioning extends Activity {
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityAsUser(new Intent(Provisioning.this, SatelliteTestApp.class),
-                        UserHandle.CURRENT);
+                startActivity(new Intent(Provisioning.this, SatelliteTestApp.class));
             }
         });
     }

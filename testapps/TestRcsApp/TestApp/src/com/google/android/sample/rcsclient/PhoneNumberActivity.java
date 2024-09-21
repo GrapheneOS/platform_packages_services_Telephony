@@ -18,7 +18,6 @@ package com.google.android.sample.rcsclient;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -52,7 +51,7 @@ public class PhoneNumberActivity extends AppCompatActivity {
             if (formattedNumber != null) {
                 Intent intent = new Intent(PhoneNumberActivity.this, ChatActivity.class);
                 intent.putExtra(ChatActivity.EXTRA_REMOTE_PHONE_NUMBER, formattedNumber);
-                PhoneNumberActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+                PhoneNumberActivity.this.startActivity(intent);
             } else {
                 Toast.makeText(this, "Invalid Number format!",
                         Toast.LENGTH_LONG).show();

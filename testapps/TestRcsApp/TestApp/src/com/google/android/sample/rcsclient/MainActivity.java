@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -63,30 +62,30 @@ public class MainActivity extends AppCompatActivity {
         mCarrierLockModeListBtn = findViewById(R.id.setCarrierLockMode);
         mProvisionButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, ProvisioningActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
 
         mDelegateButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, DelegateActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
 
         mUceButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, UceActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
 
         mGbaButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, GbaActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
         mMessageClientButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, ContactListActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
         mFileUploadButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, FileUploadActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
 
         String appVersionName = getVersionCode(getPackageName());
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCarrierLockModeListBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, CarrieLockModeListActivity.class);
-            MainActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            MainActivity.this.startActivity(intent);
         });
     }
 

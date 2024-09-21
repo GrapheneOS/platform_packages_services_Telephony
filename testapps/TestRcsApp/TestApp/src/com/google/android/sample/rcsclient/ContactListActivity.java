@@ -23,7 +23,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.UserHandle;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
 import android.view.MenuItem;
@@ -78,7 +77,7 @@ public class ContactListActivity extends AppCompatActivity {
         mStartChatButton = findViewById(R.id.start_chat_btn);
         mStartChatButton.setOnClickListener(view -> {
             Intent intent = new Intent(ContactListActivity.this, PhoneNumberActivity.class);
-            ContactListActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+            ContactListActivity.this.startActivity(intent);
         });
         setButtonClickable(false);
 
@@ -188,7 +187,7 @@ public class ContactListActivity extends AppCompatActivity {
                 Intent intent = new Intent(ContactListActivity.this, ChatActivity.class);
                 intent.putExtra(ChatActivity.EXTRA_REMOTE_PHONE_NUMBER,
                         mContactList.get(position).phoneNumber);
-                ContactListActivity.this.startActivityAsUser(intent, UserHandle.CURRENT);
+                ContactListActivity.this.startActivity(intent);
             });
         } else {
             mListview.setOnItemClickListener(null);

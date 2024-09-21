@@ -217,6 +217,30 @@ public class TelecomAccountRegistryTest extends TelephonyTestBase {
                 PhoneAccount.CAPABILITY_EMERGENCY_CALLS_ONLY)).isTrue();
     }
 
+    @Test
+    public void onLocaleChanged_withSubVoiceCapable_shouldNotRegisterEmergencyOnlyAccount() {
+        overrideSubscriptionServiceCapabilities(
+                new int[]{SubscriptionManager.SERVICE_CAPABILITY_VOICE});
+        onLocaleChanged();
+
+        PhoneAccount phoneAccount = verifyAndCaptureRegisteredPhoneAccount();
+
+        assertThat(phoneAccount.hasCapabilities(
+                PhoneAccount.CAPABILITY_EMERGENCY_CALLS_ONLY)).isFalse();
+    }
+
+    @Test
+    public void onLocaleChanged_withSubNotVoiceCapable_shouldRegisterEmergencyOnlyAccount() {
+        overrideSubscriptionServiceCapabilities(
+                new int[]{SubscriptionManager.SERVICE_CAPABILITY_DATA});
+        onLocaleChanged();
+
+        PhoneAccount phoneAccount = verifyAndCaptureRegisteredPhoneAccount();
+
+        assertThat(phoneAccount.hasCapabilities(
+                PhoneAccount.CAPABILITY_EMERGENCY_CALLS_ONLY)).isTrue();
+    }
+
     private PhoneAccount verifyAndCaptureRegisteredPhoneAccount() {
         ArgumentCaptor<PhoneAccount> phoneAccountArgumentCaptor =
                 ArgumentCaptor.forClass(PhoneAccount.class);
@@ -277,5 +301,14 @@ public class TelecomAccountRegistryTest extends TelephonyTestBase {
         Log.d(TAG, "Broadcast ACTION_NETWORK_COUNTRY_CHANGED...");
         Intent intent = new Intent(TelephonyManager.ACTION_NETWORK_COUNTRY_CHANGED);
         mLocaleChangedBroadcastReceiver.onReceive(mMockedContext, intent);
+    }
+
+    private void overrideSubscriptionServiceCapabilities(int[] capabilities) {
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putIntArray(CarrierConfigManager.KEY_CELLULAR_SERVICE_CAPABILITIES_INT_ARRAY,
+                capabilities);
+
+        when(mPhoneGlobals.getCarrierConfigForSubId(anyInt())).thenReturn(bundle);
+        mTestableLooper.processAllMessages();
     }
 }

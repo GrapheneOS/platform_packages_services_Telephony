@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.OutcomeReceiver;
-import android.os.UserHandle;
 import android.telephony.satellite.EnableRequestAttributes;
 import android.telephony.satellite.PointingInfo;
 import android.telephony.satellite.SatelliteCapabilities;
@@ -73,8 +72,7 @@ public class SendReceive extends Activity {
         findViewById(R.id.Back).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityAsUser(new Intent(SendReceive.this, SatelliteTestApp.class),
-                        UserHandle.CURRENT);
+                startActivity(new Intent(SendReceive.this, SatelliteTestApp.class));
             }
         });
     }

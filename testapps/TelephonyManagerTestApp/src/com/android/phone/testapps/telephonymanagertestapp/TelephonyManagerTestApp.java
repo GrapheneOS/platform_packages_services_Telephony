@@ -20,7 +20,6 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.View;
@@ -139,7 +138,7 @@ public class TelephonyManagerTestApp extends ListActivity implements
         sCurrentMethod = mFilteredMethods.get(position);
         Intent intent = new Intent(this, CallingMethodActivity.class);
 
-        startActivityAsUser(intent, UserHandle.CURRENT);
+        startActivity(intent);
     }
 
     @Override
