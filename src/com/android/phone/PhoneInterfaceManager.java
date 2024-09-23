@@ -9606,7 +9606,15 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     }
 
     private WorkSource getWorkSource(int uid) {
-        String packageName = mApp.getPackageManager().getNameForUid(uid);
+        PackageManager pm;
+        if (mFeatureFlags.hsumPackageManager()) {
+            pm = mApp.getBaseContext().createContextAsUser(UserHandle.getUserHandleForUid(uid), 0)
+                    .getPackageManager();
+        } else {
+            pm = mApp.getPackageManager();
+        }
+
+        String packageName = pm.getNameForUid(uid);
         if (UserHandle.isSameApp(uid, Process.ROOT_UID) && packageName == null) {
             // Downstream WorkSource attribution inside the RIL requires both a UID and package name
             // to be set for wakelock tracking, otherwise RIL requests fail with a runtime
@@ -10876,9 +10884,16 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      */
     @Override
     public @Nullable String getCurrentPackageName() {
-        PackageManager pm = mApp.getPackageManager();
-        String[] packageNames = pm == null ? null : pm.getPackagesForUid(Binder.getCallingUid());
-        return packageNames == null ? null : packageNames[0];
+        if (mFeatureFlags.hsumPackageManager()) {
+            PackageManager pm = mApp.getBaseContext().createContextAsUser(
+                    Binder.getCallingUserHandle(), 0).getPackageManager();
+            if (pm == null) return null;
+            String[] callingUids = pm.getPackagesForUid(Binder.getCallingUid());
+            return (callingUids == null) ? null : callingUids[0];
+        }
+        if (mPackageManager == null) return null;
+        String[] callingUids = mPackageManager.getPackagesForUid(Binder.getCallingUid());
+        return (callingUids == null) ? null : callingUids[0];
     }
 
     /**
@@ -10888,7 +10903,13 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      * Note: This is for logging purposes only and should not be used for security checks.
      */
     private String getCurrentPackageNameOrPhone() {
-        PackageManager pm = mApp.getPackageManager();
+        PackageManager pm;
+        if (mFeatureFlags.hsumPackageManager()) {
+            pm = mApp.getBaseContext().createContextAsUser(
+                    Binder.getCallingUserHandle(), 0).getPackageManager();
+        } else {
+            pm = mApp.getPackageManager();
+        }
         String uidName = pm == null ? null : pm.getNameForUid(Binder.getCallingUid());
         if (uidName != null && !uidName.isEmpty()) return uidName;
         return getCurrentPackageName();
@@ -12564,8 +12585,13 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
         String callingProcess;
         try {
-            callingProcess = mApp.getPackageManager().getApplicationInfo(
-                    getCurrentPackageName(), 0).processName;
+            if (mFeatureFlags.hsumPackageManager()) {
+                callingProcess = mApp.getPackageManager().getApplicationInfoAsUser(
+                        getCurrentPackageName(), 0, Binder.getCallingUserHandle()).processName;
+            } else {
+                callingProcess = mApp.getPackageManager().getApplicationInfo(
+                        getCurrentPackageName(), 0).processName;
+            }
         } catch (PackageManager.NameNotFoundException e) {
             callingProcess = getCurrentPackageName();
         }

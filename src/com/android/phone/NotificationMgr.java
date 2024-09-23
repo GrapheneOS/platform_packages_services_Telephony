@@ -519,8 +519,14 @@ public class NotificationMgr {
             return false;
         }
 
-        List<ResolveInfo> receivers = mContext.getPackageManager()
-                .queryBroadcastReceivers(intent, 0);
+        List<ResolveInfo> receivers;
+        if (mFeatureFlags.hsumPackageManager()) {
+            receivers = mContext.createContextAsUser(userHandle, 0)
+                    .getPackageManager().queryBroadcastReceivers(intent, 0);
+        } else {
+            receivers = mContext.getPackageManager()
+                    .queryBroadcastReceivers(intent, 0);
+        }
         return receivers.size() > 0;
     }
 

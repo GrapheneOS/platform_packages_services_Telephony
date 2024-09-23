@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -41,6 +42,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.UserHandle;
 import android.permission.flags.Flags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.telephony.RadioAccessFamily;
@@ -111,6 +113,9 @@ public class PhoneInterfaceManagerTest extends TelephonyTestBase {
         // alive on a test devices. You must use the spy to mock behavior. Mocks stemming from the
         // passed context will remain unused.
         mPhoneInterfaceManager = spy(PhoneInterfaceManager.init(mPhoneGlobals, mFeatureFlags));
+        doReturn(mPhoneGlobals).when(mPhoneGlobals).getBaseContext();
+        doReturn(mPhoneGlobals).when(mPhoneGlobals).createContextAsUser(
+                any(UserHandle.class), anyInt());
         doReturn(mSubscriptionManagerService).when(mPhoneInterfaceManager)
                 .getSubscriptionManagerService();
         TelephonyManager.setupISubForTest(mSubscriptionManagerService);
@@ -123,6 +128,7 @@ public class PhoneInterfaceManagerTest extends TelephonyTestBase {
         // and disabled enforce_telephony_feature_mapping_for_public_apis feature flag
         mPhoneInterfaceManager.setFeatureFlags(mFeatureFlags);
         doReturn(false).when(mFeatureFlags).enforceTelephonyFeatureMappingForPublicApis();
+        doReturn(true).when(mFeatureFlags).hsumPackageManager();
         mPhoneInterfaceManager.setPackageManager(mPackageManager);
         doReturn(true).when(mPackageManager).hasSystemFeature(anyString());
 

@@ -572,7 +572,7 @@ public class RadioInfo extends AppCompatActivity {
         mActionEsos =
             r.getString(
                     com.android.internal.R.string
-                            .config_satellite_emergency_handover_intent_action);
+                            .config_satellite_test_with_esp_replies_intent_action);
 
         mActionEsosDemo =
             r.getString(

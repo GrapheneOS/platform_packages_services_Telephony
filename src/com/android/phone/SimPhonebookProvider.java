@@ -30,6 +30,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.RemoteException;
@@ -677,8 +678,14 @@ public class SimPhonebookProvider extends ContentProvider {
         String callingPackage = getCallingPackage();
         int granted = PackageManager.PERMISSION_DENIED;
         if (callingPackage != null) {
-            granted = getContext().getPackageManager().checkPermission(
-                    Manifest.permission.MODIFY_PHONE_STATE, callingPackage);
+            if (Flags.hsumPackageManager()) {
+                granted = getContext().createContextAsUser(Binder.getCallingUserHandle(), 0)
+                        .getPackageManager().checkPermission(
+                                Manifest.permission.MODIFY_PHONE_STATE, callingPackage);
+            } else {
+                granted = getContext().getPackageManager().checkPermission(
+                        Manifest.permission.MODIFY_PHONE_STATE, callingPackage);
+            }
         }
         return granted == PackageManager.PERMISSION_GRANTED
                 || telephonyManager.hasCarrierPrivileges(args.subscriptionId);

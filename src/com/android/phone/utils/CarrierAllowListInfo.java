@@ -21,9 +21,11 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.os.Binder;
 import android.telephony.Rlog;
 import android.text.TextUtils;
 
+import com.android.internal.telephony.flags.Flags;
 import com.android.internal.telephony.uicc.IccUtils;
 
 import org.json.JSONArray;
@@ -155,7 +157,11 @@ public class CarrierAllowListInfo {
             // package name is mandatory
             return false;
         }
-        final PackageManager packageManager = context.getPackageManager();
+        PackageManager packageManager = context.getPackageManager();
+        if (Flags.hsumPackageManager()) {
+            packageManager = context.createContextAsUser(Binder.getCallingUserHandle(), 0)
+                    .getPackageManager();
+        }
         try {
             MessageDigest sha256MDigest = MessageDigest.getInstance(MESSAGE_DIGEST_256_ALGORITHM);
             final PackageInfo packageInfo = packageManager.getPackageInfo(packageName,
