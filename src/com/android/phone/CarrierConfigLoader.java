@@ -1384,14 +1384,7 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
             if (config != null) {
                 retConfig.putAll(config);
             }
-            config = mPersistentOverrideConfigs[phoneId];
-            if (config != null) {
-                retConfig.putAll(config);
-            }
-            config = mOverrideConfigs[phoneId];
-            if (config != null) {
-                retConfig.putAll(config);
-            }
+            putAllOverrides(phoneId, retConfig);
             // Ignore the theoretical case of the default app not being present since that won't
             // work in CarrierConfigLoader today.
             final boolean allConfigsApplied =
@@ -1406,6 +1399,20 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
             }
         }
         return retConfig;
+    }
+
+    /**
+     * Extracted method from upstream logic.
+     */
+    private void putAllOverrides(int phoneId, PersistableBundle retConfig) {
+        PersistableBundle config = mPersistentOverrideConfigs[phoneId];
+        if (config != null) {
+            retConfig.putAll(config);
+        }
+        config = mOverrideConfigs[phoneId];
+        if (config != null) {
+            retConfig.putAll(config);
+        }
     }
 
     @Override
@@ -1456,6 +1463,35 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
         }
 
         return configSubset;
+    }
+
+    @Override
+    @NonNull
+    public PersistableBundle getOverrideConfigForSubIdWithFeature(int subscriptionId,
+            @NonNull String callingPackage, @Nullable String callingFeatureId) {
+        Objects.requireNonNull(callingPackage, "Calling package must be non-null");
+        enforceCallerIsSystemOrRequestingPackage(callingPackage);
+        enforceTelephonyFeatureWithException(callingPackage,
+                "getOverrideConfigForSubIdWithFeature");
+        if (!"com.android.settings".equals(callingPackage)) {
+            throw new SecurityException("not from Settings app");
+        }
+        if (!TelephonyPermissions.checkCallingOrSelfReadPhoneState(mContext, subscriptionId,
+                callingPackage, callingFeatureId, "getOverrideConfig")) {
+            return new PersistableBundle();
+        }
+
+        final int phoneId = SubscriptionManager.getPhoneId(subscriptionId);
+        if (!SubscriptionManager.isValidPhoneId(phoneId)) {
+            logd("Ignore invalid phoneId: " + phoneId + " for subId: " + subscriptionId);
+            throw new IllegalArgumentException(
+                    "Invalid phoneId " + phoneId + " for subId " + subscriptionId);
+        }
+
+        final PersistableBundle retConfig = new PersistableBundle();
+        putAllOverrides(phoneId, retConfig);
+        retConfig.remove(KEY_VERSION);
+        return retConfig;
     }
 
     @android.annotation.EnforcePermission(android.Manifest.permission.MODIFY_PHONE_STATE)
