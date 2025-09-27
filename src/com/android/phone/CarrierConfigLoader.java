@@ -837,6 +837,14 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
             loge("SubscriptionManagerService missing");
             return;
         }
+
+        int subId = SubscriptionManager.getSubscriptionId(phoneId);
+        PersistableBundle extOverrides = sm.getExtCarrierConfigOverrides(subId);
+        if (extOverrides != null) {
+            configToSend = new PersistableBundle(configToSend);
+            configToSend.putAll(extOverrides);
+        }
+
         sm.updateSubscriptionByCarrierConfig(
                 phoneId, configPackageName, configToSend,
                 () -> mHandler.obtainMessage(EVENT_SUBSCRIPTION_INFO_UPDATED, phoneId, -1)
@@ -1384,14 +1392,14 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
             if (config != null) {
                 retConfig.putAll(config);
             }
-            config = mPersistentOverrideConfigs[phoneId];
-            if (config != null) {
-                retConfig.putAll(config);
+            putAllAospOverrides(phoneId, retConfig);
+
+            SubscriptionManagerService sm = SubscriptionManagerService.getInstance();
+            PersistableBundle extOverrides = sm.getExtCarrierConfigOverrides(subscriptionId);
+            if (extOverrides != null) {
+                retConfig.putAll(extOverrides);
             }
-            config = mOverrideConfigs[phoneId];
-            if (config != null) {
-                retConfig.putAll(config);
-            }
+
             // Ignore the theoretical case of the default app not being present since that won't
             // work in CarrierConfigLoader today.
             final boolean allConfigsApplied =
@@ -1406,6 +1414,20 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
             }
         }
         return retConfig;
+    }
+
+    /**
+     * Extracted method from upstream logic.
+     */
+    private void putAllAospOverrides(int phoneId, PersistableBundle retConfig) {
+        PersistableBundle config = mPersistentOverrideConfigs[phoneId];
+        if (config != null) {
+            retConfig.putAll(config);
+        }
+        config = mOverrideConfigs[phoneId];
+        if (config != null) {
+            retConfig.putAll(config);
+        }
     }
 
     @Override
@@ -1461,7 +1483,7 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
     @android.annotation.EnforcePermission(android.Manifest.permission.MODIFY_PHONE_STATE)
     @Override
     public void overrideConfig(int subscriptionId, @Nullable PersistableBundle overrides,
-            boolean persistent) {
+            int type) {
         overrideConfig_enforcePermission();
 
         // Do not allow shell UID to override the carrier config. This will not impact
@@ -1477,39 +1499,85 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
                     "Invalid phoneId " + phoneId + " for subId " + subscriptionId);
         }
 
+        switch (type) {
+            case CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT:
+            case CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT:
+            case CarrierConfigManager.CONFIG_OVERRIDE_TYPE_GRAPHENEOS:
+                break;
+            default:
+                throw new IllegalArgumentException("invalid override type: " + type);
+        }
+
         enforceTelephonyFeatureWithException(getCurrentPackageName(), "overrideConfig");
 
         // Post to run on handler thread on which all states should be confined.
         mHandler.post(() -> {
             mNeedNotifyCallback[phoneId] = true;
-            overrideConfig(mOverrideConfigs, phoneId, overrides);
+            if (type == CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT ||
+                    type == CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT) {
+                overrideConfig(mOverrideConfigs, phoneId, overrides);
 
-            if (persistent) {
-                if (isUserBuild() && !isSystemApp()) {
-                    throw new SecurityException("overrideConfig with persistent=true only can be "
-                            + "invoked by system app");
+                if (type == CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT) {
+                    if (isUserBuild() && !isSystemApp()) {
+                        throw new SecurityException("overrideConfig with persistent=true only can be "
+                                + "invoked by system app");
+                    }
+
+                    overrideConfig(mPersistentOverrideConfigs, phoneId, overrides);
+
+                    if (overrides != null) {
+                        final CarrierIdentifier carrierId = getCarrierIdentifierForPhoneId(phoneId);
+                        saveConfigToXml(mPlatformCarrierConfigPackage, OVERRIDE_PACKAGE_ADDITION,
+                                phoneId,
+                                carrierId, mPersistentOverrideConfigs[phoneId]);
+                    } else {
+                        final String iccid = getIccIdForPhoneId(phoneId);
+                        final int cid = getSpecificCarrierIdForPhoneId(phoneId);
+                        String fileName = getFilenameForConfig(mPlatformCarrierConfigPackage,
+                                OVERRIDE_PACKAGE_ADDITION, iccid, cid);
+                        File fileToDelete = new File(mContext.getFilesDir(), fileName);
+                        fileToDelete.delete();
+                    }
                 }
-
-                overrideConfig(mPersistentOverrideConfigs, phoneId, overrides);
-
-                if (overrides != null) {
-                    final CarrierIdentifier carrierId = getCarrierIdentifierForPhoneId(phoneId);
-                    saveConfigToXml(mPlatformCarrierConfigPackage, OVERRIDE_PACKAGE_ADDITION,
-                            phoneId,
-                            carrierId, mPersistentOverrideConfigs[phoneId]);
-                } else {
-                    final String iccid = getIccIdForPhoneId(phoneId);
-                    final int cid = getSpecificCarrierIdForPhoneId(phoneId);
-                    String fileName = getFilenameForConfig(mPlatformCarrierConfigPackage,
-                            OVERRIDE_PACKAGE_ADDITION, iccid, cid);
-                    File fileToDelete = new File(mContext.getFilesDir(), fileName);
-                    fileToDelete.delete();
-                }
+            } else {
+                SubscriptionManagerService sm = SubscriptionManagerService.getInstance();
+                sm.setExtCarrierConfigOverrides(subscriptionId, overrides);
             }
-            logl("overrideConfig: subId=" + subscriptionId + ", persistent="
-                    + persistent + ", overrides=" + overrides);
+            logl("overrideConfig: subId=" + subscriptionId + ", type="
+                    + type + ", overrides=" + overrides);
             updateSubscriptionDatabase(phoneId);
         });
+    }
+
+    @Override
+    @NonNull
+    public PersistableBundle getConfigOverrides(int subscriptionId, boolean aosp) {
+        getConfigOverrides_enforcePermission();
+
+        final int phoneId = SubscriptionManager.getPhoneId(subscriptionId);
+        if (!SubscriptionManager.isValidPhoneId(phoneId)) {
+            logd("Ignore invalid phoneId: " + phoneId + " for subId: " + subscriptionId);
+            throw new IllegalArgumentException(
+                    "Invalid phoneId " + phoneId + " for subId " + subscriptionId);
+        }
+
+        PersistableBundle retConfig = new PersistableBundle();
+        if (aosp) {
+            putAllAospOverrides(phoneId, retConfig);
+            retConfig.remove(KEY_VERSION);
+        } else {
+            final long token = Binder.clearCallingIdentity();
+            try {
+                SubscriptionManagerService sm = SubscriptionManagerService.getInstance();
+                PersistableBundle configs = sm.getExtCarrierConfigOverrides(subscriptionId);
+                if (configs != null) {
+                    retConfig.putAll(configs);
+                }
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        }
+        return retConfig;
     }
 
     private boolean isSystemApp() {
