@@ -110,6 +110,9 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
     private static final SimpleDateFormat TIME_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
+    private static final Set OVERRIDE_BLOCKLIST_ON_USER_BUILD =
+            Set.of("satellite_entitlement_supported_bool", "satellite_data_support_mode_int");
+
     // Package name for platform carrier config app, bundled with system image.
     @NonNull private final String mPlatformCarrierConfigPackage;
 
@@ -1480,11 +1483,36 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
         return configSubset;
     }
 
+    private void secureOverrideConfig(PersistableBundle persistableBundle, boolean z) {
+        if (TelephonyPermissions.isShell(ICarrierConfigLoader.Stub.getCallingUid())) {
+            throw new SecurityException("overrideConfig cannot be invoked by shell");
+        }
+        long jClearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            String modemService = ((TelephonyManager) this.mContext.getSystemService(TelephonyManager.class)).getModemService();
+            logd("modemService=" + modemService);
+            boolean zEquals = "android.telephony.mockmodem.MockModemService".equals(modemService);
+            if (isUserBuild() && persistableBundle != null && !zEquals) {
+                for (String str : OVERRIDE_BLOCKLIST_ON_USER_BUILD) {
+                    if (persistableBundle.containsKey(str)) {
+                        throw new SecurityException("Overriding " + str + " is not allowed on user builds.");
+                    }
+                }
+            }
+            if (z && isUserBuild() && !isSystemApp()) {
+                throw new SecurityException("overrideConfig with persistent=true only can be invoked by system app");
+            }
+        } finally {
+            Binder.restoreCallingIdentity(jClearCallingIdentity);
+        }
+    }
+
     @android.annotation.EnforcePermission(android.Manifest.permission.MODIFY_PHONE_STATE)
     @Override
     public void overrideConfig(int subscriptionId, @Nullable PersistableBundle overrides,
             int type) {
         overrideConfig_enforcePermission();
+        secureOverrideConfig(overrides, type == 1);
 
         // Do not allow shell UID to override the carrier config. This will not impact
         // the CTS and telephony shell commands as they use different uids
@@ -1518,11 +1546,6 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
                 overrideConfig(mOverrideConfigs, phoneId, overrides);
 
                 if (type == CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT) {
-                    if (isUserBuild() && !isSystemApp()) {
-                        throw new SecurityException("overrideConfig with persistent=true only can be "
-                                + "invoked by system app");
-                    }
-
                     overrideConfig(mPersistentOverrideConfigs, phoneId, overrides);
 
                     if (overrides != null) {
@@ -1595,7 +1618,7 @@ public class CarrierConfigLoader extends ICarrierConfigLoader.Stub {
         }
     }
 
-    private boolean isUserBuild() {
+    public boolean isUserBuild() {
         return "user".equals(android.os.Build.TYPE);
     }
 
