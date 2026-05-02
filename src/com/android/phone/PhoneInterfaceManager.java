@@ -3270,6 +3270,16 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                     PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS, "getNetworkCountryIsoForPhone");
         }
 
+        final int callerUid = Binder.getCallingUid();
+        try {
+            if (ActivityManager.getService().shouldHideCarrierInfoForUid(
+                    callerUid, "getNetworkCountryIso")) {
+                return "";
+            }
+        } catch (RemoteException e) {
+            return "";
+        }
+
         // Reporting the correct network country is ambiguous when IWLAN could conflict with
         // registered cell info, so return a NULL country instead.
         final long identity = Binder.clearCallingIdentity();
@@ -12370,6 +12380,16 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
                 com.android.internal.R.bool.config_force_phone_globals_creation)) {
             enforceTelephonyFeatureWithException(getCurrentPackageName(),
                     PackageManager.FEATURE_TELEPHONY_SUBSCRIPTION, "getSimStateForSlotIndex");
+        }
+
+        final int callerUid = Binder.getCallingUid();
+        try {
+            if (ActivityManager.getService().shouldHideCarrierInfoForUid(
+                    callerUid, "getSimState")) {
+                return IccCardConstants.State.ABSENT.ordinal();
+            }
+        } catch (RemoteException e) {
+            return IccCardConstants.State.ABSENT.ordinal();
         }
 
         IccCardConstants.State simState;
