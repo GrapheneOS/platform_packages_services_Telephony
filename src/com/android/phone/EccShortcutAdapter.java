@@ -26,10 +26,15 @@ import android.widget.BaseAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.common.collect.LinkedListMultimap;
+import com.android.settingslib.emergencynumber.EmergencyNumberUtils;
+import com.android.settingslib.emergencynumber.EmergencyNumberUtils.Candidate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An abstract adapter between ECC data and the view contains ECC shortcuts.
@@ -115,19 +120,15 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
                 return;
             }
 
-            LinkedListMultimap<String, Integer> emergencyNumbers = LinkedListMultimap.create();
-            for (int category : ShortcutViewUtils.PROMOTED_CATEGORIES) {
-                String number = pickEmergencyNumberForCategory(category,
-                        phoneInfo.getPromotedEmergencyNumbers());
-                if (number != null) {
-                    emergencyNumbers.put(number, category);
+            Set<Integer> displayedCategories = new HashSet<>();
+            for (Candidate candidate : getRankedEmergencyNumbers(phoneInfo)) {
+                EmergencyNumber number = candidate.metadata();
+                // Compare full category sets, including services without a shortcut label.
+                if (!displayedCategories.add(number.getEmergencyServiceCategoryBitmask())) {
+                    continue;
                 }
-            }
-
-            // prepare display material for picked ECC
-            for (String number : emergencyNumbers.keySet()) {
-                EccDisplayMaterial material = prepareEccMaterial(context, number,
-                        emergencyNumbers.get(number));
+                EccDisplayMaterial material = prepareEccMaterial(context, candidate.number(),
+                        number.getEmergencyServiceCategoryBitmask());
                 if (material != null) {
                     displayMaterials.add(material);
                 }
@@ -151,23 +152,35 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
         return false;
     }
 
-    @Nullable
-    private String pickEmergencyNumberForCategory(int category,
-            @NonNull List<EmergencyNumber> emergencyNumbers) {
+    private static List<Candidate> getRankedEmergencyNumbers(ShortcutViewUtils.PhoneInfo phoneInfo) {
+        List<EmergencyNumber> emergencyNumbers = phoneInfo.getPromotedEmergencyNumbers();
+        Map<String, Integer> categoriesByNumber = new HashMap<>();
         for (EmergencyNumber number : emergencyNumbers) {
-            if ((number.getEmergencyServiceCategoryBitmask() & category) != 0) {
-                return number.getNumber();
-            }
+            categoriesByNumber.merge(number.getNumber(), number.getEmergencyServiceCategoryBitmask(),
+                    (first, second) -> first | second);
         }
-        return null;
+
+        // Combine category information for each dial string without merging source priorities.
+        List<Candidate> candidates = new ArrayList<>();
+        for (EmergencyNumber number : emergencyNumbers) {
+            EmergencyNumber combined = new EmergencyNumber(number.getNumber(), number.getCountryIso(),
+                    number.getMnc(), categoriesByNumber.get(number.getNumber()),
+                    number.getEmergencyUrns(), number.getEmergencyNumberSourceBitmask(),
+                    number.getEmergencyCallRouting());
+            candidates.add(new Candidate(combined, combined.getNumber()));
+        }
+        return EmergencyNumberUtils.rankEmergencyNumbers(candidates, phoneInfo.getCountryIso());
     }
 
     @Nullable
     private EccDisplayMaterial prepareEccMaterial(@NonNull Context context, @NonNull String number,
-            @NonNull List<Integer> categories) {
+            int categories) {
         EccDisplayMaterial material = new EccDisplayMaterial();
         material.number = number;
-        for (int category : categories) {
+        for (int category : ShortcutViewUtils.PROMOTED_CATEGORIES) {
+            if ((categories & category) == 0) {
+                continue;
+            }
             CharSequence description;
             switch (category) {
                 case EmergencyNumber.EMERGENCY_SERVICE_CATEGORY_POLICE:
