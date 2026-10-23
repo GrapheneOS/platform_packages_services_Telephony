@@ -156,9 +156,6 @@ public class EmergencyDialer extends Activity implements View.OnClickListener,
     /** 85% opacity for black background **/
     private static final int BLACK_BACKGROUND_GRADIENT_ALPHA = 217;
 
-    /** Size limit of emergency shortcut buttons container. **/
-    private static final int SHORTCUT_SIZE_LIMIT = 3;
-
     private static final float COLOR_DELTA = 1.0f / 16.0f;
 
     /** Dial button color, from packages/apps/PhoneCommon/res/drawable-mdpi/fab_green.png **/
@@ -1064,7 +1061,7 @@ public class EmergencyDialer extends Activity implements View.OnClickListener,
                 shortcutButtonContainer.removeAllViews();
                 mEmergencyShortcutButtonList.clear();
 
-                for (int i = 0; i < mShortcutAdapter.getCount() && i < SHORTCUT_SIZE_LIMIT; ++i) {
+                for (int i = 0; i < mShortcutAdapter.getCount(); ++i) {
                     EmergencyShortcutButton button = (EmergencyShortcutButton)
                             mShortcutAdapter.getView(i, null, shortcutButtonContainer);
                     mEmergencyShortcutButtonList.add(button);

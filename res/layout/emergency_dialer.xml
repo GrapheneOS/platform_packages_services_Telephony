@@ -20,25 +20,32 @@
         android:layout_height="match_parent">
 
     <!-- Emergency dialer shortcuts layout-->
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/emergency_dialer_shortcuts"
         android:accessibilityPaneTitle="@string/emergencyDialerIconLabel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:visibility="gone">
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/emergency_shortcuts_scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <include layout="@layout/emergency_information"/>
-            <include layout="@layout/emergency_shortcut_buttons_group"/>
-        </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include layout="@layout/emergency_information"/>
+                <include layout="@layout/emergency_shortcut_buttons_group"/>
+            </LinearLayout>
+        </ScrollView>
 
         <FrameLayout
             android:id="@+id/dialpad_button_container"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_gravity="bottom|center"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/emergency_dialer_dialpad_button_margin">
             <ImageButton
                 android:id="@+id/floating_action_button_dialpad"
@@ -50,7 +57,7 @@
                 android:scaleType="centerInside"
                 android:backgroundTint="@color/emergency_dialpad_fab_tint_color"/>
         </FrameLayout>
-    </FrameLayout>
+    </LinearLayout>
 
     <!--Emergency Dialer Layout-->
     <FrameLayout
