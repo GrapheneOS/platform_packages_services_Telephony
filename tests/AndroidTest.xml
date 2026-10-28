@@ -19,6 +19,15 @@
     </target_preparer>
     <option name="test-suite-tag" value="apct" />
     <option name="test-suite-tag" value="apct-instrumentation" />
+    <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
+        <option name="throw-if-cmd-fail" value="true" />
+        <!-- GrapheneOS: allow Dexmaker to load generated mocks from the phone app's storage. -->
+        <option name="run-command" value="setprop persist.sys.allow_weakening_system_app_sepolicy true" />
+        <option name="run-command" value="pm edit-gos-package-state com.android.phone 0 add-flag RESTRICT_STORAGE_DYN_CODE_LOADING_NON_DEFAULT clear-flag RESTRICT_STORAGE_DYN_CODE_LOADING set-kill-uid-after-apply true" />
+        <!-- Restore the default restrictions and restart the phone process after tests. -->
+        <option name="teardown-command" value="setprop persist.sys.allow_weakening_system_app_sepolicy ''" />
+        <option name="teardown-command" value="pm edit-gos-package-state com.android.phone 0 clear-flag RESTRICT_STORAGE_DYN_CODE_LOADING_NON_DEFAULT clear-flag RESTRICT_STORAGE_DYN_CODE_LOADING set-kill-uid-after-apply true" />
+    </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.suite.SuiteApkInstaller">
         <option name="cleanup-apks" value="true" />
         <option name="test-file-name" value="TeleServiceTests.apk" />
