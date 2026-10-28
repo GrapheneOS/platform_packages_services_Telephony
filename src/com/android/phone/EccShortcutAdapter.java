@@ -51,8 +51,8 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
 
     private static class EccDisplayMaterial {
         public CharSequence number = null;
-        public int iconRes = 0;
-        public CharSequence description = null;
+        public int iconRes = R.drawable.ic_emergency_callback_mode;
+        public CharSequence description = "";
     }
 
     public EccShortcutAdapter(@NonNull Context context) {
@@ -120,18 +120,22 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
                 return;
             }
 
-            Set<Integer> displayedCategories = new HashSet<>();
-            for (Candidate candidate : getRankedEmergencyNumbers(phoneInfo)) {
+            Map<String, Set<Integer>> categoriesByNumber = new HashMap<>();
+            for (EmergencyNumber number : phoneInfo.getPromotedEmergencyNumbers()) {
+                categoriesByNumber.computeIfAbsent(number.getNumber(), key -> new HashSet<>())
+                        .addAll(number.getEmergencyServiceCategories());
+            }
+
+            Set<Set<Integer>> displayedCategories = new HashSet<>();
+            for (Candidate candidate : getRankedEmergencyNumbers(phoneInfo, categoriesByNumber)) {
                 EmergencyNumber number = candidate.metadata();
                 // Compare full category sets, including services without a shortcut label.
-                if (!displayedCategories.add(number.getEmergencyServiceCategoryBitmask())) {
+                // A set preserves unspecified (0) alongside categories from another entry.
+                if (!displayedCategories.add(categoriesByNumber.get(candidate.number()))) {
                     continue;
                 }
-                EccDisplayMaterial material = prepareEccMaterial(context, candidate.number(),
-                        number.getEmergencyServiceCategoryBitmask());
-                if (material != null) {
-                    displayMaterials.add(material);
-                }
+                displayMaterials.add(prepareEccMaterial(context, candidate.number(),
+                        number.getEmergencyServiceCategoryBitmask()));
             }
         } finally {
             mEccDisplayMaterialList = displayMaterials;
@@ -152,19 +156,18 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
         return false;
     }
 
-    private static List<Candidate> getRankedEmergencyNumbers(ShortcutViewUtils.PhoneInfo phoneInfo) {
+    private static List<Candidate> getRankedEmergencyNumbers(ShortcutViewUtils.PhoneInfo phoneInfo,
+            Map<String, Set<Integer>> categoriesByNumber) {
         List<EmergencyNumber> emergencyNumbers = phoneInfo.getPromotedEmergencyNumbers();
-        Map<String, Integer> categoriesByNumber = new HashMap<>();
-        for (EmergencyNumber number : emergencyNumbers) {
-            categoriesByNumber.merge(number.getNumber(), number.getEmergencyServiceCategoryBitmask(),
-                    (first, second) -> first | second);
-        }
-
         // Combine category information for each dial string without merging source priorities.
         List<Candidate> candidates = new ArrayList<>();
         for (EmergencyNumber number : emergencyNumbers) {
+            int categories = 0;
+            for (int category : categoriesByNumber.get(number.getNumber())) {
+                categories |= category;
+            }
             EmergencyNumber combined = new EmergencyNumber(number.getNumber(), number.getCountryIso(),
-                    number.getMnc(), categoriesByNumber.get(number.getNumber()),
+                    number.getMnc(), categories,
                     number.getEmergencyUrns(), number.getEmergencyNumberSourceBitmask(),
                     number.getEmergencyCallRouting());
             candidates.add(new Candidate(combined, combined.getNumber()));
@@ -172,7 +175,7 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
         return EmergencyNumberUtils.rankEmergencyNumbers(candidates, phoneInfo.getCountryIso());
     }
 
-    @Nullable
+    @NonNull
     private EccDisplayMaterial prepareEccMaterial(@NonNull Context context, @NonNull String number,
             int categories) {
         EccDisplayMaterial material = new EccDisplayMaterial();
@@ -210,9 +213,6 @@ public abstract class EccShortcutAdapter extends BaseAdapter {
             }
         }
 
-        if (TextUtils.isEmpty(material.description) || material.iconRes == 0) {
-            return null;
-        }
         return material;
     }
 }

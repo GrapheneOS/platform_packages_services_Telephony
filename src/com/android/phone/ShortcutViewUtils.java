@@ -42,7 +42,7 @@ import java.util.Map;
 class ShortcutViewUtils {
     private static final String LOG_TAG = "ShortcutViewUtils";
 
-    // Emergency services which will be promoted on the shortcut view.
+    // Emergency services with labels on the shortcut view.
     static final int[] PROMOTED_CATEGORIES = {
             EmergencyNumber.EMERGENCY_SERVICE_CATEGORY_POLICE,
             EmergencyNumber.EMERGENCY_SERVICE_CATEGORY_AMBULANCE,
@@ -402,12 +402,10 @@ class ShortcutViewUtils {
                             + (isFromPrioritizedSource ? "P" : ""));
                 }
 
-                if (isPromotedCategory) {
-                    if (isFromPrioritizedSource) {
-                        promotedList.add(emergencyNumber);
-                    } else {
-                        tempList.add(emergencyNumber);
-                    }
+                if (isFromPrioritizedSource) {
+                    promotedList.add(emergencyNumber);
+                } else {
+                    tempList.add(emergencyNumber);
                 }
             }
             // Puts numbers in temp list after prioritized numbers.

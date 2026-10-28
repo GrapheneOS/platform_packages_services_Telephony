@@ -19,6 +19,7 @@ package com.android.phone;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -105,6 +106,7 @@ public class EmergencyShortcutButton extends FrameLayout implements View.OnClick
      */
     public void setPhoneDescription(@NonNull CharSequence description) {
         mPhoneTypeDescription.setText(description);
+        mPhoneTypeDescription.setVisibility(TextUtils.isEmpty(description) ? GONE : VISIBLE);
     }
 
     /**
