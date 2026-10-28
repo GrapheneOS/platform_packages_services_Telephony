@@ -16,6 +16,9 @@
 
 package com.android.phone;
 
+import static android.telephony.CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT;
+import static android.telephony.CarrierConfigManager.CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT;
+
 import static com.android.TestContext.STUB_PERMISSION_ENABLE_ALL;
 import static com.android.internal.telephony.util.TelephonyUtils.TELEPHONY_FEATURE_ENFORCEMENT_VENDOR_API_LEVEL;
 
@@ -302,7 +305,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
     public void testOverrideConfig_noPermission() throws Exception {
         assertThrows(SecurityException.class,
                 () -> mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, PersistableBundle.EMPTY,
-                        false));
+                        CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT));
     }
 
     /**
@@ -313,7 +316,8 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
         mFakePermissionEnforcer.grant(android.Manifest.permission.MODIFY_PHONE_STATE);
 
         assertThrows(IllegalArgumentException.class, () -> mCarrierConfigLoader.overrideConfig(
-                SubscriptionManager.INVALID_SUBSCRIPTION_ID, new PersistableBundle(), false));
+                SubscriptionManager.INVALID_SUBSCRIPTION_ID, new PersistableBundle(),
+                CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT));
     }
 
     /**
@@ -328,7 +332,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
         mFakePermissionEnforcer.grant(android.Manifest.permission.MODIFY_PHONE_STATE);
 
         mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, null /*overrides*/,
-                false/*persistent*/);
+                CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
         processOneMessage();
         processOneMessage();
 
@@ -351,7 +355,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
 
         PersistableBundle config = getTestConfig();
         mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, config /*overrides*/,
-                false/*persistent*/);
+                CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
         processOneMessage();
         processOneMessage();
         assertThat(mCarrierConfigLoader.getOverrideConfig(DEFAULT_PHONE_ID).getInt(
@@ -380,7 +384,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
         overrides.putBoolean(
                 CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL, false);
         mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, overrides /*overrides*/,
-                false/*persistent*/);
+                CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
         processOneMessage();
         processOneMessage();
         assertNotNull(mCarrierConfigLoader.getOverrideConfig(DEFAULT_PHONE_ID));
@@ -388,7 +392,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
                 CarrierConfigManager.KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL)).isFalse();
 
         // Clear override config for next test.
-        mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, null, false);
+        mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, null, CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
 
         // Case 2, If not mock modem then do not override and throw security exception as the key
         // KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL is blocked.
@@ -399,7 +403,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
         try {
             // Call overrideConfig on the local instance
             mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, overrides /*overrides*/,
-                    false/*persistent*/);
+                    CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
             fail("Not received the SecurityException");
         } catch (SecurityException se) {
             // expected
@@ -414,7 +418,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
                 CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL, true);
         mCarrierConfigLoader.clearConfigForPhone(DEFAULT_PHONE_ID, false);
         mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, overrides /*overrides*/,
-                false/*persistent*/);
+                CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
         processOneMessage();
         processOneMessage();
         assertThat(mCarrierConfigLoader.getOverrideConfig(DEFAULT_PHONE_ID).getBoolean(
@@ -427,7 +431,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
         overrides.putBoolean(
                 CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL, false);
         mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, overrides /*overrides*/,
-                false/*persistent*/);
+                CONFIG_OVERRIDE_TYPE_AOSP_TRANSIENT);
         processAllMessages();
         assertThat(mCarrierConfigLoader.getOverrideConfig(DEFAULT_PHONE_ID).getBoolean(
                 CarrierConfigManager.KEY_SATELLITE_ATTACH_SUPPORTED_BOOL)).isFalse();
@@ -671,7 +675,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
 
         assertThrows(SecurityException.class,
                 () -> mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, new PersistableBundle(),
-                        true/*persistent*/));
+                        CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT));
     }
 
     @Test
@@ -687,7 +691,8 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
         appInfo.flags = 0; // Not a system app
         doReturn(appInfo).when(mPackageManager).getApplicationInfo(eq(pkgName), anyInt());
         assertThrows(SecurityException.class, () -> mCarrierConfigLoader
-                .overrideConfig(DEFAULT_SUB_ID, getTestConfig(), true /*persistent*/));
+                .overrideConfig(DEFAULT_SUB_ID, getTestConfig(),
+                        CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT));
     }
 
     @Test
@@ -716,6 +721,7 @@ public class CarrierConfigLoaderTest extends TelephonyTestBase {
                 .getApplicationInfo(eq(systemPkg), anyInt());
 
         // Assert that no SecurityException is thrown (the method should execute successfully)
-        mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, getTestConfig(), true /*persistent*/);
+        mCarrierConfigLoader.overrideConfig(DEFAULT_SUB_ID, getTestConfig(),
+                CONFIG_OVERRIDE_TYPE_AOSP_PERSISTENT);
     }
 }
