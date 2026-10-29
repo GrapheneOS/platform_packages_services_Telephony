@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.TelephonyTestBase;
 import com.android.phone.ecc.nano.ProtobufEccData;
 
 import org.junit.Test;
@@ -39,7 +38,7 @@ import java.util.zip.GZIPInputStream;
  * Unit tests for eccdata.
  */
 @RunWith(AndroidJUnit4.class)
-public class EccDataTest extends TelephonyTestBase {
+public class EccDataTest {
     @Test
     public void testEccDataContent() throws IOException {
         InputStream eccData = new GZIPInputStream(new BufferedInputStream(
