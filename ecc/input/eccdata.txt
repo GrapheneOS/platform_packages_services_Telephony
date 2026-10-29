@@ -1,4 +1,4 @@
-revision: 2
+revision: 3
 countries {
   iso_code: "AD"
   eccs {
@@ -1378,6 +1378,16 @@ countries {
     types: POLICE
     types: AMBULANCE
     types: FIRE
+  }
+  eccs {
+    phone_number: "101"
+    types: FIRE
+    routing: NORMAL
+  }
+  eccs {
+    phone_number: "102"
+    types: AMBULANCE
+    routing: NORMAL
   }
   eccs {
     phone_number: "108"
