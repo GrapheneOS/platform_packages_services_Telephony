@@ -791,7 +791,6 @@ public class NotificationMgr {
                         R.string.limited_sim_function_notification_title))
                 .setContentText(contentText)
                 .setOnlyAlertOnce(true)
-                .setOngoing(true)
                 .setChannelId(NotificationChannelController.CHANNEL_ID_SIM_HIGH_PRIORITY)
                 .setContentIntent(contentIntent);
         final Notification notification = new Notification.BigTextStyle(builder).bigText(

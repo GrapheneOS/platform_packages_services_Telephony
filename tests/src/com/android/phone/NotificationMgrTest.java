@@ -732,6 +732,25 @@ public class NotificationMgrTest extends TelephonyTestBase {
     }
 
     @Test
+    public void testShowLimitedSimFunctionWarningNotification_notificationIsDismissible() {
+        when(mResources.getText(R.string.limited_sim_function_notification_message)).thenReturn(
+                CARRIER_NAME);
+        when(mResources.getText(
+                R.string.limited_sim_function_with_phone_num_notification_message)).thenReturn(
+                "123");
+
+        mNotificationMgr.showLimitedSimFunctionWarningNotification(TEST_SUB_ID, CARRIER_NAME);
+
+        ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(
+                Notification.class);
+        verify(mNotificationManager).notify(any(), eq(LIMITED_SIM_FUNCTION_NOTIFICATION),
+                notificationArgumentCaptor.capture());
+        Notification capturedNotification = notificationArgumentCaptor.getValue();
+        assertThat(capturedNotification.flags & Notification.FLAG_ONGOING_EVENT).isEqualTo(0);
+        assertThat(capturedNotification.flags & Notification.FLAG_NO_CLEAR).isEqualTo(0);
+    }
+
+    @Test
     public void testDismissLimitedSimFunctionWarningNotification_noShowCalledBefore_noCancelSent() {
         // showLimitedSimFunctionWarningNotification was never called before
 
